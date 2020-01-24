@@ -1,8 +1,0 @@
-{
-    "prettier.endOfLine": "lf",
-    "prettier.printWidth": 120,
-    "prettier.tabWidth": 4,
-    "prettier.trailingComma": "es5",
-    "javascript.format.semicolons": "insert",
-    "typescript.format.semicolons": "insert"
-}
