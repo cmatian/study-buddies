@@ -48,7 +48,7 @@ If you're mostly working on the frontend and don't need any immediate requests t
 
 # Making Changes
 
-I'm hoping that we can all use [Git Flow]("https://nvie.com/posts/a-successful-git-branching-model/") during development.
+I'm hoping that we can all use [Git Flow](https://nvie.com/posts/a-successful-git-branching-model/) during development.
 
 Since we are working on this project simultaneously, we don't want to be submitting changes _directly_ to the `devel` branch.
 
