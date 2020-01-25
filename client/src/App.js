@@ -4,6 +4,8 @@ import "./App.css";
 class App extends React.Component {
     state = {
         apiResponse: "",
+        lat: null,
+        long: null
     };
 
     callAPI() {
@@ -19,6 +21,16 @@ class App extends React.Component {
 
     componentDidMount() {
         this.callAPI();
+
+        // get user loc
+        window.navigator.geolocation.getCurrentPosition(
+            position => {
+                // set state
+                this.setState({ lat: position.coords.latitude });
+                this.setState({ long: position.coords.longitude });
+            },
+            err => console.log(err)
+        );
     }
 
     render() {
@@ -28,6 +40,8 @@ class App extends React.Component {
                     <p>
                         API Response: <br />
                         {this.state.apiResponse}
+                        latitude: {this.state.lat} <br />
+                        longitude: {this.state.long}
                     </p>
                 </header>
             </div>
