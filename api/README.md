@@ -1,18 +1,46 @@
 Study Buddies Website
 ---------------------
 
-To set up the first time:
+## First time setup
+
+### Set up gcloud
+
+- Follow https://cloud.google.com/sdk/docs/#install_the_latest_cloud_sdk_version
+- Run the following:
 
 ```
+gcloud init
+gcloud auth login
+gcloud config set project study-buddies-266004
+```
+
+### Set up MySQL
+
+```
+wget https://dl.google.com/cloudsql/cloud_sql_proxy.linux.amd64 -O cloud_sql_proxy
+chmod +x cloud_sql_proxy
+export SB_MYSQL_PW=(password here)
+```
+
+### Set up website
+```
 sudo apt install npm
-cd website/
+cd api/
 npm install
 ```
 
-To run:
+## Running
+
+Run the Cloud SQL proxy (in its own terminal window):
+
+```
+./cloud_sql_proxy -instances=study-buddies-266004:us-west1:study-buddies-db=tcp:3306
+```
+
+Run the website:
 
 ```
 DEBUG=study-buddies:* npm start
 ```
 
-Then in your browser visit http://127.0.0.1:3000/ .
+Then in your browser visit http://127.0.0.1:9000/ .
