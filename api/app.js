@@ -5,10 +5,12 @@ var cookieParser = require("cookie-parser");
 var logger = require("morgan");
 var expressHandlebars = require("express-handlebars");
 var cors = require("cors"); // cross origin resource sharing - absolutely required
+var session = require("express-session");
 
 var indexRouter = require("./routes/index");
 var usersRouter = require("./routes/users");
 var testapiRouter = require("./routes/testapi");
+var auth = require("./auth.js");
 
 var app = express();
 
@@ -22,6 +24,15 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
+
+app.use(session({
+    secret: process.env.SB_SESSION_SECRET,
+    resave: false,
+    saveUninitialized: false,
+}));
+
+// Must come after session initialization
+auth.init(app);
 
 // Define Routes here
 app.use("/", indexRouter);

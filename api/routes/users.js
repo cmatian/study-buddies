@@ -1,9 +1,10 @@
 var express = require('express');
+var auth = require('../auth');
+
 var router = express.Router();
 
-/* GET users listing. */
-router.get('/', function(req, res, next) {
-  res.send('respond with a resource');
+router.get('/me', auth.checkAuth, (req, res) => {
+    res.render('users', { title: 'Study Buddies', user_id: req.user.id });
 });
 
 module.exports = router;
