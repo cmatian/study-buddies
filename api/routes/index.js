@@ -12,7 +12,14 @@ router.get('/', function(req, res, next) {
 	    return;
 	}
 
-	res.render('index', { title: 'Study Buddies', data: util.inspect(dbRes) });
+	var user_id = null;
+	if (req.isAuthenticated()) {
+	    user_id = req.user.id;
+	    console.log('authenticated user: ' + user_id);
+	} else {
+	    console.log('unauthenticated user');
+	}
+	res.render('index', { title: 'Study Buddies', user_id: user_id, data: util.inspect(dbRes) });
     });
 });
 
