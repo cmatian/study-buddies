@@ -2,7 +2,7 @@ var express = require("express");
 const router = express.Router();
 
 router.get("/", (req, res, next) => {
-    res.send("If you see this, the API is working properly.");
+    res.send("React router is receiving this message from the Express Server.");
 });
 
 module.exports = router;
