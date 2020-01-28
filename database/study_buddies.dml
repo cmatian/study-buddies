@@ -1,0 +1,224 @@
+/******************************
+users table
+*******************************/
+
+-- Select all details for a specific user 
+-- May need to refactor this to only select specific details rather than wild card query
+SELECT * FROM users 
+WHERE user_id = :user_id_input; 
+
+-- Generate a new User (account creation)
+INSERT INTO users (
+    username,
+    date_of_birth, 
+    phone, 
+    address, 
+    city, 
+    zip, 
+    state, 
+    country
+) 
+VALUES (
+    :username_input,
+    :date_of_birth_input,
+    :phone_input,
+    :address_input,
+    :city_input,
+    :zip_input,
+    :state_input,
+    :country_input
+);
+
+-- Update an existing user
+/* 
+    We may need to break this up so that it's more compartmentalized. For example, if they want to update
+    their address we only enable them to update the inputs related to address. If they want to update phone or email those are in another section. Effectively, we have different forms that are submitted with smaller update queries. 
+*/
+UPDATE users 
+SET date_of_birth = :date_of_birth_input,
+    phone = :phone_input,
+    address = :address_input,
+    city = :city_input,
+    zip = :zip_input,
+    state = :state_input,
+    country = :country_input
+WHERE user_id = :user_id_input;
+
+-- Delete a User
+DELETE FROM users 
+WHERE user_id = :user_id_input;
+
+/******************************
+locations table
+*******************************/
+
+-- Select all locations and also select all of their assoc. ratings and average them
+SELECT
+    l.location_id,
+    l.places_id,
+    l.name,
+    l.business_type,
+    ifnull(
+        (SELECT AVG(r.rating)
+            FROM ratings r
+            WHERE r.location_id = l.location_id)
+        , null
+        ) as avg_rating
+FROM locations l;
+
+-- Insert a new location
+INSERT INTO locations (
+    places_id,
+    name,
+    business_type
+)
+VALUES (
+    :places_id_input,
+    :name_input,
+    :business_type_input
+);
+
+-- Update an existing location
+UPDATE locations
+SET places_id = :places_id_input,
+    name = :name_input,
+    business_type = :business_type_input
+WHERE location_id = :location_id_input;
+
+
+-- Delete a location entry
+DELETE from locations
+WHERE location_id = :location_id_input;
+
+/******************************
+saved_locations table
+*******************************/
+
+-- Select all saved_locations for a specific user
+SELECT
+    sl.user_id as uid,
+    sl.location_id as lid,
+    sl.saved_location_id as slid,
+    sl.nickname,
+    l.name
+FROM saved_locations sl 
+INNER JOIN users u
+    ON u.user_id = sl.user_id
+INNER JOIN locations l
+    ON l.location_id = sl.location_id
+WHERE sl.user_id = :user_id_input;
+
+-- Insert a new saved_location
+INSERT INTO saved_locations (
+    user_id,
+    location_id,
+    nickname
+)
+VALUES (
+    :user_id_input,
+    :location_id_input,
+    :nickname_input
+);
+
+-- User can only update the nickname (nothing else)
+UPDATE saved_locations
+SET nickname = :nickname_input
+WHERE saved_location_id = :saved_location_id_input;
+
+-- Delete a saved_location
+DELETE FROM saved_locations
+WHERE saved_location_id = :saved_location_id_input;
+
+/******************************
+reservations table
+*******************************/
+
+-- Select all reservations for the user - we will need specific queries based on status
+SELECT 
+    r.reservation_id,
+    r.user_id,
+    r.location_id,
+    r.status,
+    r.group_size,
+    r.duration
+    l.places_id,
+    l.name
+FROM reservations r
+INNER JOIN locations l ON l.location_id = r.location_id
+WHERE r.user_id = :user_id_input;
+
+-- Insert a new reservation
+INSERT INTO reservations (
+    reservation_id,
+    user_id,
+    location_id,
+    status,
+    group_size,
+    duration
+)
+VALUES (
+    :reservation_id_input,
+    :user_id_input,
+    :location_id_input,
+    :status_input
+    :group_size_input,
+    :duration_input
+);
+
+-- Update an existing reservation
+UPDATE reservations 
+SET status = :status_input,
+    group_size = :group_size_input,
+    duration = :duration_input
+WHERE reservation_id = :reservation_id_input;
+
+-- Delete a reservation (this should be for testing only. We should never allow a user to delete an entry from the db). 
+DELETE FROM reservations
+WHERE reservation_id = :reservation_id_input;
+
+/******************************
+ratings table
+*******************************/
+
+-- Select all ratings associated with a specific user
+SELECT 
+    r.rating_id,
+    r.user_id,
+    r.location_id,
+    r.rating,
+    r.comment,
+    r.cost
+    u.username
+    l.name
+FROM ratings r
+INNER JOIN users u ON u.user_id = r.user_id
+INNER JOIN locations l on l.location_id = r.location_id
+WHERE r.user_id = :user_id_input;
+
+-- Insert a new rating
+INSERT INTO ratings (
+    user_id,
+    location_id,
+    rating,
+    comment,
+    cost
+)
+VALUES (
+    :user_id_input,
+    :location_id_input,
+    :rating_input,
+    :comment_input,
+    :cost_input
+);
+
+-- Update an existing rating (allow them to update the comment, rating, or cost)
+UPDATE ratings
+SET rating = :rating_input,
+    comment = :comment_input,
+    cost = :cost_input
+WHERE rating_id = :rating_id_input;
+
+-- Delete an existing review
+DELETE FROM ratings
+WHERE rating_id = :rating_id_input;
+
