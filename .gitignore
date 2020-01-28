@@ -30,6 +30,8 @@
 ######################
 node_modules
 *~
+/temp/*
+.env
 
 # OS generated files #
 ######################
