@@ -1,24 +1,24 @@
 import React from "react";
-import { BrowserRouter, Route } from 'react-router-dom';
+import { BrowserRouter, Route } from "react-router-dom";
 import "./App.css";
 import LandingPage from "./components/layouts/LandingPage";
 import Maps from "./components/maps/Maps";
 import Search from "./components/maps/Search";
 import Biz from "./components/business/Biz";
 import Rates from "./components/business/Rates";
-import Reserve from "./components/business/Reserve"
-import Reservations from "./components/reservation/Reservations"
+import Reserve from "./components/business/Reserve";
+import Reservations from "./components/reservation/Reservations";
 import Saved from "./components/maps/Saved";
 
 class App extends React.Component {
     state = {
         apiResponse: "",
         lat: null,
-        long: null
+        long: null,
     };
 
     callAPI() {
-        fetch("http://localhost:9000/testapi")
+        fetch("http://localhost:5000/testapi")
             .then(res => res.text())
             .then(res =>
                 this.setState({
@@ -48,7 +48,7 @@ class App extends React.Component {
                 <header className="App-header">
                     <p>
                         API Response: <br />
-                        {this.state.apiResponse}
+                        {this.state.apiResponse} <br />
                         latitude: {this.state.lat} <br />
                         longitude: {this.state.long}
                     </p>
@@ -63,10 +63,8 @@ class App extends React.Component {
                             <Route path="/biz/reserve" exact component={Reserve}></Route>
                             <Route path="/users/reservations" exact component={Reservations}></Route>
                             <Route path="/maps/users/saved" exact component={Saved}></Route>
-                        </BrowserRouter>                        
+                        </BrowserRouter>
                     </div>
-
-                    
                 </header>
             </div>
         );
