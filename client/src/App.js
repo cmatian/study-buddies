@@ -1,6 +1,5 @@
 import React from "react";
 import { BrowserRouter, Route } from "react-router-dom";
-import "./App.css";
 import LandingPage from "./components/layouts/LandingPage";
 import Maps from "./components/maps/Maps";
 import Search from "./components/maps/Search";
@@ -9,6 +8,9 @@ import Rates from "./components/business/Rates";
 import Reserve from "./components/business/Reserve";
 import Reservations from "./components/reservation/Reservations";
 import Saved from "./components/maps/Saved";
+
+// App specific styling
+import "./App.scss";
 
 class App extends React.Component {
     state = {
