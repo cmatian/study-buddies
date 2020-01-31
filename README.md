@@ -65,3 +65,6 @@ Here is a basic flow to follow:
 4. Issue `git commit -m "Some commit message"` to produce a message describing your commit. Try to use meaningful commit messages describing what you changed.
 
 5. Finally, you can issue `git push origin your-branch-name`. This will push your changes to the repository where you can either continue work (and repeat the steps above) or produce a pull (merge) request on Github.
+
+## Config
+Paste config folder into client/src/config

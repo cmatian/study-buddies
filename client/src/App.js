@@ -14,6 +14,31 @@ import "./App.scss";
 
 // Only routes, the provider context API, or nav elements should be on App.js
 class App extends React.Component {
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            lat: null,
+            long: null,
+        };
+    }
+
+    getUserCoord = () => {
+        // get user loc
+        window.navigator.geolocation.getCurrentPosition(
+            position => {
+                // set state
+                this.setState({ lat: position.coords.latitude });
+                this.setState({ long: position.coords.longitude });
+            },
+            err => console.log(err)
+        );
+    };
+
+    componentDidMount() {
+        this.getUserCoord();
+    }
+
     render() {
         return (
             <div className="App">
