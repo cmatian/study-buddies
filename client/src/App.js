@@ -28,8 +28,10 @@ class App extends React.Component {
         window.navigator.geolocation.getCurrentPosition(
             position => {
                 // set state
-                this.setState({ lat: position.coords.latitude });
-                this.setState({ long: position.coords.longitude });
+                this.setState({ 
+                    lat: position.coords.latitude,
+                    long: position.coords.longitude
+                });
             },
             err => console.log(err)
         );
@@ -44,8 +46,18 @@ class App extends React.Component {
             <div className="App">
                 <BrowserRouter>
                     {/* Can optionally wrap all routes in a switch if we only want one matched route to render */}
-                    <Route path="/" exact component={Home}></Route>
-                    <Route path="/maps" exact component={Maps}></Route>
+                    <Route 
+                        path="/" exact
+                        render={() => {
+                            return <Home lat={this.state.lat} long={this.state.long} />
+                        }}
+                    ></Route>
+                    <Route 
+                        path="/maps" exact
+                        render={() => {
+                            return <Maps lat={this.state.lat} long={this.state.long} />
+                        }}
+                    ></Route>
                     <Route path="/maps/search" exact component={Search}></Route>
                     <Route path="/biz" exact component={Biz}></Route>
                     <Route path="/biz/rate" exact component={Rates}></Route>
