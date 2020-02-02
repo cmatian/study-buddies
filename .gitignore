@@ -33,6 +33,9 @@ node_modules
 /temp/*
 .env
 
+# Config #
+client/src/config
+
 # OS generated files #
 ######################
 *.swp
