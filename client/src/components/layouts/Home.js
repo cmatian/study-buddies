@@ -1,5 +1,4 @@
 import React from "react";
-
 // Home specific styling
 import "./Home.scss";
 
@@ -7,10 +6,21 @@ class Home extends React.Component {
     constructor(props) {
         super(props);
 
+        // set inital state to props being passed down
         this.state = {
-            lat: null,
-            long: null,
+            lat: props.lat,
+            long: props.long,
         };
+    }
+
+    // update state wheneve changed
+    componentDidUpdate(prevProps) {
+        if (prevProps !== this.props) {
+            this.setState({
+                lat: this.props.lat,
+                long: this.props.long
+            })
+        }
     }
 
     // Example API function call to our express server - make sure it's running before using this fn!
@@ -23,22 +33,6 @@ class Home extends React.Component {
                 })
             )
             .catch(err => err);
-    }
-
-    getUserCoord = () => {
-        // get user loc
-        window.navigator.geolocation.getCurrentPosition(
-            position => {
-                // set state
-                this.setState({ lat: position.coords.latitude });
-                this.setState({ long: position.coords.longitude });
-            },
-            err => console.log(err)
-        );
-    };
-
-    componentDidMount() {
-        this.getUserCoord();
     }
 
     render() {
