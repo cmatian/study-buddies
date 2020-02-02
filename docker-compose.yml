@@ -1,0 +1,17 @@
+version: '3'
+services:
+  web:
+    build: .
+    depends_on:
+      - cloud-sql-proxy
+    ports:
+      - 3000:3000
+  cloud-sql-proxy:
+    image: gcr.io/cloudsql-docker/gce-proxy:1.11
+    command: ["/cloud_sql_proxy",
+              "-instances=study-buddies-266004:us-west1:study-buddies-db=tcp:0.0.0.0:3306",
+              "-credential_file=/secrets/cloudsql/study-buddies-cloud-sql-sa.json"]
+    volumes:
+      - ./study-buddies-cloud-sql-sa.json:/secrets/cloudsql/study-buddies-cloud-sql-sa.json
+    ports:
+      - 3306:3306
