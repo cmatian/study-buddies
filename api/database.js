@@ -1,7 +1,7 @@
 
 var mysql = require('mysql');
 var connection = mysql.createConnection({
-    host: 'localhost',
+    host: 'cloud-sql-proxy',
     user: 'app',
     password: process.env.SB_MYSQL_PW,
     database: 'study_buddies'

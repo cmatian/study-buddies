@@ -54,3 +54,7 @@ _notes
 .idea
 .vscode
 
+# Secret keys #
+###############
+init-study-buddies-env.sh
+study-buddies-cloud-sql-sa.json
