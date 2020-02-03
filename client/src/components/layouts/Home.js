@@ -1,4 +1,5 @@
 import React from "react";
+import Search from "../maps/Search";
 // Home specific styling
 import "./Home.scss";
 
@@ -18,8 +19,8 @@ class Home extends React.Component {
         if (prevProps !== this.props) {
             this.setState({
                 lat: this.props.lat,
-                long: this.props.long
-            })
+                long: this.props.long,
+            });
         }
     }
 
@@ -38,9 +39,9 @@ class Home extends React.Component {
     render() {
         return (
             <div className="home_page">
-                <p>
-                    Your current coordinates are lat: {this.state.lat} and long: {this.state.long}.
-                </p>
+                <div className="content_wrapper">
+                    <Search />
+                </div>
             </div>
         );
     }

@@ -16,6 +16,13 @@ Example:
 
 */
 
+// Constrain all content to the borders
+*,
+*:before,
+*:after {
+    box-sizing: border-box;
+}
+
 .App {
     text-align: center;
 }
