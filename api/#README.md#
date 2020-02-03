@@ -36,11 +36,3 @@ Run the Cloud SQL proxy (in its own terminal window):
 ```
 ./cloud_sql_proxy -instances=study-buddies-266004:us-west1:study-buddies-db=tcp:3306
 ```
-
-Run the website:
-
-```
-DEBUG=study-buddies:* npm start
-```
-
-Then in your browser visit http://127.0.0.1:9000/ .
