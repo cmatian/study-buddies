@@ -30,21 +30,70 @@ The `/api` folder contains the code for the Express backend.
 
 The `/client` folder contains the code for the React frontend.
 
-## Fire up Express
+## Local setup
 
-To fire up the Express backend, `cd` into the `/api` directory and issue `npm install`. This will initialize all of the node module dependencies.
+### Set up gcloud
 
-Afterwards, you can issue `npm start` and the server will start up. The server will be hosted at `http://localhost:9000`. If you can see the Study Buddies title then that means you're all set.
+- Follow https://cloud.google.com/sdk/docs/#install_the_latest_cloud_sdk_version
+- Run the following:
 
-## Fire up React
+```
+gcloud init
+gcloud auth login
+gcloud config set project study-buddies-266004
+```
 
-To start the React frontend, `cd` into the `/client` directory and issue the `npm install` command to get all of your dependencies in order. Afterwards, you can safely start up React by issuing `npm start`. Your React application will be served at `http://localhost:3000`.
+### Set up MySQL
 
-## Putting it all together
+```
+wget https://dl.google.com/cloudsql/cloud_sql_proxy.linux.amd64 -O cloud_sql_proxy
+chmod +x cloud_sql_proxy
+export SB_MYSQL_PW=(password here)
+```
+
+### Install Node dependencies
+
+Before starting Express or React, each of them needs dependencies installed. To prepare the Express backend, `cd` into the `/api` directory and issue `npm install`. This will initialize all of the node module dependencies for Express. To prepare the React frontend, `cd` into the `/client` directory and issue the `npm install` command to get all of your React dependencies in order. 
+
+## Running locally
+
+### Run Cloud SQL Proxy
+
+Run the Cloud SQL proxy (in its own terminal window):
+
+```
+./cloud_sql_proxy -instances=study-buddies-266004:us-west1:study-buddies-db=tcp:3306
+```
+
+### Running the Node Components individually
+
+Express and React can be started individually, or together with a single handy command (see the next section for this).
+
+#### Fire up Express
+
+Issue `npm start` and the server will start up. The server will be hosted at `http://localhost:5000`. If you can see the Study Buddies title then that means you're all set.
+
+#### Fire up React
+
+Start up React by issuing `npm start`. Your React application will be served at `http://localhost:3000`.
+
+#### Putting it all together
 
 In order for this to all run seamlessly, you need to have **both** the React client and the Express api are running at the same time. Do the above steps each in different terminal windows and you should be good to go.
 
 If you're mostly working on the frontend and don't need any immediate requests to the server or database, then you can probably work without starting up Express (and vice versa). Do note that if your frontend has any requests to the backend and the server isn't running, then the application will experience run time errors.
+
+### Running the Node components with one command
+
+To start both together, `cd` into the `/client` cirectory and issue the `npm run dev` command. This will first start Express, then start React.
+
+# Building the docker image
+
+TO DO
+
+# Deploying the website
+
+TO DO
 
 # Making Changes
 
