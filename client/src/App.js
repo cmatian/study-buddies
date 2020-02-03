@@ -1,5 +1,5 @@
 import React from "react";
-import { BrowserRouter, Route } from "react-router-dom";
+import { BrowserRouter, Switch, Route } from "react-router-dom";
 import Home from "./components/layouts/Home";
 import Maps from "./components/maps/Maps";
 import Search from "./components/maps/Search";
@@ -46,28 +46,29 @@ class App extends React.Component {
         return (
             <div className="App">
                 <BrowserRouter>
-                    {/* Can optionally wrap all routes in a switch if we only want one matched route to render */}
-                    <Route
-                        path="/"
-                        exact
-                        render={() => {
-                            return <Home lat={this.state.lat} long={this.state.long} />;
-                        }}
-                    ></Route>
-                    <Route
-                        path="/maps"
-                        exact
-                        render={() => {
-                            return <Maps lat={this.state.lat} long={this.state.long} />;
-                        }}
-                    ></Route>
-                    <Route path="/maps/search" exact component={Search}></Route>
-                    <Route path="/biz" exact component={Biz}></Route>
-                    <Route path="/biz/rate" exact component={Rates}></Route>
-                    <Route path="/biz/reserve" exact component={Reserve}></Route>
-                    <Route path="/users/reservations" exact component={Reservations}></Route>
-                    <Route path="/maps/users/saved" exact component={Saved}></Route>
-                    <Route component={NotFound}></Route>
+                    <Switch>
+                        <Route
+                            path="/"
+                            exact
+                            render={() => {
+                                return <Home lat={this.state.lat} long={this.state.long} />;
+                            }}
+                        ></Route>
+                        <Route
+                            path="/maps"
+                            exact
+                            render={() => {
+                                return <Maps lat={this.state.lat} long={this.state.long} />;
+                            }}
+                        ></Route>
+                        <Route path="/maps/search" exact component={Search}></Route>
+                        <Route path="/biz" exact component={Biz}></Route>
+                        <Route path="/biz/rate" exact component={Rates}></Route>
+                        <Route path="/biz/reserve" exact component={Reserve}></Route>
+                        <Route path="/users/reservations" exact component={Reservations}></Route>
+                        <Route path="/maps/users/saved" exact component={Saved}></Route>
+                        <Route component={NotFound}></Route>
+                    </Switch>
                 </BrowserRouter>
             </div>
         );
