@@ -36,8 +36,10 @@ app.use(
 // Must come after session initialization
 auth.init(app);
 
+app.use(express.static(`../client/build`));
+
 // Define Routes here
-app.use("/", indexRouter);
+app.use("/express-index", indexRouter);
 app.use("/testapi", testapiRouter);
 app.use("/users", usersRouter);
 
