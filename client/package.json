@@ -22,7 +22,7 @@
         "eject": "react-scripts eject",
         "client": "npm start",
         "server": "cd ../api && npm run server",
-        "dev": "concurrently \"npm run client\" \"npm run server\""
+        "dev": "concurrently --kill-others \"npm run client\" \"npm run server\""
     },
     "eslintConfig": {
         "extends": "react-app"

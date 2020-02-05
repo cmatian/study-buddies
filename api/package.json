@@ -5,7 +5,7 @@
     "main": "app.js",
     "scripts": {
         "start": "node ./bin/www",
-        "server": "nodemon --exec npm start"
+        "server": "npm start"
     },
     "dependencies": {
         "cookie-parser": "~1.4.4",
