@@ -87,13 +87,21 @@ If you're mostly working on the frontend and don't need any immediate requests t
 
 To start both together, `cd` into the `/client` cirectory and issue the `npm run dev` command. This will first start Express, then start React.
 
-# Building the docker image
+# Building the docker image and deploying
 
-TO DO
+## Prerequisites
 
-# Deploying the website
+- Install docker: https://docs.docker.com/install/
+- Set up "docker credential helpers" as described in step 7 of https://cloud.google.com/run/docs/setup
 
-TO DO
+## Building and deploying
+
+```
+cd study-buddies/
+docker build -t gcr.io/study-buddies-266004/study-buddies-img .
+docker push gcr.io/study-buddies-266004/study-buddies-img:latest
+gcloud run deploy study-buddies-img --image gcr.io/study-buddies-266004/study-buddies-img --platform managed --region us-west1
+```
 
 # Making Changes
 
