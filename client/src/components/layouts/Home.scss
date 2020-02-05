@@ -5,4 +5,16 @@
     align-items: center;
     background-color: #787878;
     min-height: 100vh;
+    /* Might be worth transitioning to a local image in the future */
+    background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
+        url("https://images.unsplash.com/photo-1519155031214-e8d583928bf2?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1950&q=80");
+    background-size: cover;
+
+    .content_wrapper {
+        max-width: 960px;
+        background: #fff;
+        width: 100%;
+        border-radius: 10px;
+        padding: 15px;
+    }
 }
