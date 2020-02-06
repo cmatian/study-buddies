@@ -38,6 +38,14 @@ class App extends React.Component {
         );
     };
 
+    // update user location
+    updateUserCoord = (lat, long) => {
+        this.setState({
+            lat: lat,
+            long: long
+        });
+    };
+
     componentDidMount() {
         this.getUserCoord();
     }
@@ -51,7 +59,7 @@ class App extends React.Component {
                             path="/"
                             exact
                             render={() => {
-                                return <Home lat={this.state.lat} long={this.state.long} />;
+                                return <Home lat={this.state.lat} long={this.state.long} updateUserCoord={this.updateUserCoord} />;
                             }}
                         ></Route>
                         <Route
@@ -60,7 +68,7 @@ class App extends React.Component {
                             render={() => {
                                 return <Maps lat={this.state.lat} long={this.state.long} />;
                             }}
-                        ></Route>
+                        ></Route>{}
                         <Route path="/maps/search" exact component={Search}></Route>
                         <Route path="/biz" exact component={Biz}></Route>
                         <Route path="/biz/rate" exact component={Rates}></Route>
