@@ -1,11 +1,17 @@
 import React from "react";
 import PlacesAutocomplete, { geocodeByAddress, getLatLng } from "react-places-autocomplete";
+import { Redirect } from "react-router-dom"
 import "./Search.scss"; // Styling
 
 class Search extends React.Component {
     constructor(props) {
         super(props);
-        this.state = { address: "" };
+        this.state = { 
+            address: "", 
+            redirect: false
+        };
+
+        console.log("props: ", props);
     }
 
     handleChange = address => {
@@ -15,11 +21,16 @@ class Search extends React.Component {
     handleSelect = address => {
         geocodeByAddress(address)
             .then(results => getLatLng(results[0]))
-            .then(latLng => console.log("Success", latLng))
+            .then(latLng => this.props.updateUserCoord(latLng.lat, latLng.lng))
             .catch(error => console.error("Error", error));
     };
 
+    // onclick of submit button redirect to maps
     render() {
+        if (this.state.redirect) {
+            return <Redirect to="/maps"/>
+        }
+
         return (
             <PlacesAutocomplete value={this.state.address} onChange={this.handleChange} onSelect={this.handleSelect}>
                 {({ getInputProps, suggestions, getSuggestionItemProps, loading }) => (
@@ -49,6 +60,7 @@ class Search extends React.Component {
                                 );
                             })}
                         </div>
+                        <button onClick={()=>{this.setState({ redirect: true })}}>Submit</button>
                     </div>
                 )}
             </PlacesAutocomplete>

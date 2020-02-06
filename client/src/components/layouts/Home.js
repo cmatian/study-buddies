@@ -40,8 +40,8 @@ class Home extends React.Component {
         return (
             <div className="home_page">
                 <div className="content_wrapper">
-                    <Search />
-                </div>
+                    <Search updateUserCoord={this.props.updateUserCoord} />
+                </div> 
             </div>
         );
     }
