@@ -1,6 +1,5 @@
 import React from "react";
-import { Map, GoogleApiWrapper, Marker } from "google-maps-react";
-import { config } from "../../config/config";
+import { Map, Marker } from "google-maps-react";
 
 const mapStyles = {
     width: "100%",
@@ -11,12 +10,12 @@ class Maps extends React.Component {
     render() {
         return (
             <div>
-                Results from a particular geo location & zoom, without a particular search term
                 <Map
-                    google={this.props.google}
-                    zoom={8}
+                    google={window.google}
+                    zoom={12}
                     style={mapStyles}
                     initialCenter={{ lat: this.props.lat, lng: this.props.long }}
+                    center={{ lat: this.props.lat, lng: this.props.long }}
                 >
                     <Marker position={{ lat: this.props.lat, lng: this.props.long }} />
                 </Map>
@@ -25,6 +24,4 @@ class Maps extends React.Component {
     }
 }
 
-export default GoogleApiWrapper({
-    apiKey: config.MAP_API_KEY,
-})(Maps);
+export default Maps;

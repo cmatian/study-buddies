@@ -1,5 +1,6 @@
 import React from "react";
-import Search from "../maps/Search";
+import Search from "../search/Search";
+import Header from "./Header";
 // Home specific styling
 import "./Home.scss";
 
@@ -39,9 +40,15 @@ class Home extends React.Component {
     render() {
         return (
             <div className="home_page">
+                <Header headerTitle="Study Buddies" />
                 <div className="content_wrapper">
-                    <Search updateUserCoord={this.props.updateUserCoord} />
-                </div> 
+                    <Search
+                        lat={this.props.lat}
+                        long={this.props.long}
+                        updateUserCoord={this.props.updateUserCoord}
+                        getUserCoord={this.props.getUserCoord}
+                    />
+                </div>
             </div>
         );
     }
