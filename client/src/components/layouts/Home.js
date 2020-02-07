@@ -40,6 +40,9 @@ class Home extends React.Component {
     render() {
         return (
             <div className="home_page">
+                <video id="video-main" muted loop autoPlay>
+                    <source src="./images/rain_ambient.mp4" type="video/mp4" />
+                </video>
                 <Header headerTitle="Study Buddies" />
                 <div className="content_wrapper">
                     <Search
