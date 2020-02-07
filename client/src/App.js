@@ -2,7 +2,7 @@ import React from "react";
 import { BrowserRouter, Switch, Route } from "react-router-dom";
 import Home from "./components/layouts/Home";
 import Maps from "./components/maps/Maps";
-import Search from "./components/maps/Search";
+import Search from "./components/search/Search";
 import Biz from "./components/business/Biz";
 import Rates from "./components/business/Rates";
 import Reserve from "./components/business/Reserve";
@@ -42,7 +42,7 @@ class App extends React.Component {
     updateUserCoord = (lat, long) => {
         this.setState({
             lat: lat,
-            long: long
+            long: long,
         });
     };
 
@@ -59,7 +59,14 @@ class App extends React.Component {
                             path="/"
                             exact
                             render={() => {
-                                return <Home lat={this.state.lat} long={this.state.long} updateUserCoord={this.updateUserCoord} />;
+                                return (
+                                    <Home
+                                        lat={this.state.lat}
+                                        long={this.state.long}
+                                        updateUserCoord={this.updateUserCoord}
+                                        getUserCoord={this.getUserCoord}
+                                    />
+                                );
                             }}
                         ></Route>
                         <Route
@@ -68,7 +75,7 @@ class App extends React.Component {
                             render={() => {
                                 return <Maps lat={this.state.lat} long={this.state.long} />;
                             }}
-                        ></Route>{}
+                        ></Route>
                         <Route path="/maps/search" exact component={Search}></Route>
                         <Route path="/biz" exact component={Biz}></Route>
                         <Route path="/biz/rate" exact component={Rates}></Route>

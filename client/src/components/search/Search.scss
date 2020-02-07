@@ -1,0 +1,103 @@
+$borderColor: #cccccc;
+$purpleColor: #9147ff;
+$purpleColorHover: #772ce8;
+
+.search_addr_form {
+    position: relative;
+    display: flex;
+    flex-flow: row nowrap;
+
+    button {
+        border: 1px solid $borderColor;
+        flex: 0 1 15%;
+        border-top-right-radius: 10px;
+        border-bottom-right-radius: 10px;
+        cursor: pointer;
+        font-weight: bold;
+        color: #fff;
+        background: $purpleColor;
+        border-color: $purpleColor;
+
+        &:hover {
+            background: $purpleColorHover;
+            color: #fff;
+        }
+    }
+
+    .input_icon_container,
+    .search_input_group {
+        position: relative;
+        display: flex;
+        flex: 0 1 100%;
+    }
+
+    i.material-icons {
+        position: absolute;
+        top: 25%;
+        bottom: 25%;
+        color: $purpleColor;
+        cursor: pointer;
+        padding-left: 5px;
+
+        &:hover {
+            color: $purpleColorHover;
+        }
+    }
+
+    .location_search_input {
+        flex: 0 1 100%;
+        text-align: center;
+        font-size: 18px;
+        padding: 10px;
+        border-top-left-radius: 10px;
+        border-bottom-left-radius: 10px;
+        border: 1px solid $borderColor;
+        border-right: none;
+        outline: none;
+
+        &::placeholder {
+            color: #c9c9c9;
+        }
+    }
+
+    .location_search_input:focus {
+        box-shadow: 0 0 3px 1px #41a3ff;
+    }
+
+    .autocomplete_dropdown_container {
+        position: absolute;
+        background: #fff;
+        width: 100%;
+        height: auto;
+        top: 50px;
+        left: 0;
+        border-radius: 10px;
+
+        .suggestion_item {
+            padding: 5px 0;
+            border: 1px solid $borderColor;
+            cursor: pointer;
+        }
+
+        .suggestion_item__active {
+            background: $purpleColor;
+            border-color: $purpleColor;
+            color: #fff;
+            transition: ease-in-out 100ms;
+        }
+
+        .suggestion_item:first-of-type {
+            border-top-left-radius: 10px;
+            border-top-right-radius: 10px;
+        }
+
+        .suggestion_item:last-of-type {
+            border-bottom-right-radius: 10px;
+            border-bottom-left-radius: 10px;
+        }
+
+        span {
+            text-align: center;
+        }
+    }
+}
