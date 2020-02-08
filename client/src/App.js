@@ -1,5 +1,6 @@
 import React from "react";
 import { BrowserRouter, Switch, Route } from "react-router-dom";
+import Nav from "./components/layouts/Nav";
 import Home from "./components/layouts/Home";
 import Maps from "./components/maps/Maps";
 import Search from "./components/search/Search";
@@ -54,6 +55,7 @@ class App extends React.Component {
         return (
             <div className="App">
                 <BrowserRouter>
+                    <Nav /> {/* Navigation Component */}
                     <Switch>
                         <Route
                             path="/"
