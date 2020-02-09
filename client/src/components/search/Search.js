@@ -22,10 +22,7 @@ class Search extends React.Component {
     };
 
     handleLocClick = () => {
-        // If the coords are already set immediately redirect them
-        if (!this.props.lat && !this.props.long) {
-            this.props.getUserCoord();
-        }
+        this.props.getUserCoord(); // Update the coords using the user's current location
         return this.props.history.push("/maps");
     };
 
