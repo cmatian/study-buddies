@@ -12,6 +12,7 @@ var indexRouter = require("./routes/index");
 var usersRouter = require("./routes/users");
 var testapiRouter = require("./routes/testapi");
 var auth = require("./auth.js");
+
 var app = express();
 
 // view engine setup
@@ -42,6 +43,18 @@ app.use(express.static(`../client/build`));
 app.use("/express-index", indexRouter);
 app.use("/testapi", testapiRouter);
 app.use("/users", usersRouter);
+
+app.use((req, res, next) => {
+    var matched = ["/maps", "/biz", "/users"].some(prefix => {
+        return req.url.startsWith(prefix);
+    });
+    if (matched) {
+        console.log("Routing to React: " + req.url)
+        res.sendFile(path.join(__dirname, '../client/build/index.html'));
+    } else {
+        res.status(404).send('Not found')
+    }
+});
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
