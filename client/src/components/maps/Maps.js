@@ -1,5 +1,6 @@
 import React from 'react';
 import GoogleMap from 'google-map-react';
+import Reserve from "../business/Reserve";
 
 const mapStyles = {
     width: "100%",
@@ -70,6 +71,9 @@ class Maps extends React.Component {
         }
         return (
             <div style={mapStyles}>
+          {/* Make Reservation Component */}
+                <Reserve />
+                {/* Map Component */}
             <GoogleMap
                 bootstrapURLKeys={{ key: 'AIzaSyC4YLPSKd-b0RxRh5kqx8QDnf9yMDioK0Y' }}
                 center={center}

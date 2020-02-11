@@ -1,0 +1,82 @@
+.make_reservation_wrapper {
+    position: fixed;
+    top: 0;
+    left: 0;
+    max-width: 300px;
+    height: 100%;
+    width: 100%;
+    background: #fff;
+    overflow-y: auto;
+    z-index: 9999999;
+
+    .make_reservation_form {
+        display: flex;
+        flex-flow: column nowrap;
+        padding: 25px;
+        height: 100%;
+
+        h2 {
+            margin-top: 0;
+        }
+
+        button[type="submit"] {
+            appearance: none;
+            border: none;
+            margin-top: auto;
+            padding: 15px;
+            border: 1px solid #cccccc;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            color: #fff;
+            background: #9147ff;
+            border-color: #9147ff;
+            transition: ease-in-out 150ms;
+
+            &:hover {
+                background: #772ce8;
+                color: #fff;
+            }
+        }
+    }
+
+    .input_group {
+        display: flex;
+        flex-flow: column nowrap;
+        align-items: flex-start;
+        margin-bottom: 20px;
+
+        .react-datepicker-wrapper {
+            width: 100%;
+        }
+
+        label {
+            color: #272727;
+            text-align: left;
+            padding-bottom: 5px;
+        }
+
+        input[type="number"]::-webkit-inner-spin-button,
+        input[type="number"]::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        input[readonly] {
+            cursor: default;
+        }
+
+        input {
+            width: 100%;
+            border-radius: 5px;
+            border: 1px solid #cccccc;
+            font-size: 16px;
+            padding: 10px 5px;
+            outline: none;
+
+            &:focus {
+                box-shadow: 0 0 3px 1px #41a3ff;
+            }
+        }
+    }
+}
