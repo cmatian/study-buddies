@@ -47,7 +47,7 @@ class Maps extends React.Component {
                 let placeLen = results.length > 10 ? 10 : results.length;
                 
                 // add place obj to places list
-                this.setState({ places: results });        
+                this.setState({ places: results.slice(0, placeLen) });        
                 for (let i = 0; i < placeLen; i++) {
                     this.addMarker(results[i].formatted_address, map, this.state.maps)
                 } 
