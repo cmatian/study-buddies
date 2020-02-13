@@ -1,6 +1,8 @@
 import React from 'react';
 import GoogleMap from 'google-map-react';
 import Reserve from "../business/Reserve";
+import PlaceList from './PlaceList';
+import "./Maps.scss"; // Styling
 
 const mapStyles = {
     width: "100%",
@@ -14,9 +16,11 @@ class Maps extends React.Component {
             map : {},
             maps: {},
             geocoderService: {},
+            places: [],
         };
     }
     
+    // map is google map and maps = maps api
     handleApiLoaded = ({ map, maps }) => {
         // console.log(map, maps)
         this.setState({
@@ -27,23 +31,30 @@ class Maps extends React.Component {
 
         let request = {
             location: new maps.LatLng(this.props.lat, this.props.long),
-            type: ['restaurant', 'cafe', 'libary', 'university'],
+            type: ['restaurant', 'cafe', 'libary', 'university', 'book_store'],
             query: 'study spots',
-            // can only use rankBy or radius
+            // can only use rankBy or radius can't use both
             rankBy: maps.places.RankBy.DISTANCE,
-            //radius: 30000, 
+            // radius: 30000, 
         };
 
         let placeService = new maps.places.PlacesService(map);
     
         // perform text search
         placeService.textSearch(request, (results, status) => {
-            if (status == this.state.maps.places.PlacesServiceStatus.OK) {
+            if (status == maps.places.PlacesServiceStatus.OK) {
                 console.log(results)
-                for (let i = 0; i < 10; i++) {
-                    this.addMarker(results[i].formatted_address, this.state.map, this.state.maps)
+                let placeLen = results.length > 10 ? 10 : results.length;
+                
+                // add place obj to places list
+                this.setState({ places: results });        
+                for (let i = 0; i < placeLen; i++) {
+                    this.addMarker(results[i].formatted_address, map, this.state.maps)
                 } 
+            } else {
+                console.log('Error place service fail.')
             }
+            // console.log('places: ', this.state.places)
         })
     }
 
@@ -52,7 +63,7 @@ class Maps extends React.Component {
         this.state.geocoderService.geocode( { 'address': address}, function(results, status) {
           if (status == 'OK') {
             map.setCenter(results[0].geometry.location);
-            let marker = new maps.Marker({
+            new maps.Marker({
                 map: map,
                 position: results[0].geometry.location,
             }); 
@@ -64,24 +75,32 @@ class Maps extends React.Component {
       
 
     render() {
-        console.log('this.props: ', this.props)
+        // console.log('this.props: ', this.props)
         const center = {
             lat: this.props.lat,
             lng: this.props.long
-        }
+        }   
+
         return (
-            <div style={mapStyles}>
-          {/* Make Reservation Component */}
-                <Reserve />
-                {/* Map Component */}
-            <GoogleMap
-                bootstrapURLKeys={{ key: 'AIzaSyC4YLPSKd-b0RxRh5kqx8QDnf9yMDioK0Y' }}
-                center={center}
-                defaultZoom={12}
-                yesIWantToUseGoogleMapApiInternals
-                onGoogleApiLoaded={({map, maps}) => this.handleApiLoaded({map, maps})}
-            >
-            </GoogleMap>
+            <div className="map_wrapper">
+                <div className="place_list_container">
+                    <PlaceList places={this.state.places} />
+                </div>
+                <div className="map_container">
+                    <div style={mapStyles}>   
+                    {/* Make Reservation Component */}
+                       {/* <Reserve /> */} 
+                    {/* Map Component */}
+                    <GoogleMap
+                        bootstrapURLKeys={{ key: 'AIzaSyC4YLPSKd-b0RxRh5kqx8QDnf9yMDioK0Y' }}
+                        center={center}
+                        defaultZoom={12}
+                        yesIWantToUseGoogleMapApiInternals
+                        onGoogleApiLoaded={({map, maps}) => this.handleApiLoaded({map, maps})}
+                    >
+                    </GoogleMap>
+                    </div>                     
+                </div>                
             </div>
         );
     }
