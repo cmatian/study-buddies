@@ -1,19 +1,19 @@
-import React from 'react';
-import GoogleMap from 'google-map-react';
+import React from "react";
+import GoogleMap from "google-map-react";
 import Reserve from "../business/Reserve";
 import PlaceList from './PlaceList';
 import "./Maps.scss"; // Styling
 
 const mapStyles = {
     width: "100%",
-    height: "100%"
+    height: "100%",
 };
 
 class Maps extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            map : {},
+            map: {},
             maps: {},
             geocoderService: {},
             places: [],
@@ -39,7 +39,7 @@ class Maps extends React.Component {
         };
 
         let placeService = new maps.places.PlacesService(map);
-    
+
         // perform text search
         placeService.textSearch(request, (results, status) => {
             if (status == maps.places.PlacesServiceStatus.OK) {
@@ -72,15 +72,13 @@ class Maps extends React.Component {
           }
         });
     }
-      
 
     render() {
         // console.log('this.props: ', this.props)
         const center = {
             lat: this.props.lat,
-            lng: this.props.long
-        }   
-
+            lng: this.props.long,
+        };
         return (
             <div className="map_wrapper">
                 <div className="place_list_container">

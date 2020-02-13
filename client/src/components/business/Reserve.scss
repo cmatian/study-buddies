@@ -9,6 +9,30 @@
     overflow-y: auto;
     z-index: 9999999;
 
+    .required_ast {
+        color: red;
+    }
+
+    button.custom_datetime_input_button {
+        appearance: none;
+        border: none;
+        padding: 15px;
+        border: 1px solid #cccccc;
+        border-radius: 5px;
+        width: 100%;
+        cursor: pointer;
+
+        &:hover {
+            background: rgba(0, 0, 0, 0.1);
+        }
+    }
+
+    .date_time_group {
+        > div {
+            width: 100%;
+        }
+    }
+
     .make_reservation_form {
         display: flex;
         flex-flow: column nowrap;
@@ -32,10 +56,21 @@
             background: #9147ff;
             border-color: #9147ff;
             transition: ease-in-out 150ms;
+            letter-spacing: 0.4px;
 
             &:hover {
                 background: #772ce8;
                 color: #fff;
+            }
+
+            &[disabled],
+            &:disabled {
+                cursor: not-allowed;
+                opacity: 0.3;
+
+                &:hover {
+                    background: #9147ff;
+                }
             }
         }
     }
@@ -62,6 +97,7 @@
             margin: 0;
         }
 
+        input:read-only,
         input[readonly] {
             cursor: default;
         }
@@ -74,8 +110,21 @@
             padding: 10px 5px;
             outline: none;
 
+            &::placeholder {
+                color: #cccccc;
+                font-style: italic;
+            }
+
             &:focus {
                 box-shadow: 0 0 3px 1px #41a3ff;
+            }
+        }
+
+        input.error {
+            border: 1px solid red;
+
+            &:focus {
+                box-shadow: 0 0 3px 0 red;
             }
         }
     }
