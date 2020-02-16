@@ -24,7 +24,7 @@ class Nav extends React.Component {
                             ""
                         )}
                         <li>
-                            <NavLink exact to="/reservations" activeClassName="active">
+                            <NavLink exact to="/users/reservations" activeClassName="active">
                                 My Reservations
                             </NavLink>
                         </li>
