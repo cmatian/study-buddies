@@ -83,6 +83,32 @@ class Reserve extends React.Component {
         console.log(this.meetingLocationRef.current.value);
         // We then flush state for the form before redirecting away
         // Flush code here later
+
+        // Call the backend to save the reservation
+        var auth2 = window.gapi.auth2.getAuthInstance();
+        var googleUser = auth2.currentUser.get();
+        var idToken = googleUser.getAuthResponse().id_token;
+        var data = {
+            user_token: idToken,
+            places_id: this.meetingLocationRef.current.value || "1234567890",
+            group_size: this.groupSizeRef.current.value,
+            duration_minutes: 60,
+            date: "2019-02-18",
+            time: "14:30:00",
+            name: this.meetingNameRef.current.value
+        }
+        console.log("reservation: " + JSON.stringify(data));
+        fetch('/backend/users/reservations', {
+            method: 'POST',
+            body: JSON.stringify(data),
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        }).then((response) => {
+            console.log('Success:', response.json());
+        }).catch((error) => {
+            console.error('Error', error);
+        });
     };
 
     render() {
