@@ -3,8 +3,8 @@ USE study_buddies;
 
 CREATE TABLE users (
   user_id INT NOT NULL AUTO_INCREMENT,
-  google_id VARCHAR(100),
-  username VARCHAR(20),
+  google_id VARCHAR(100) UNIQUE,
+  username VARCHAR(20) UNIQUE,
   date_of_birth DATE,
   phone VARCHAR(15), -- to support international numbers
   address VARCHAR(200),
