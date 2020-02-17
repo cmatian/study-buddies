@@ -93,7 +93,6 @@ class Reserve extends React.Component {
         var googleUser = auth2.currentUser.get();
         var idToken = googleUser.getAuthResponse().id_token;
         var data = {
-            user_token: idToken,
             places_id: this.meetingLocationRef.current.value || "1234567890",
             group_size: this.groupSizeRef.current.value,
             duration_minutes: 60,
@@ -106,7 +105,8 @@ class Reserve extends React.Component {
             method: 'POST',
             body: JSON.stringify(data),
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + idToken
             }
         }).then((response) => {
             console.log('Success:', response.json());
