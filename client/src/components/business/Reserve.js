@@ -96,7 +96,7 @@ class Reserve extends React.Component {
             date: "2019-02-18",
             time: "14:30:00",
             name: this.meetingNameRef.current.value
-        }
+        };
         console.log("reservation: " + JSON.stringify(data));
         fetch('/backend/users/reservations', {
             method: 'POST',
