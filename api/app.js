@@ -4,6 +4,7 @@ var path = require("path");
 var cookieParser = require("cookie-parser");
 var logger = require("morgan");
 var expressHandlebars = require("express-handlebars");
+var bearerToken = require("express-bearer-token");
 var cors = require("cors"); // cross origin resource sharing - absolutely required
 var session = require("express-session");
 var bodyParser = require("body-parser");
@@ -19,6 +20,7 @@ var app = express();
 app.engine("handlebars", expressHandlebars({ defaultLayout: "main" }));
 app.set("view engine", "handlebars");
 
+app.use(bearerToken());
 app.use(cors());
 app.use(logger("dev"));
 app.use(express.json());
