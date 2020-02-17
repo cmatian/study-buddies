@@ -15,7 +15,7 @@ router.post('/', function(req, res, next) {
     var locationId;
     var reservationStatus = "SUBMITTED";
     var ticket = oauth2Client.verifyIdToken({
-        idToken: req.body.user_token,
+        idToken: req.token,
         audience: process.env.SB_OAUTH_CLIENT_ID
     }).then((ticket) => {
         var payload = ticket.getPayload();
