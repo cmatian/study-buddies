@@ -12,6 +12,7 @@ require("dotenv").config(); // for process environments - only for development (
 
 var signinRouter = require("./routes/signin");
 var reservationsRouter = require("./routes/reservations");
+var ratingsRouter = require("./routes/ratings");
 var auth = require("./auth.js");
 
 var app = express();
@@ -45,6 +46,7 @@ app.use(express.static(`../client/build`));
 // Define Routes here
 app.use("/backend/signin", signinRouter);
 app.use("/backend/users/reservations", reservationsRouter);
+app.use("/backend/users/ratings", ratingsRouter);
 
 app.use((req, res, next) => {
     var matched = ["/maps", "/biz", "/users"].some(prefix => {
