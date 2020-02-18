@@ -28,7 +28,7 @@ class Maps extends React.Component {
             showMakeReservation: false,
         };
     }
-    
+
     // map is google map and maps = maps api
     handleApiLoaded = ({ map, maps }) => {
         // console.log(map, maps)
@@ -42,13 +42,13 @@ class Maps extends React.Component {
 
         let request = {
             location: new maps.LatLng(this.props.lat, this.props.long),
-            type: ['restaurant', 'cafe', 'libary', 'university', 'book_store'],
-            query: 'study spots',
+            type: ["restaurant", "cafe", "libary", "university", "book_store"],
+            query: "study spots",
             // can only use rankBy or radius can't use both
             rankBy: maps.places.RankBy.DISTANCE,
-            // radius: 30000, 
+            // radius: 30000,
         };
-    
+
         // perform text search
         this.state.placeService.textSearch(request, (results, status) => {
             if (status === maps.places.PlacesServiceStatus.OK) {
@@ -56,62 +56,38 @@ class Maps extends React.Component {
                 let placeLen = results.length > 10 ? 10 : results.length;
 
                 // add place obj to places list
-                this.setState({ 
-                    places: results.slice(0, placeLen)
-                });        
+                this.setState({
+                    places: results.slice(0, placeLen),
+                });
                 for (let i = 0; i < placeLen; i++) {
-                    this.addMarker(results[i], this.state.map, this.state.maps)
-                } 
+                    this.addMarker(results[i], this.state.map, this.state.maps);
+                }
             } else {
-                console.log('Place service was not successful for the following reason: ' + status)
+                console.log("Place service was not successful for the following reason: " + status);
             }
             // console.log('places: ', this.state.places)
-        })
-    }
+        });
+    };
 
     // call getDetails for selectedPlace and save result to selectedPlaceDetail
     getPlaceDetail = (place) => {
         // call get detail only for 
         let detailRequest = {
             placeId: place.place_id,
-        }
+        };
 
-        // perform get detail 
+        // perform get detail
         this.state.placeService.getDetails(detailRequest, (results, status) => {
             if (status === this.state.maps.places.PlacesServiceStatus.OK) {
                 // console.log('in getPlaceDetail results', results)
                 this.setState({
-                    selectedPlaceDetail: results
+                    selectedPlaceDetail: results,
                 });
             } else {
-                console.log('getDetail was not successful for the following reason: ' + status)
+                console.log("getDetail was not successful for the following reason: " + status);
             }
-        })
-    }
-
-    // call getDistanceMatrix and save result to selectedPlaceDistance
-    getDistanceDetail = () => {  
-        let origin = {lat: this.props.lat, lng: this.props.long};
-        let destination = this.state.selectedPlace.formatted_address;
-
-        let distanceRequest = {
-            origins: [origin],
-            destinations: [destination],
-            travelMode: 'DRIVING',
-            unitSystem: this.state.maps.UnitSystem.IMPERIAL,
-        }
-
-        this.state.distanceService.getDistanceMatrix(distanceRequest, (results, status) => {
-            if (status === 'OK') {
-                // console.log('in getDistanceDetail results', results)
-                this.setState({
-                    selectedPlaceDistance: results
-                });
-            } else {
-                console.log('getDistanceMatrix was not successful for the following reason: ' + status)
-            }
-        })
-    }
+        });
+    };
 
     // add marker to map 
     addMarker(address, map, maps) {
@@ -123,21 +99,23 @@ class Maps extends React.Component {
                 let marker = new maps.Marker({
                     map: map,
                     position: results[0].geometry.location,
-                }); 
+                });
                 let infowindow = new maps.InfoWindow({
                     content: address.name,
                 });
 
                 // add onclick event
-                marker.addListener('click', () => {
+                marker.addListener("click", () => {
                     // update selectedPlace to clicked pin
                     this.onPlaceSelect(address);
                     // open and auto close infowindow after 2 sec
                     infowindow.open(map, marker);
-                    setTimeout(() => {infowindow.close();}, '2000');
+                    setTimeout(() => {
+                        infowindow.close();
+                    }, "2000");
                 });
             } else {
-                console.log('Geocode was not successful for the following reason: ' + status);
+                console.log("Geocode was not successful for the following reason: " + status);
             }
         });
     }
@@ -153,7 +131,7 @@ class Maps extends React.Component {
         // OPTIONAL: zoom in to marker need to get latLng
         // this.state.map.setZoom(14);
         // this.state.map.setCenter();
-    }
+    };
 
     // func to update showBusiness state from child PlaceSelected
     onDetailSelect = () => {
