@@ -3,10 +3,14 @@
     height: 100%;
     position: fixed;
     margin-top: 53px;
-    .place_list_container {
+
+
+    .place_list_container {  
+        position: static;
         width: 25%;
         height: 100%;
         float: left;
+        overflow-y: scroll;
     }
     .map_container {
         width: 75%;
