@@ -8,7 +8,7 @@ class PlaceList extends React.Component {
                 // takes in places list and return new array of placeItem components
                 this.props.places.map((place) => {
                     // TODO: ADD UNIQUE KEY PROP TO EACH CHILD COMPONENT
-                    return <PlaceItem  place={place} />;
+                    return <PlaceItem onPlaceSelect={this.props.onPlaceSelect} place={place} />;
                 })
             }
             </div> 
