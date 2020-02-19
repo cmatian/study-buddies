@@ -1,5 +1,5 @@
-import React from 'react';
-import GoogleMap from 'google-map-react';
+import React from "react";
+import GoogleMap from "google-map-react";
 import Reserve from "../business/Reserve";
 import PlaceList from './PlaceList';
 import PlaceSelected from './PlaceSelected';
@@ -7,14 +7,14 @@ import "./Maps.scss"; // Styling
 
 const mapStyles = {
     width: "100%",
-    height: "100%"
+    height: "100%",
 };
 
 class Maps extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            map : {},
+            map: {},
             maps: {},
             geocoderService: {},
             placeService: {},
@@ -132,8 +132,7 @@ class Maps extends React.Component {
         const center = {
             lat: this.props.lat,
             lng: this.props.long,
-        }   
-
+        };
         return (
             <div className="map_wrapper">
                 <div className="place_list_container">

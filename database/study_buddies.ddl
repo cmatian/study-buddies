@@ -3,8 +3,8 @@ USE study_buddies;
 
 CREATE TABLE users (
   user_id INT NOT NULL AUTO_INCREMENT,
-  google_id VARCHAR(100),
-  username VARCHAR(20),
+  google_id VARCHAR(100) UNIQUE,
+  username VARCHAR(20) UNIQUE,
   date_of_birth DATE,
   phone VARCHAR(15), -- to support international numbers
   address VARCHAR(200),
@@ -17,7 +17,7 @@ CREATE TABLE users (
 
 CREATE TABLE locations (
   location_id INT NOT NULL AUTO_INCREMENT,
-  places_id VARCHAR(100), -- max seen is 60
+  places_id VARCHAR(100) UNIQUE, -- max seen is 60
   name VARCHAR(200),
   cost VARCHAR(20), -- “free”, “cost_0_to_5”, “cost_5_to_10”, “cost_10_to_20”, “cost_20_to_50”, “cost_gt_50”
   business_type VARCHAR(50),
@@ -42,6 +42,8 @@ CREATE TABLE reservations (
   status VARCHAR(20),
   group_size INT,
   duration_minutes INT,
+  date_time DATETIME,
+  name VARCHAR(200),
   PRIMARY KEY (reservation_id),
   FOREIGN KEY (user_id) REFERENCES users(user_id),
   FOREIGN KEY (location_id) REFERENCES locations(location_id)

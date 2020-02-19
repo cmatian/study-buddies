@@ -1,5 +1,6 @@
 import React from "react";
 import DatePicker from "react-datepicker";
+import DatePickerButton from "../layouts/form/DatePickerButton";
 import "react-datepicker/dist/react-datepicker.css"; // DatePicker CSS import
 import "./Reserve.scss";
 
@@ -14,10 +15,10 @@ class Reserve extends React.Component {
         super(props);
         this.state = {
             meeting_name: "",
-            group_size: "1",
-            location: "",
-            meeting_date: "",
-            meeting_time: "",
+            group_size: "1", // Default 1
+            location: "", // Prepopulated when user selects a location to make a reservation
+            meeting_date_time: "",
+            errors: {},
         };
         this.meetingNameRef = React.createRef();
         this.groupSizeRef = React.createRef();
@@ -26,15 +27,26 @@ class Reserve extends React.Component {
         this.meetingTimeRef = React.createRef();
     }
 
+    validateInput = event => {
+        let result = event.target.value.length < 1;
+        this.setState({
+            errors: { [event.target.name]: result },
+        });
+    };
+
     handleChange = event => {
+        this.validateInput(event);
         this.setState({
             [event.target.name]: event.target.value,
         });
     };
 
+    handleBlur = event => {
+        this.validateInput(event);
+    };
+
     handleGroupSize = event => {
         let size = event.target.value;
-
         /*
             Sanitize inputs where value is greater than 10.
             The edge case for this is if we have a value in the field and the user tries to change it. 
@@ -60,21 +72,13 @@ class Reserve extends React.Component {
         });
     };
 
-    handleChangeDate = date => {
+    handleChangeDateTime = date => {
         this.setState({
-            meeting_date: date, //date
+            meeting_date_time: date, //date
         });
     };
 
-    handleChangeTime = date => {
-        // We need to convert the time to en-US format and then store the raw value as well.
-        // The date arg is used exclusively by the DatePicker component so we can't alter it with formattedTime.
-        this.setState({
-            meeting_time: date, // time
-        });
-    };
-
-    // Form Submissions
+    // Form Submit Event Handler
     handleSubmit = event => {
         event.preventDefault();
         console.log("Form Submitted");
@@ -83,9 +87,43 @@ class Reserve extends React.Component {
         console.log(this.meetingLocationRef.current.value);
         // We then flush state for the form before redirecting away
         // Flush code here later
+
+        // Call the backend to save the reservation
+        var auth2 = window.gapi.auth2.getAuthInstance();
+        var googleUser = auth2.currentUser.get();
+        var idToken = googleUser.getAuthResponse().id_token;
+        var data = {
+            places_id: this.meetingLocationRef.current.value || "1234567890",
+            group_size: this.groupSizeRef.current.value,
+            duration_minutes: 60,
+            date: "2019-02-18",
+            time: "14:30:00",
+            name: this.meetingNameRef.current.value
+        };
+        console.log("reservation: " + JSON.stringify(data));
+        fetch('/backend/users/reservations', {
+            method: 'POST',
+            body: JSON.stringify(data),
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + idToken
+            }
+        }).then((response) => {
+            console.log('Success:', response.json());
+        }).catch((error) => {
+            console.error('Error', error);
+        });
+    };
+
+    // Determines the state of the form submission button
+    canSubmit = () => {
+        const { meeting_name, meeting_date_time } = this.state;
+        return meeting_name.length > 0 && typeof meeting_date_time === "object";
     };
 
     render() {
+        const { errors } = this.state;
+        const disabled = this.canSubmit();
         return (
             <div className="make_reservation_wrapper">
                 <form
@@ -96,7 +134,9 @@ class Reserve extends React.Component {
                 >
                     <h2>Make a Reservation</h2>
                     <div className="input_group">
-                        <label htmlFor="meeting_name">Meeting Name</label>
+                        <label htmlFor="meeting_name">
+                            Meeting Name <span className="required_ast">*</span>
+                        </label>
                         <input
                             ref={this.meetingNameRef}
                             id="meeting_name"
@@ -104,6 +144,9 @@ class Reserve extends React.Component {
                             name="meeting_name"
                             value={this.state.meeting_name}
                             onChange={this.handleChange}
+                            onBlur={this.handleBlur}
+                            className={errors.meeting_name ? "error" : ""}
+                            placeholder="CS 467 Study Session"
                         />
                     </div>
                     <div className="input_group">
@@ -134,32 +177,27 @@ class Reserve extends React.Component {
                             readOnly
                         />
                     </div>
-                    <div className="input_group">
-                        <label htmlFor="meeting_date">Date</label>
+                    <div className="input_group date_time_group">
+                        <label htmlFor="meeting_date_time">
+                            Date & Time <span className="required_ast">*</span>
+                        </label>
                         <DatePicker
-                            ref={this.meetingDateRef}
-                            id="meeting_date"
-                            name="meeting_date"
-                            selected={this.state.meeting_date}
-                            onChange={date => this.handleChangeDate(date)}
-                        />
-                    </div>
-                    <div className="input_group">
-                        <label htmlFor="meeting_time">Time</label>
-                        <DatePicker
-                            ref={this.meetingTimeRef}
-                            id="meeting_time"
-                            name="meeting_time"
-                            selected={this.state.meeting_time}
-                            onChange={date => this.handleChangeTime(date)}
+                            ref={this.meetingDateTimeRef}
+                            id="meeting_date_time"
+                            name="meeting_date_time"
+                            selected={this.state.meeting_date_time}
+                            onChange={date => this.handleChangeDateTime(date)}
                             showTimeSelect
-                            showTimeSelectOnly
+                            withPortal
                             timeIntervals={30}
-                            timeCaption="Time"
-                            dateFormat="h:mm aa"
+                            dateFormat="MMM d, yyyy - h:mm aa"
+                            customInput={<DatePickerButton />}
                         />
                     </div>
-                    <button type="submit">Confirm Reservation</button>
+                    {/* Remove disabled if debugging */}
+                    <button type="submit" disabled={!disabled}>
+                        Confirm Reservation
+                    </button>
                 </form>
             </div>
         );

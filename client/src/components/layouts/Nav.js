@@ -1,5 +1,6 @@
 import React from "react";
 import { NavLink, withRouter } from "react-router-dom";
+import GoogleSignIn from "../auth/GoogleSignIn";
 import "./Nav.scss"; // CSS
 
 class Nav extends React.Component {
@@ -23,7 +24,7 @@ class Nav extends React.Component {
                             ""
                         )}
                         <li>
-                            <NavLink exact to="/reservations" activeClassName="active">
+                            <NavLink exact to="/users/reservations" activeClassName="active">
                                 My Reservations
                             </NavLink>
                         </li>
@@ -36,6 +37,9 @@ class Nav extends React.Component {
                             <NavLink exact to="/" activeClassName="active">
                                 Sign-in
                             </NavLink>
+                        </li>
+                        <li className="user">
+                            <GoogleSignIn/>
                         </li>
                     </ul>
                 </div>
