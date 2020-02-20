@@ -3,6 +3,7 @@ import GoogleMap from "google-map-react";
 import Reserve from "../business/Reserve";
 import PlaceList from './PlaceList';
 import PlaceSelected from './PlaceSelected';
+import Biz from '../business/Biz'
 import "./Maps.scss"; // Styling
 
 const mapStyles = {
@@ -18,9 +19,13 @@ class Maps extends React.Component {
             maps: {},
             geocoderService: {},
             placeService: {},
+            distanceService: {},
             places: [],
             selectedPlace: null,
             selectedPlaceDetail: {},
+            selectedPlaceDistance: {},
+            showBusinessDetail: false,
+            showMakeReservation: false,
         };
     }
     
@@ -32,6 +37,7 @@ class Maps extends React.Component {
             maps,
             geocoderService: new maps.Geocoder(),
             placeService: new maps.places.PlacesService(map),
+            distanceService: new maps.DistanceMatrixService(),
         });
 
         let request = {
@@ -45,8 +51,8 @@ class Maps extends React.Component {
     
         // perform text search
         this.state.placeService.textSearch(request, (results, status) => {
-            if (status == maps.places.PlacesServiceStatus.OK) {
-                console.log(results)
+            if (status === maps.places.PlacesServiceStatus.OK) {
+                // console.log(results)
                 let placeLen = results.length > 10 ? 10 : results.length;
 
                 // add place obj to places list
@@ -65,7 +71,6 @@ class Maps extends React.Component {
 
     // call getDetails for selectedPlace and save result to selectedPlaceDetail
     getPlaceDetail = (place) => {
-        // console.log('place:', place.place_id)
         // call get detail only for 
         let detailRequest = {
             placeId: place.place_id,
@@ -73,8 +78,8 @@ class Maps extends React.Component {
 
         // perform get detail 
         this.state.placeService.getDetails(detailRequest, (results, status) => {
-            if (status == this.state.maps.places.PlacesServiceStatus.OK) {
-                console.log('in getPlaceDetail results', results)
+            if (status === this.state.maps.places.PlacesServiceStatus.OK) {
+                // console.log('in getPlaceDetail results', results)
                 this.setState({
                     selectedPlaceDetail: results
                 });
@@ -84,12 +89,36 @@ class Maps extends React.Component {
         })
     }
 
+    // call getDistanceMatrix and save result to selectedPlaceDistance
+    getDistanceDetail = () => {  
+        let origin = {lat: this.props.lat, lng: this.props.long};
+        let destination = this.state.selectedPlace.formatted_address;
+
+        let distanceRequest = {
+            origins: [origin],
+            destinations: [destination],
+            travelMode: 'DRIVING',
+            unitSystem: this.state.maps.UnitSystem.IMPERIAL,
+        }
+
+        this.state.distanceService.getDistanceMatrix(distanceRequest, (results, status) => {
+            if (status === 'OK') {
+                // console.log('in getDistanceDetail results', results)
+                this.setState({
+                    selectedPlaceDistance: results
+                });
+            } else {
+                console.log('getDistanceMatrix was not successful for the following reason: ' + status)
+            }
+        })
+    }
+
     // add marker to map 
     addMarker(address, map, maps) {
         // console.log(address)
         // perform geocode to convert address to latLng
         this.state.geocoderService.geocode({ 'address': address.formatted_address }, (results, status) => {
-            if (status == 'OK') {
+            if (status === 'OK') {
                 map.setCenter(results[0].geometry.location);
                 let marker = new maps.Marker({
                     map: map,
@@ -113,39 +142,69 @@ class Maps extends React.Component {
         });
     }
 
-    // set state for cur place selected
+    // set state for cur place selected and hide selected
     onPlaceSelect = place => {
         this.setState({
-            selectedPlace: place
+            selectedPlace: place,
+            showBusinessDetail: false,
+            showMakeReservation: false,
         });
         this.getPlaceDetail(place);
-        // console.log('onPlaceSelectedPlace: ', this.state.selectedPlace)
-        // console.log('onPlaceSelectedDetail: ', this.state.selectedPlaceDetail)
         // OPTIONAL: zoom in to marker need to get latLng
         // this.state.map.setZoom(14);
         // this.state.map.setCenter();
     }
 
+    // func to update showBusiness state from child PlaceSelected
+    onDetailSelect = () => {
+        this.setState({
+            showBusinessDetail: true,
+            showMakeReservation: false,
+        });
+        this.getDistanceDetail();
+    }
+
+    // func to updadate showMakeReservation to display reserve component
+    onReservationSelect = () => {
+        this.setState({
+            showBusinessDetail: false,
+            showMakeReservation: true,
+        })
+    }
+
     render() {
         // console.log('this.props: ', this.props)
-        console.log('this.state.selectedPlaceDetail: ', this.state.selectedPlaceDetail);
         const center = {
             lat: this.props.lat,
             lng: this.props.long,
         };
+
         return (
             <div className="map_wrapper">
                 <div className="place_list_container">
                     <div>
-                        <PlaceSelected place={this.state.selectedPlace}/>
+                        <PlaceSelected 
+                            onDetailSelect={this.onDetailSelect} 
+                            place={this.state.selectedPlace} 
+                            onReservationSelect={this.onReservationSelect}
+                        />
                     </div>
                     <PlaceList onPlaceSelect={this.onPlaceSelect} places={this.state.places} />
                 </div>
                 <div className="map_container">
+                    <div>
+                        {this.state.showBusinessDetail ? 
+                        <Biz 
+                            selectedPlace={this.state.selectedPlace} 
+                            selectedPlaceDetail={this.state.selectedPlaceDetail} 
+                            selectedPlaceDistance={this.state.selectedPlaceDistance}
+                            onReservationSelect={this.onReservationSelect}
+                        /> : null }
+                    </div>
                     <div style={mapStyles}>   
-                    {/* Make Reservation Component */}
-                       {/* <Reserve openingHours={this.state.selectedPlaceDetail.opening_hours}/>  */}
-                    {/* Map Component */}
+                    {this.state.showMakeReservation ?
+                       <Reserve openingHours={this.state.selectedPlaceDetail.opening_hours} 
+                       /> : null }
                     <GoogleMap
                         bootstrapURLKeys={{ key: 'AIzaSyC4YLPSKd-b0RxRh5kqx8QDnf9yMDioK0Y' }}
                         center={center}

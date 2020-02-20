@@ -1,0 +1,34 @@
+.business_detail_wrapper {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    max-width: 25%;
+    height: 93%;
+    width: 25%;
+    background: #fff;
+    overflow-y: auto;
+    
+    .image_container {
+        height: 200px;
+        width: 300px;
+    }
+    .business_name_container {
+        font-size: 20px;
+        padding: 10px;
+    }
+    .business_addr_container {
+        padding: 10px;
+    }
+    .travel_detail_container{
+        padding: 5px;
+    }
+    .business_hours_container {
+        padding: 5px;
+    }
+    .utility_buttons_container{
+        padding: 10px;
+    }
+    .view_review_container{
+        padding: 10px;
+    }
+}
