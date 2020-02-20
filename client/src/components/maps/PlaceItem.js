@@ -11,6 +11,7 @@ class PlaceItem extends React.Component {
         let rating = place.rating === undefined ? 0 : place.rating;
         let estCost = place.price_level === undefined ? 'N/A' : place.price_level;
 
+        // onclick update calls a call back function to update state of placeSlected
         return(    
             <div className="place_item_card" onClick={() => onPlaceSelect(place)}>
                 <div>{place.name}</div> 
