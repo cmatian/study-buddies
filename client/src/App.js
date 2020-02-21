@@ -10,6 +10,8 @@ import Reserve from "./components/business/Reserve";
 import Reservations from "./components/reservation/Reservations";
 import Saved from "./components/maps/Saved";
 import NotFound from "./components/pages/NotFound";
+import CallbackContext from "./CallbackContext";
+import UserContext from "./UserContext";
 
 // App specific styling
 import "./App.scss";
@@ -22,6 +24,12 @@ class App extends React.Component {
         this.state = {
             lat: null,
             long: null,
+            user: {},
+            isAuthenticated: false,
+            callbacks: {
+                onSigninSuccess: this.onSigninSuccess.bind(this),
+                onSigninFailure: this.onSigninFailure.bind(this)
+            }
         };
     }
 
@@ -30,7 +38,7 @@ class App extends React.Component {
         window.navigator.geolocation.getCurrentPosition(
             position => {
                 // set state
-                this.setState({
+                this.setState({...this.state,
                     lat: position.coords.latitude,
                     long: position.coords.longitude,
                 });
@@ -41,7 +49,7 @@ class App extends React.Component {
 
     // update user location
     updateUserCoord = (lat, long) => {
-        this.setState({
+        this.setState({...this.state,
             lat: lat,
             long: long,
         });
@@ -51,43 +59,84 @@ class App extends React.Component {
         this.getUserCoord();
     }
 
+    onSigninSuccess(googleUser) {
+        this.setState({...this.state, user: googleUser, isAuthenticated: true});
+        var profile = googleUser.getBasicProfile();
+        console.log('ID: ' + profile.getId()); // Do not send to your backend! Use an ID token instead.
+        console.log('Name: ' + profile.getName());
+        console.log('Image URL: ' + profile.getImageUrl());
+        console.log('Email: ' + profile.getEmail()); // This is null if the 'email' scope is not present.
+        var idToken = googleUser.getAuthResponse().id_token;
+        var data = {idToken: idToken};
+        fetch('/backend/signin', {
+            method: 'POST',
+            body: JSON.stringify(data),
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        }).then((response) => {
+            console.log('Success:', response.json());
+        }).catch((error) => {
+            console.error('Error', error);
+        });
+    }
+
+    onSigninFailure(error) {
+        this.setState({...this.state, user: {}, isAuthenticated: false});
+        console.log(error);
+    }
+
     render() {
+        var authState = {
+            user: this.state.user,
+            isAuthenticated: this.state.isAuthenticated
+        };
         return (
             <div className="App">
-                <BrowserRouter>
-                    <Nav /> {/* Navigation Component */}
-                    <Switch>
-                        <Route
-                            path="/"
-                            exact
-                            render={() => {
-                                return (
-                                    <Home
-                                        lat={this.state.lat}
-                                        long={this.state.long}
-                                        updateUserCoord={this.updateUserCoord}
-                                        getUserCoord={this.getUserCoord}
-                                    />
-                                );
-                            }}
-                        ></Route>
-                        <Route
-                            path="/maps"
-                            exact
-                            render={() => {
-                                return <Maps lat={this.state.lat} long={this.state.long} />;
-                            }}
-                        ></Route>
-                        <Route path="/maps/search" exact component={Search}></Route>
-                        <Route path="/biz" exact component={Biz}></Route>
-                        <Route path="/biz/rate" exact component={Rates}></Route>
-                        <Route path="/biz/reserve" exact component={Reserve}></Route>
-                        <Route path="/users/reservations" exact component={Reservations}></Route>
-                        <Route path="/maps/users/saved" exact component={Saved}></Route>
-                        <Route component={NotFound}></Route>
-                    </Switch>
-                </BrowserRouter>
+                <UserContext.Provider value={authState}>
+                    <CallbackContext.Provider value={this.state.callbacks}>
+                        {this.renderRouter()}
+                    </CallbackContext.Provider>
+                </UserContext.Provider>
             </div>
+        );
+    }
+
+    renderRouter() {
+        return (
+            <BrowserRouter>
+                <Nav /> {/* Navigation Component */}
+                <Switch>
+                    <Route
+                        path="/"
+                        exact
+                        render={() => {
+                            return (
+                                <Home
+                                    lat={this.state.lat}
+                                    long={this.state.long}
+                                    updateUserCoord={this.updateUserCoord}
+                                    getUserCoord={this.getUserCoord}
+                                />
+                            );
+                        }}
+                    ></Route>
+                    <Route
+                        path="/maps"
+                        exact
+                        render={() => {
+                            return <Maps lat={this.state.lat} long={this.state.long} />;
+                        }}
+                    ></Route>
+                    <Route path="/maps/search" exact component={Search}></Route>
+                    <Route path="/biz" exact component={Biz}></Route>
+                    <Route path="/biz/rate" exact component={Rates}></Route>
+                    <Route path="/biz/reserve" exact component={Reserve}></Route>
+                    <Route path="/users/reservations" exact component={Reservations}></Route>
+                    <Route path="/maps/users/saved" exact component={Saved}></Route>
+                    <Route component={NotFound}></Route>
+                </Switch>
+            </BrowserRouter>
         );
     }
 }
