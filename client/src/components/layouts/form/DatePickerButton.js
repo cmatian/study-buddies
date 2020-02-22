@@ -9,12 +9,18 @@ import React from "react";
 class DatePickerButton extends React.Component {
     render() {
         const { value, onClick } = this.props;
+
+        let set_value = value;
+        if (value === "edit") {
+            set_value = <i className="material-icons">edit</i>;
+        } else if (value === "") {
+            set_value = "Select Date & Time";
+        }
+
         return (
-            <>
-                <button type="button" className="custom_datetime_input_button" onClick={onClick}>
-                    {value ? value : "Select Date & Time"}
-                </button>
-            </>
+            <button type="button" className="custom_datetime_input_button" onClick={onClick}>
+                {set_value}
+            </button>
         );
     }
 }

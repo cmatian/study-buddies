@@ -28,8 +28,8 @@ class App extends React.Component {
             isAuthenticated: false,
             callbacks: {
                 onSigninSuccess: this.onSigninSuccess.bind(this),
-                onSigninFailure: this.onSigninFailure.bind(this)
-            }
+                onSigninFailure: this.onSigninFailure.bind(this),
+            },
         };
     }
 
@@ -38,10 +38,7 @@ class App extends React.Component {
         window.navigator.geolocation.getCurrentPosition(
             position => {
                 // set state
-                this.setState({...this.state,
-                    lat: position.coords.latitude,
-                    long: position.coords.longitude,
-                });
+                this.setState({ ...this.state, lat: position.coords.latitude, long: position.coords.longitude });
             },
             err => console.log(err)
         );
@@ -49,10 +46,7 @@ class App extends React.Component {
 
     // update user location
     updateUserCoord = (lat, long) => {
-        this.setState({...this.state,
-            lat: lat,
-            long: long,
-        });
+        this.setState({ ...this.state, lat: lat, long: long });
     };
 
     componentDidMount() {
@@ -60,36 +54,38 @@ class App extends React.Component {
     }
 
     onSigninSuccess(googleUser) {
-        this.setState({...this.state, user: googleUser, isAuthenticated: true});
+        this.setState({ ...this.state, user: googleUser, isAuthenticated: true });
         var profile = googleUser.getBasicProfile();
-        console.log('ID: ' + profile.getId()); // Do not send to your backend! Use an ID token instead.
-        console.log('Name: ' + profile.getName());
-        console.log('Image URL: ' + profile.getImageUrl());
-        console.log('Email: ' + profile.getEmail()); // This is null if the 'email' scope is not present.
+        console.log("ID: " + profile.getId()); // Do not send to your backend! Use an ID token instead.
+        console.log("Name: " + profile.getName());
+        console.log("Image URL: " + profile.getImageUrl());
+        console.log("Email: " + profile.getEmail()); // This is null if the 'email' scope is not present.
         var idToken = googleUser.getAuthResponse().id_token;
-        var data = {idToken: idToken};
-        fetch('/backend/signin', {
-            method: 'POST',
+        var data = { idToken: idToken };
+        fetch("/backend/signin", {
+            method: "POST",
             body: JSON.stringify(data),
             headers: {
-                'Content-Type': 'application/json'
-            }
-        }).then((response) => {
-            console.log('Success:', response.json());
-        }).catch((error) => {
-            console.error('Error', error);
-        });
+                "Content-Type": "application/json",
+            },
+        })
+            .then(response => {
+                console.log("Success:", response.json());
+            })
+            .catch(error => {
+                console.error("Error", error);
+            });
     }
 
     onSigninFailure(error) {
-        this.setState({...this.state, user: {}, isAuthenticated: false});
+        this.setState({ ...this.state, user: {}, isAuthenticated: false });
         console.log(error);
     }
 
     render() {
         var authState = {
             user: this.state.user,
-            isAuthenticated: this.state.isAuthenticated
+            isAuthenticated: this.state.isAuthenticated,
         };
         return (
             <div className="App">
