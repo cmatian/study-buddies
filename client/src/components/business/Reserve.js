@@ -97,7 +97,7 @@ class Reserve extends React.Component {
             group_size: this.groupSizeRef.current.value,
             duration_minutes: 60,
             date: "2019-02-18",
-            time: "14:30:00",
+            time: "22:30:00", // 2:30 pm in UTC (during non-daylight-savings time)
             name: this.meetingNameRef.current.value,
         };
         console.log("reservation: " + JSON.stringify(data));

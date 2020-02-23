@@ -83,4 +83,49 @@ router.get("/", function(req, res, next) {
         });
 });
 
+router.patch("/:reservation_id", function(req, res, next) {
+    console.log("Reservation patch: " + JSON.stringify(req.body));
+    reservationId = req.params.reservation_id;
+    var setClauseParts = []
+    var parameters = []
+    if (req.body.status != null) {
+        setClauseParts.push("status = ?");
+        parameters.push(req.body.status);
+    }
+    if (req.body.group_size != null) {
+        setClauseParts.push("group_size = ?");
+        parameters.push(req.body.group_size);
+    }
+    if (req.body.duration_minutes != null) {
+        setClauseParts.push("duration_minutes = ?");
+        parameters.push(req.body.duration_minutes);
+    }
+    if (req.body.date_time != null) {
+        setClauseParts.push("date_time = STR_TO_DATE(?, '%Y-%m-%dT%H:%i:%s.000Z')");
+        parameters.push(req.body.date_time);
+    }
+    if (req.body.name != null) {
+        setClauseParts.push("name = ?");
+        parameters.push(req.body.name);
+    }
+
+    var updateQuery = "UPDATE reservations SET " +
+        setClauseParts.join(",") +
+        " WHERE reservation_id = ?";
+    parameters.push(reservationId);
+    console.log("update reservation query: " + updateQuery);
+
+    query(updateQuery, parameters)
+        .then(dbResult => {
+            console.log("insert reservation result: ", dbResult);
+            res.json("{}");
+            return;
+        })
+        .catch(error => {
+            console.error("Error", error);
+            next(error);
+        });
+
+});
+
 module.exports = router;
