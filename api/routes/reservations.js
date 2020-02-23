@@ -4,49 +4,21 @@ var promisify = require("util").promisify;
 var router = express.Router();
 
 var dbConnection = require("../database.js");
+var SharedQueries = require("./SharedQueries.js");
 
 var oauth2Client = new OAuth2Client(process.env.SB_OAUTH_CLIENT_ID);
 
 query = promisify(dbConnection.query).bind(dbConnection);
 
 router.post("/", function(req, res, next) {
-    var googleId;
     var userId;
-    var locationId;
     var reservationStatus = "SUBMITTED";
-    var ticket = oauth2Client
-        .verifyIdToken({
-            idToken: req.token,
-            audience: process.env.SB_OAUTH_CLIENT_ID,
+    SharedQueries.getUser(req.token)
+        .then(paramUserId => {
+            userId = paramUserId;
+            return SharedQueries.upsertLocation(req.body.places_id);
         })
-        .then(ticket => {
-            var payload = ticket.getPayload();
-            googleId = payload["sub"];
-            console.log("googleId: ", googleId);
-            return query("SELECT * FROM users where google_id = ?", [googleId]);
-        })
-        .then(dbResult => {
-            if (dbResult.length > 0) {
-                userId = dbResult[0].user_id;
-                return query("SELECT * FROM locations where places_id = ?", [req.body.places_id]);
-            } else {
-                return Promise.reject(new Error("Missing user with google_id: " + googleId));
-            }
-        })
-        .then(dbResult => {
-            if (dbResult.length > 0) {
-                console.log("Old location: " + JSON.stringify(dbResult[0]));
-                locationId = dbResult[0].location_id;
-                return Promise.resolve({});
-            } else {
-                console.log("New location, inserting place: " + req.body.places_id);
-                return query("INSERT INTO locations (places_id) VALUES (?)", [req.body.places_id]).then(dbResult => {
-                    console.log("insert location result: ", dbResult);
-                    return Promise.resolve({});
-                });
-            }
-        })
-        .then(dummy => {
+        .then(locationId => {
             data = req.body;
             dateTime = data.date + " " + data.time;
             console.log("dateTime: " + dateTime);
@@ -70,33 +42,14 @@ router.post("/", function(req, res, next) {
 });
 
 router.get("/", function(req, res, next) {
-    var googleId;
-    var userId;
-    var ticket = oauth2Client
-        .verifyIdToken({
-            idToken: req.token,
-            audience: process.env.SB_OAUTH_CLIENT_ID,
-        })
-        .then(ticket => {
-            var payload = ticket.getPayload();
-            googleId = payload["sub"];
-            console.log("googleId: ", googleId);
-            return query("SELECT * FROM users where google_id = ?", [googleId]);
-        })
-        .then(dbResult => {
-            if (dbResult.length > 0) {
-                userId = dbResult[0].user_id;
-                // I aliased the table query because name is shared by both. When you query for name you're
-                // overwriting the reservation name with location name
-                return query(
-                    "SELECT *, r.name as meeting_name, l.name as location_name FROM reservations AS r " +
-                        "JOIN locations AS l ON r.location_id = l.location_id " +
-                        "where user_id = ?",
-                    [userId]
-                );
-            } else {
-                return Promise.reject(new Error("Missing user with google_id: " + googleId));
-            }
+    SharedQueries.getUser(req.token)
+        .then(userId => {
+            return query(
+                "SELECT *, r.name as meeting_name, l.name as location_name FROM reservations AS r " +
+                    "JOIN locations AS l ON r.location_id = l.location_id " +
+                    "where user_id = ?",
+                [userId]
+            );
         })
         .then(dbResult => {
             var resultReservations = [];
