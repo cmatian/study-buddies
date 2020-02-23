@@ -168,8 +168,33 @@ class ReservationDetails extends React.Component {
         });
     };
 
-    handleChangeDateTime = date => {
+    handleChangeDateTime = (reservationId, date) => {
         this.setState({ meeting_date_time: date });
+        console.log("new date_time: ", date);
+        var auth2 = window.gapi.auth2.getAuthInstance();
+        var googleUser = auth2.currentUser.get();
+        var idToken = googleUser.getAuthResponse().id_token;
+        var data = {
+            //group_size: 7,
+            //duration_minutes: 45,
+            date_time: date,
+            //name: "jajaja",
+        };
+        console.log("reservation: " + JSON.stringify(data));
+        fetch("/backend/users/reservations/" + reservationId, {
+            method: "PATCH",
+            body: JSON.stringify(data),
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: "Bearer " + idToken,
+            },
+        })
+            .then(response => {
+                console.log("Success:", response.json());
+            })
+            .catch(error => {
+                console.error("Error", error);
+            });
     };
 
     // Need to initialize the selected date when the user opens the date box.
@@ -274,6 +299,7 @@ class ReservationDetails extends React.Component {
         const { details, initialTime, isLoading, meeting_date_time } = this.state;
         const reservation = this.props.reservations[this.props.index];
         const date_options = { weekday: "long", year: "numeric", month: "long", day: "numeric" };
+        const reservation_id = reservation.reservation_id;
 
         return isLoading ? (
             <div>Loading</div>
@@ -295,7 +321,7 @@ class ReservationDetails extends React.Component {
                         name="meeting_date_time"
                         selected={meeting_date_time}
                         onSelect={date => this.setOperationHours(date)}
-                        onChange={date => this.handleChangeDateTime(date)}
+                        onChange={date => this.handleChangeDateTime(reservation_id, date)}
                         onCalendarOpen={this.initDateTime}
                         filterDate={date => this.getClosedDays(date)}
                         minDate={subDays(new Date(), 0)}
