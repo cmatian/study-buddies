@@ -4,7 +4,8 @@ var connection = mysql.createConnection({
     host: 'localhost',
     user: 'app',
     password: process.env.SB_MYSQL_PW,
-    database: 'study_buddies'
+    database: 'study_buddies',
+    timezone: 'Z'
 })
 
 connection.connect((err) => {

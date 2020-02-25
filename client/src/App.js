@@ -10,6 +10,10 @@ import Reserve from "./components/business/Reserve";
 import Reservations from "./components/reservation/Reservations";
 import Saved from "./components/maps/Saved";
 import NotFound from "./components/pages/NotFound";
+import Signin from "./components/auth/Signin";
+import CallbackContext from "./CallbackContext";
+import UserContext from "./UserContext";
+import AuthButtonContext from "./AuthButtonContext";
 
 // App specific styling
 import "./App.scss";
@@ -22,6 +26,27 @@ class App extends React.Component {
         this.state = {
             lat: null,
             long: null,
+            // Default Values
+            filters: {
+                openNow: true,
+                type: {
+                    cafe: true,
+                    library: true,
+                    university: true,
+                    book_store: true,
+                    restaurant: true,
+                },
+                minPriceLevel: 0,
+                maxPriceLevel: 4,
+            },
+            user: {},
+            isUserChecked: false,
+            isAuthenticated: false,
+            callbacks: {
+                onSigninSuccess: this.onSigninSuccess.bind(this),
+                onSigninFailure: this.onSigninFailure.bind(this),
+                onSignout: this.onSignout.bind(this),
+            },
         };
     }
 
@@ -30,10 +55,7 @@ class App extends React.Component {
         window.navigator.geolocation.getCurrentPosition(
             position => {
                 // set state
-                this.setState({
-                    lat: position.coords.latitude,
-                    long: position.coords.longitude,
-                });
+                this.setState({ ...this.state, lat: position.coords.latitude, long: position.coords.longitude });
             },
             err => console.log(err)
         );
@@ -41,9 +63,13 @@ class App extends React.Component {
 
     // update user location
     updateUserCoord = (lat, long) => {
+        this.setState({ ...this.state, lat: lat, long: long });
+    };
+
+    updateFilters = filters => {
+        console.log(filters);
         this.setState({
-            lat: lat,
-            long: long,
+            filters,
         });
     };
 
@@ -51,43 +77,101 @@ class App extends React.Component {
         this.getUserCoord();
     }
 
+    onSigninSuccess(googleUser) {
+        this.setState({ ...this.state, user: googleUser, isUserChecked: true, isAuthenticated: true });
+        var profile = googleUser.getBasicProfile();
+        console.log("ID: " + profile.getId()); // Do not send to your backend! Use an ID token instead.
+        console.log("Name: " + profile.getName());
+        console.log("Image URL: " + profile.getImageUrl());
+        console.log("Email: " + profile.getEmail()); // This is null if the 'email' scope is not present.
+        var idToken = googleUser.getAuthResponse().id_token;
+        var data = { idToken: idToken };
+        fetch("/backend/signin", {
+            method: "POST",
+            body: JSON.stringify(data),
+            headers: {
+                "Content-Type": "application/json",
+            },
+        })
+            .then(response => {
+                console.log("Success:", response.json());
+            })
+            .catch(error => {
+                console.error("Error", error);
+            });
+    }
+
+    onSigninFailure(error) {
+        this.setState({ ...this.state, user: {}, isUserChecked: true, isAuthenticated: false });
+        console.log(error);
+    }
+
+    onSignout() {
+        this.setState({ ...this.state, user: {}, isUserChecked: true, isAuthenticated: false });
+    }
+
     render() {
+        var userState = {
+            user: this.state.user,
+            isAuthenticated: this.state.isAuthenticated,
+        };
+        var authState = {
+            callbacks: this.state.callbacks,
+            isUserChecked: this.state.isUserChecked,
+            isAuthenticated: this.state.isAuthenticated,
+        };
         return (
             <div className="App">
-                <BrowserRouter>
-                    <Nav /> {/* Navigation Component */}
-                    <Switch>
-                        <Route
-                            path="/"
-                            exact
-                            render={() => {
-                                return (
-                                    <Home
-                                        lat={this.state.lat}
-                                        long={this.state.long}
-                                        updateUserCoord={this.updateUserCoord}
-                                        getUserCoord={this.getUserCoord}
-                                    />
-                                );
-                            }}
-                        ></Route>
-                        <Route
-                            path="/maps"
-                            exact
-                            render={() => {
-                                return <Maps lat={this.state.lat} long={this.state.long} />;
-                            }}
-                        ></Route>
-                        <Route path="/maps/search" exact component={Search}></Route>
-                        <Route path="/biz" exact component={Biz}></Route>
-                        <Route path="/biz/rate" exact component={Rates}></Route>
-                        <Route path="/biz/reserve" exact component={Reserve}></Route>
-                        <Route path="/users/reservations" exact component={Reservations}></Route>
-                        <Route path="/maps/users/saved" exact component={Saved}></Route>
-                        <Route component={NotFound}></Route>
-                    </Switch>
-                </BrowserRouter>
+                <UserContext.Provider value={userState}>
+                    <CallbackContext.Provider value={this.state.callbacks}>
+                        <AuthButtonContext.Provider value={authState}>
+                            {this.renderRouter()}
+                        </AuthButtonContext.Provider>
+                    </CallbackContext.Provider>
+                </UserContext.Provider>
             </div>
+        );
+    }
+
+    renderRouter() {
+        return (
+            <BrowserRouter>
+                <Nav /> {/* Navigation Component */}
+                <Switch>
+                    <Route
+                        path="/"
+                        exact
+                        render={() => {
+                            return (
+                                <Home
+                                    lat={this.state.lat}
+                                    long={this.state.long}
+                                    updateUserCoord={this.updateUserCoord}
+                                    getUserCoord={this.getUserCoord}
+                                    updateFilters={this.updateFilters}
+                                    filters={this.state.filters}
+                                />
+                            );
+                        }}
+                    ></Route>
+                    <Route
+                        path="/maps"
+                        exact
+                        render={() => {
+                            return <Maps lat={this.state.lat} long={this.state.long} filters={this.state.filters} />;
+                        }}
+                    ></Route>
+                    <Route path="/maps/search" exact component={Search}></Route>
+                    <Route path="/biz" exact component={Biz}></Route>
+                    <Route path="/biz/rate" exact component={Rates}></Route>
+                    <Route path="/biz/reserve" exact component={Reserve}></Route>
+                    <Route path="/users/reservations" exact component={Reservations}></Route>
+                    <Route path="/maps/users/saved" exact component={Saved}></Route>
+                    <Route path="/signin" exact component={Signin}></Route>
+                    <Route path="/signout" exact component={Signin}></Route>
+                    <Route component={NotFound}></Route>
+                </Switch>
+            </BrowserRouter>
         );
     }
 }

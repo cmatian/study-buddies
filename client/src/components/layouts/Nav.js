@@ -1,6 +1,6 @@
 import React from "react";
 import { NavLink, withRouter } from "react-router-dom";
-import GoogleSignIn from "../auth/GoogleSignIn";
+import AuthNavButton from "../auth/AuthNavButton";
 import "./Nav.scss"; // CSS
 
 class Nav extends React.Component {
@@ -34,12 +34,7 @@ class Nav extends React.Component {
                             </NavLink>
                         </li>
                         <li className="user">
-                            <NavLink exact to="/" activeClassName="active">
-                                Sign-in
-                            </NavLink>
-                        </li>
-                        <li className="user">
-                            <GoogleSignIn/>
+                            <AuthNavButton/>
                         </li>
                     </ul>
                 </div>

@@ -93,26 +93,28 @@ class Reserve extends React.Component {
         var googleUser = auth2.currentUser.get();
         var idToken = googleUser.getAuthResponse().id_token;
         var data = {
-            places_id: this.meetingLocationRef.current.value || "1234567890",
+            places_id: this.meetingLocationRef.current.value || "ChIJN1t_tDeuEmsRUsoyG83frY4", // fallback = Google Australia place_id for testing purposes only - remove this later
             group_size: this.groupSizeRef.current.value,
             duration_minutes: 60,
             date: "2019-02-18",
-            time: "14:30:00",
-            name: this.meetingNameRef.current.value
+            time: "22:30:00", // 2:30 pm in UTC (during non-daylight-savings time)
+            name: this.meetingNameRef.current.value,
         };
         console.log("reservation: " + JSON.stringify(data));
-        fetch('/backend/users/reservations', {
-            method: 'POST',
+        fetch("/backend/users/reservations", {
+            method: "POST",
             body: JSON.stringify(data),
             headers: {
-                'Content-Type': 'application/json',
-                'Authorization': 'Bearer ' + idToken
-            }
-        }).then((response) => {
-            console.log('Success:', response.json());
-        }).catch((error) => {
-            console.error('Error', error);
-        });
+                "Content-Type": "application/json",
+                Authorization: "Bearer " + idToken,
+            },
+        })
+            .then(response => {
+                console.log("Success:", response.json());
+            })
+            .catch(error => {
+                console.error("Error", error);
+            });
     };
 
     // Determines the state of the form submission button

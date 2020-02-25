@@ -1,5 +1,6 @@
 import React from "react";
 import Search from "../search/Search";
+import Filters from "../search/Filters";
 import Header from "./Header";
 // Home specific styling
 import "./Home.scss";
@@ -12,6 +13,7 @@ class Home extends React.Component {
         this.state = {
             lat: props.lat,
             long: props.long,
+            filters: {},
         };
     }
 
@@ -25,18 +27,6 @@ class Home extends React.Component {
         }
     }
 
-    // Example API function call to our express server - make sure it's running before using this fn!
-    callAPI() {
-        fetch("http://localhost:5000/testapi")
-            .then(res => res.text())
-            .then(res =>
-                this.setState({
-                    apiResponse: res,
-                })
-            )
-            .catch(err => err);
-    }
-
     render() {
         return (
             <div className="home_page">
@@ -45,6 +35,7 @@ class Home extends React.Component {
                 </video>
                 <Header headerTitle="Study Buddies" />
                 <div className="content_wrapper">
+                    <Filters updateFilters={this.props.updateFilters} filters={this.props.filters} />
                     <Search
                         lat={this.props.lat}
                         long={this.props.long}
