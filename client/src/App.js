@@ -24,6 +24,19 @@ class App extends React.Component {
         this.state = {
             lat: null,
             long: null,
+            // Default Values
+            filters: {
+                openNow: true,
+                type: {
+                    cafe: true,
+                    library: true,
+                    university: true,
+                    book_store: true,
+                    restaurant: true,
+                },
+                minPriceLevel: 0,
+                maxPriceLevel: 4,
+            },
             user: {},
             isAuthenticated: false,
             callbacks: {
@@ -47,6 +60,13 @@ class App extends React.Component {
     // update user location
     updateUserCoord = (lat, long) => {
         this.setState({ ...this.state, lat: lat, long: long });
+    };
+
+    updateFilters = filters => {
+        console.log(filters);
+        this.setState({
+            filters,
+        });
     };
 
     componentDidMount() {
@@ -113,6 +133,8 @@ class App extends React.Component {
                                     long={this.state.long}
                                     updateUserCoord={this.updateUserCoord}
                                     getUserCoord={this.getUserCoord}
+                                    updateFilters={this.updateFilters}
+                                    filters={this.state.filters}
                                 />
                             );
                         }}
@@ -121,7 +143,7 @@ class App extends React.Component {
                         path="/maps"
                         exact
                         render={() => {
-                            return <Maps lat={this.state.lat} long={this.state.long} />;
+                            return <Maps lat={this.state.lat} long={this.state.long} filters={this.state.filters} />;
                         }}
                     ></Route>
                     <Route path="/maps/search" exact component={Search}></Route>
