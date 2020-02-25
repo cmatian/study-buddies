@@ -1,0 +1,21 @@
+.review_wrapper{
+    padding-top: 100px;
+    .estimated_cost_container{
+        flex-direction: row;
+        justify-content: space-evenly;
+        display: flex;
+        .cost_selected{ 
+            border-style: solid;
+            border-width: 2px;
+        }
+        .cost {
+            border-style: none;
+        }
+    }
+    .star_filled {
+        color: #edbd21;
+    }
+    .star{
+        color: #8c8777;
+    }
+}
