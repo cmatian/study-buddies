@@ -10,8 +10,10 @@ import Reserve from "./components/business/Reserve";
 import Reservations from "./components/reservation/Reservations";
 import Saved from "./components/maps/Saved";
 import NotFound from "./components/pages/NotFound";
+import Signin from "./components/auth/Signin";
 import CallbackContext from "./CallbackContext";
 import UserContext from "./UserContext";
+import AuthButtonContext from "./AuthButtonContext";
 
 // App specific styling
 import "./App.scss";
@@ -38,10 +40,12 @@ class App extends React.Component {
                 maxPriceLevel: 4,
             },
             user: {},
+            isUserChecked: false,
             isAuthenticated: false,
             callbacks: {
                 onSigninSuccess: this.onSigninSuccess.bind(this),
                 onSigninFailure: this.onSigninFailure.bind(this),
+                onSignout: this.onSignout.bind(this),
             },
         };
     }
@@ -74,7 +78,7 @@ class App extends React.Component {
     }
 
     onSigninSuccess(googleUser) {
-        this.setState({ ...this.state, user: googleUser, isAuthenticated: true });
+        this.setState({ ...this.state, user: googleUser, isUserChecked: true, isAuthenticated: true });
         var profile = googleUser.getBasicProfile();
         console.log("ID: " + profile.getId()); // Do not send to your backend! Use an ID token instead.
         console.log("Name: " + profile.getName());
@@ -98,20 +102,31 @@ class App extends React.Component {
     }
 
     onSigninFailure(error) {
-        this.setState({ ...this.state, user: {}, isAuthenticated: false });
+        this.setState({ ...this.state, user: {}, isUserChecked: true, isAuthenticated: false });
         console.log(error);
     }
 
+    onSignout() {
+        this.setState({ ...this.state, user: {}, isUserChecked: true, isAuthenticated: false });
+    }
+
     render() {
-        var authState = {
+        var userState = {
             user: this.state.user,
+            isAuthenticated: this.state.isAuthenticated,
+        };
+        var authState = {
+            callbacks: this.state.callbacks,
+            isUserChecked: this.state.isUserChecked,
             isAuthenticated: this.state.isAuthenticated,
         };
         return (
             <div className="App">
-                <UserContext.Provider value={authState}>
+                <UserContext.Provider value={userState}>
                     <CallbackContext.Provider value={this.state.callbacks}>
-                        {this.renderRouter()}
+                        <AuthButtonContext.Provider value={authState}>
+                            {this.renderRouter()}
+                        </AuthButtonContext.Provider>
                     </CallbackContext.Provider>
                 </UserContext.Provider>
             </div>
@@ -152,6 +167,8 @@ class App extends React.Component {
                     <Route path="/biz/reserve" exact component={Reserve}></Route>
                     <Route path="/users/reservations" exact component={Reservations}></Route>
                     <Route path="/maps/users/saved" exact component={Saved}></Route>
+                    <Route path="/signin" exact component={Signin}></Route>
+                    <Route path="/signout" exact component={Signin}></Route>
                     <Route component={NotFound}></Route>
                 </Switch>
             </BrowserRouter>

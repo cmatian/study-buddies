@@ -51,7 +51,7 @@ app.use("/backend/users/ratings", ratingsRouter);
 app.use("/backend/users/savedLocations", savedLocationsRouter);
 
 app.use((req, res, next) => {
-    var matched = ["/maps", "/biz", "/users"].some(prefix => {
+    var matched = ["/maps", "/biz", "/users", "/signin"].some(prefix => {
         return req.url.startsWith(prefix);
     });
     if (matched) {
