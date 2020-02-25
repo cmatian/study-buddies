@@ -17,7 +17,6 @@ class Maps extends React.Component {
         this.state = {
             map: {},
             maps: {},
-            geocoderService: {},
             placeService: {},
             distanceService: {},
             places: [],
@@ -31,30 +30,27 @@ class Maps extends React.Component {
     
     // map is google map and maps = maps api
     handleApiLoaded = ({ map, maps }) => {
-        // console.log(map, maps)
         this.setState({
             map,
             maps,
-            geocoderService: new maps.Geocoder(),
             placeService: new maps.places.PlacesService(map),
             distanceService: new maps.DistanceMatrixService(),
         });
 
-        let request = {
-            location: new maps.LatLng(this.props.lat, this.props.long),
+        let request = {  
+            location: {lat: this.props.lat, lng: this.props.long},
+            // location: new maps.LatLng(this.props.lat, this.props.long),
             type: ['restaurant', 'cafe', 'libary', 'university', 'book_store'],
             query: 'study spots',
             // can only use rankBy or radius can't use both
             rankBy: maps.places.RankBy.DISTANCE,
             // radius: 30000, 
         };
-    
         // perform text search
         this.state.placeService.textSearch(request, (results, status) => {
             if (status === maps.places.PlacesServiceStatus.OK) {
-                // console.log(results)
+                // console.log('results ', results)
                 let placeLen = results.length > 10 ? 10 : results.length;
-
                 // add place obj to places list
                 this.setState({ 
                     places: results.slice(0, placeLen)
@@ -115,30 +111,25 @@ class Maps extends React.Component {
 
     // add marker to map 
     addMarker(address, map, maps) {
-        // console.log(address)
-        // perform geocode to convert address to latLng
-        this.state.geocoderService.geocode({ 'address': address.formatted_address }, (results, status) => {
-            if (status === 'OK') {
-                map.setCenter(results[0].geometry.location);
-                let marker = new maps.Marker({
-                    map: map,
-                    position: results[0].geometry.location,
-                }); 
-                let infowindow = new maps.InfoWindow({
-                    content: address.name,
-                });
+        let LatLng = {lat: address.geometry.location.lat(), lng: address.geometry.location.lng()}
 
-                // add onclick event
-                marker.addListener('click', () => {
-                    // update selectedPlace to clicked pin
-                    this.onPlaceSelect(address);
-                    // open and auto close infowindow after 2 sec
-                    infowindow.open(map, marker);
-                    setTimeout(() => {infowindow.close();}, '2000');
-                });
-            } else {
-                console.log('Geocode was not successful for the following reason: ' + status);
-            }
+        map.setCenter(LatLng);
+        let marker = new maps.Marker({
+            map: map,
+            position: LatLng,
+        }); 
+
+        let infowindow = new maps.InfoWindow({
+            content: address.name,
+        });
+
+        // add onclick event
+        marker.addListener('click', () => {
+            // update selectedPlace to clicked pin
+            this.onPlaceSelect(address);
+            // open and auto close infowindow after 2 sec
+            infowindow.open(map, marker);
+            setTimeout(() => {infowindow.close();}, '2000');
         });
     }
 

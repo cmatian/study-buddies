@@ -1,13 +1,21 @@
 import React from 'react';
+import { withRouter } from "react-router-dom";
 import "./Biz.scss";
 
 // Display extended details for matches display of hours, location, and distance
 class Biz extends React.Component {
+    handleRedriect = () => {
+        return this.props.history.push("biz/rate");
+    }
+
     render() {
         const {selectedPlace, selectedPlaceDetail, selectedPlaceDistance, onReservationSelect} = this.props;
+
         if (Object.keys(selectedPlaceDistance).length === 0 && selectedPlaceDistance.constructor === Object) {
             return null;
         } else {
+            let displayDistance = this.props.selectedPlaceDistance.rows[0].elements[0].status === 'NOT_FOUND' ? false : true;
+           
             return(
                 <div className="business_detail_wrapper">
                     <div className="business_name_container">
@@ -17,22 +25,25 @@ class Biz extends React.Component {
                     <div className="business_addr_container">
                         {selectedPlaceDetail.formatted_address}
                     </div>
-                    <div className="travel_detail_container">
-                        Distance: {selectedPlaceDistance.rows[0].elements[0].distance.text}
-                        <br/>
-                        Driving time: {selectedPlaceDistance.rows[0].elements[0].duration.text}
-                    </div>
+                    {/* display distance only when available */}
+                    {displayDistance ?
+                        <div className="travel_detail_container">
+                            Distance: {selectedPlaceDistance.rows[0].elements[0].distance.text}
+                            <br/>
+                            Driving time: {selectedPlaceDistance.rows[0].elements[0].duration.text}
+                        </div>
+                    : null }
                     <div className="business_hours_container">
                         Opening Hours:
                         <br/>
-                        {selectedPlaceDetail.opening_hours.weekday_text.map(text => {
-                            return <div>{text}<br/></div>
+                        {selectedPlaceDetail.opening_hours.weekday_text.map((text, index) => {
+                            return <div key={index}>{text}<br/></div>
                         })}
                     </div>
                     <div className="utility_buttons_container">
                         <button onClick={()=> onReservationSelect()}>Make Reservation</button>
                         <button>Save</button>
-                        <button>Write a Review</button>                    
+                        <button onClick={()=>this.handleRedriect()}>Write a Review</button>                    
                     </div>
                     <div className="view_review_container">
                         <div>
@@ -43,10 +54,9 @@ class Biz extends React.Component {
                         </div>
                     </div>
                 </div>
-            );            
+            );                
         }
-
     }
 }
 
-export default Biz;
+export default withRouter(Biz);
