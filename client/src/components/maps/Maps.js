@@ -1,9 +1,9 @@
 import React from "react";
 import GoogleMap from "google-map-react";
 import Reserve from "../business/Reserve";
-import PlaceList from './PlaceList';
-import PlaceSelected from './PlaceSelected';
-import Biz from '../business/Biz'
+import PlaceList from "./PlaceList";
+import PlaceSelected from "./PlaceSelected";
+import Biz from "../business/Biz";
 import "./Maps.scss"; // Styling
 
 const mapStyles = {
@@ -29,9 +29,23 @@ class Maps extends React.Component {
         };
     }
 
+    // Returns a formatted array of the filters
+    setTypeFilter = () => {
+        const { filters } = this.props;
+
+        let types = [];
+        Object.keys(filters.type).map(key => {
+            if (filters.type[key]) {
+                types.push(key);
+            }
+        });
+        return types.length > 0 ? types : ["restaurant", "cafe", "libary", "university", "book_store"];
+    };
+
     // map is google map and maps = maps api
     handleApiLoaded = ({ map, maps }) => {
         // console.log(map, maps)
+        this.setTypeFilter();
         this.setState({
             map,
             maps,
@@ -42,7 +56,9 @@ class Maps extends React.Component {
 
         let request = {
             location: new maps.LatLng(this.props.lat, this.props.long),
-            type: ["restaurant", "cafe", "libary", "university", "book_store"],
+            type: this.setTypeFilter(),
+            maxPriceLevel: this.props.filters.maxPriceLevel,
+            openNow: this.props.filters.openNow,
             query: "study spots",
             // can only use rankBy or radius can't use both
             rankBy: maps.places.RankBy.DISTANCE,
@@ -70,8 +86,8 @@ class Maps extends React.Component {
     };
 
     // call getDetails for selectedPlace and save result to selectedPlaceDetail
-    getPlaceDetail = (place) => {
-        // call get detail only for 
+    getPlaceDetail = place => {
+        // call get detail only for
         let detailRequest = {
             placeId: place.place_id,
         };
@@ -89,12 +105,12 @@ class Maps extends React.Component {
         });
     };
 
-    // add marker to map 
+    // add marker to map
     addMarker(address, map, maps) {
         // console.log(address)
         // perform geocode to convert address to latLng
-        this.state.geocoderService.geocode({ 'address': address.formatted_address }, (results, status) => {
-            if (status === 'OK') {
+        this.state.geocoderService.geocode({ address: address.formatted_address }, (results, status) => {
+            if (status === "OK") {
                 map.setCenter(results[0].geometry.location);
                 let marker = new maps.Marker({
                     map: map,
@@ -140,15 +156,15 @@ class Maps extends React.Component {
             showMakeReservation: false,
         });
         this.getDistanceDetail();
-    }
+    };
 
     // func to updadate showMakeReservation to display reserve component
     onReservationSelect = () => {
         this.setState({
             showBusinessDetail: false,
             showMakeReservation: true,
-        })
-    }
+        });
+    };
 
     render() {
         // console.log('this.props: ', this.props)
@@ -161,9 +177,9 @@ class Maps extends React.Component {
             <div className="map_wrapper">
                 <div className="place_list_container">
                     <div>
-                        <PlaceSelected 
-                            onDetailSelect={this.onDetailSelect} 
-                            place={this.state.selectedPlace} 
+                        <PlaceSelected
+                            onDetailSelect={this.onDetailSelect}
+                            place={this.state.selectedPlace}
                             onReservationSelect={this.onReservationSelect}
                         />
                     </div>
@@ -171,28 +187,28 @@ class Maps extends React.Component {
                 </div>
                 <div className="map_container">
                     <div>
-                        {this.state.showBusinessDetail ? 
-                        <Biz 
-                            selectedPlace={this.state.selectedPlace} 
-                            selectedPlaceDetail={this.state.selectedPlaceDetail} 
-                            selectedPlaceDistance={this.state.selectedPlaceDistance}
-                            onReservationSelect={this.onReservationSelect}
-                        /> : null }
+                        {this.state.showBusinessDetail ? (
+                            <Biz
+                                selectedPlace={this.state.selectedPlace}
+                                selectedPlaceDetail={this.state.selectedPlaceDetail}
+                                selectedPlaceDistance={this.state.selectedPlaceDistance}
+                                onReservationSelect={this.onReservationSelect}
+                            />
+                        ) : null}
                     </div>
-                    <div style={mapStyles}>   
-                    {this.state.showMakeReservation ?
-                       <Reserve openingHours={this.state.selectedPlaceDetail.opening_hours} 
-                       /> : null }
-                    <GoogleMap
-                        bootstrapURLKeys={{ key: 'AIzaSyC4YLPSKd-b0RxRh5kqx8QDnf9yMDioK0Y' }}
-                        center={center}
-                        defaultZoom={12}
-                        yesIWantToUseGoogleMapApiInternals
-                        onGoogleApiLoaded={({map, maps}) => this.handleApiLoaded({map, maps})}
-                    >
-                    </GoogleMap>
-                    </div>                     
-                </div>                
+                    <div style={mapStyles}>
+                        {this.state.showMakeReservation ? (
+                            <Reserve openingHours={this.state.selectedPlaceDetail.opening_hours} />
+                        ) : null}
+                        <GoogleMap
+                            bootstrapURLKeys={{ key: "AIzaSyC4YLPSKd-b0RxRh5kqx8QDnf9yMDioK0Y" }}
+                            center={center}
+                            defaultZoom={12}
+                            yesIWantToUseGoogleMapApiInternals
+                            onGoogleApiLoaded={({ map, maps }) => this.handleApiLoaded({ map, maps })}
+                        ></GoogleMap>
+                    </div>
+                </div>
             </div>
         );
     }
