@@ -101,6 +101,30 @@ class Maps extends React.Component {
         });
     };
 
+    // call getDistanceMatrix and save result to selectedPlaceDistance
+    getDistanceDetail = () => {  
+        let origin = {lat: this.props.lat, lng: this.props.long};
+        let destination = this.state.selectedPlace.formatted_address;
+
+        let distanceRequest = {
+            origins: [origin],
+            destinations: [destination],
+            travelMode: 'DRIVING',
+            unitSystem: this.state.maps.UnitSystem.IMPERIAL,
+        }
+
+        this.state.distanceService.getDistanceMatrix(distanceRequest, (results, status) => {
+            if (status === 'OK') {
+                // console.log('in getDistanceDetail results', results)
+                this.setState({
+                    selectedPlaceDistance: results
+                });
+            } else {
+                console.log('getDistanceMatrix was not successful for the following reason: ' + status)
+            }
+        })
+    }
+
     // add marker to map
     addMarker(address, map, maps) {
         let LatLng = {lat: address.geometry.location.lat(), lng: address.geometry.location.lng()}
