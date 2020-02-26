@@ -35,13 +35,13 @@ class Home extends React.Component {
                 </video>
                 <Header headerTitle="Study Buddies" />
                 <div className="content_wrapper">
-                    <Filters updateFilters={this.props.updateFilters} filters={this.props.filters} />
                     <Search
                         lat={this.props.lat}
                         long={this.props.long}
                         updateUserCoord={this.props.updateUserCoord}
                         getUserCoord={this.props.getUserCoord}
                     />
+                    <Filters updateFilters={this.props.updateFilters} filters={this.props.filters} />
                 </div>
             </div>
         );

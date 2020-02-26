@@ -86,8 +86,8 @@ router.get("/", function(req, res, next) {
 router.patch("/:reservation_id", function(req, res, next) {
     console.log("Reservation patch: " + JSON.stringify(req.body));
     reservationId = req.params.reservation_id;
-    var setClauseParts = []
-    var parameters = []
+    var setClauseParts = [];
+    var parameters = [];
     if (req.body.status != null) {
         setClauseParts.push("status = ?");
         parameters.push(req.body.status);
@@ -109,9 +109,7 @@ router.patch("/:reservation_id", function(req, res, next) {
         parameters.push(req.body.name);
     }
 
-    var updateQuery = "UPDATE reservations SET " +
-        setClauseParts.join(",") +
-        " WHERE reservation_id = ?";
+    var updateQuery = "UPDATE reservations SET " + setClauseParts.join(",") + " WHERE reservation_id = ?";
     parameters.push(reservationId);
     console.log("update reservation query: " + updateQuery);
 
@@ -125,7 +123,6 @@ router.patch("/:reservation_id", function(req, res, next) {
             console.error("Error", error);
             next(error);
         });
-
 });
 
 module.exports = router;
