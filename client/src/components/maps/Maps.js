@@ -31,6 +31,7 @@ class Maps extends React.Component {
     // Returns a formatted array of the filters
     setTypeFilter = () => {
         const { filters } = this.props;
+        const defaultTypes = ["restaurant", "cafe", "libary", "university", "book_store"];
 
         let types = [];
         Object.keys(filters.type).map(key => {
@@ -38,13 +39,12 @@ class Maps extends React.Component {
                 types.push(key);
             }
         });
-        return types.length > 0 ? types : ["restaurant", "cafe", "libary", "university", "book_store"];
+        return types.length > 0 ? types : defaultTypes;
     };
 
     // map is google map and maps = maps api
     handleApiLoaded = ({ map, maps }) => {
         // console.log(map, maps)
-        this.setTypeFilter();
         this.setState({
             map,
             maps,
@@ -102,50 +102,52 @@ class Maps extends React.Component {
     };
 
     // call getDistanceMatrix and save result to selectedPlaceDistance
-    getDistanceDetail = () => {  
-        let origin = {lat: this.props.lat, lng: this.props.long};
+    getDistanceDetail = () => {
+        let origin = { lat: this.props.lat, lng: this.props.long };
         let destination = this.state.selectedPlace.formatted_address;
 
         let distanceRequest = {
             origins: [origin],
             destinations: [destination],
-            travelMode: 'DRIVING',
+            travelMode: "DRIVING",
             unitSystem: this.state.maps.UnitSystem.IMPERIAL,
-        }
+        };
 
         this.state.distanceService.getDistanceMatrix(distanceRequest, (results, status) => {
-            if (status === 'OK') {
+            if (status === "OK") {
                 // console.log('in getDistanceDetail results', results)
                 this.setState({
-                    selectedPlaceDistance: results
+                    selectedPlaceDistance: results,
                 });
             } else {
-                console.log('getDistanceMatrix was not successful for the following reason: ' + status)
+                console.log("getDistanceMatrix was not successful for the following reason: " + status);
             }
-        })
-    }
+        });
+    };
 
     // add marker to map
     addMarker(address, map, maps) {
-        let LatLng = {lat: address.geometry.location.lat(), lng: address.geometry.location.lng()}
+        let LatLng = { lat: address.geometry.location.lat(), lng: address.geometry.location.lng() };
 
         map.setCenter(LatLng);
         let marker = new maps.Marker({
             map: map,
             position: LatLng,
-        }); 
+        });
 
         let infowindow = new maps.InfoWindow({
             content: address.name,
         });
 
         // add onclick event
-        marker.addListener('click', () => {
+        marker.addListener("click", () => {
             // update selectedPlace to clicked pin
             this.onPlaceSelect(address);
             // open and auto close infowindow after 2 sec
             infowindow.open(map, marker);
-            setTimeout(() => {infowindow.close();}, '2000');
+            setTimeout(() => {
+                infowindow.close();
+            }, "2000");
         });
     }
 

@@ -1,0 +1,147 @@
+.form_filters {
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: center;
+    justify-content: flex-start;
+    margin-top: 25px;
+
+    .showPriceButton,
+    .showTypesButton {
+        display: flex;
+        flex-flow: row nowrap;
+        align-items: center;
+        border: 1px solid #bbbac0;
+        background: #fff;
+        appearance: none;
+        padding: 6px 12px;
+        font-size: 14px;
+        border-radius: 16px;
+        cursor: pointer;
+
+        &:hover {
+            background: #dadada;
+        }
+
+        i {
+            margin-left: 5px;
+            font-size: inherit;
+        }
+    }
+
+    .flex_container {
+        position: absolute;
+        display: flex;
+        flex-flow: column nowrap;
+        align-items: flex-start;
+        background: #fff;
+        border-radius: 4px;
+        padding: 10px 15px;
+        min-width: 175px;
+        box-shadow: 0 0 18px rgba(0, 0, 0, 0.15);
+        opacity: 0;
+        transition: opacity ease-in 150ms;
+        top: 40px;
+
+        &:not(.visible) {
+            pointer-events: none;
+        }
+
+        &.visible {
+            opacity: 1;
+        }
+
+        .flex_item {
+            display: flex;
+            align-items: center;
+            border-radius: 5px;
+            margin-bottom: 5px;
+            width: 100%;
+
+            &:hover {
+                background: #dadada;
+            }
+
+            &.active {
+                background: #9147ff;
+                color: #fff;
+            }
+
+            label,
+            input {
+                cursor: pointer;
+            }
+
+            label {
+                width: inherit;
+                font-size: 14px;
+                padding: 5px 7px;
+                text-align: left;
+            }
+
+            input {
+                margin: 0;
+                margin-left: 5px;
+            }
+        }
+    }
+
+    .fp_wrapper {
+        position: relative;
+        display: inline-block;
+
+        input {
+            position: relative;
+            top: 1px;
+        }
+    }
+
+    .fo_wrapper {
+        display: inline-flex;
+        margin-left: 10px;
+
+        label {
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 14px;
+            padding: 6px 12px;
+            border: 1px solid #bbbac0;
+            border-radius: 16px;
+            cursor: pointer;
+            transition: background ease-in 150ms;
+            background: #fff;
+
+            &:hover {
+                background: #dadada;
+                border-color: #bbbac0;
+            }
+        }
+
+        input:checked ~ label {
+            background: #9147ff;
+            border-color: #772ce8;
+            color: #fff;
+        }
+
+        input {
+            position: absolute;
+            visibility: hidden;
+            pointer-events: none;
+        }
+    }
+
+    .ft_wrapper {
+        position: relative;
+        margin-left: 10px;
+
+        label {
+            display: flex;
+            align-items: center;
+        }
+
+        input[type="checkbox"] {
+            position: relative;
+            top: 1px;
+            margin: 0;
+            margin-right: 5px;
+        }
+    }
+}
