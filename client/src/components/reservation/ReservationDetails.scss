@@ -1,6 +1,57 @@
 .reservation_form {
     height: auto;
 
+    .required_ast {
+        color: red;
+    }
+
+    .meeting_edit_button {
+        appearance: none;
+        border: none;
+        background: #fff;
+        cursor: pointer;
+        color: #41a3ff;
+        outline: 0;
+
+        &:hover {
+            text-decoration: underline;
+            color: #1678d3;
+        }
+    }
+
+    .submit_edit_button {
+        margin-left: 10px;
+        padding: 5px;
+        appearance: none;
+        border: 1px solid #41a3ff;
+        color: #fff;
+        background: #41a3ff;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: background ease-out 150ms;
+        outline: 0;
+
+        &:hover {
+            background: #1678d3;
+            color: #fff
+        }
+    }
+
+    .cancel_edit_button {
+        outline: 0;
+        appearance: none;
+        border: none;
+        color: #ca2525;
+        background: #fff;
+        cursor: pointer;
+
+        &:hover {
+            text-decoration: underline;
+            color: #a30404;
+        }
+    }
+    
+
     .btn_cancel_reservation {
         display: flex;
         margin: 10px 0 0 auto;
@@ -29,13 +80,104 @@
     .content_group {
         display: flex;
         align-items: center;
+        margin-bottom: 10px;
 
-        .res_title {
-            font-size: 40px;
+        .edit_meeting_group_size {
+            margin-bottom: 10px;
+
+            span {
+                font-size: 20px;
+            }
+        }
+
+        .edit_meeting_duration {
+            display: flex;
+            flex-flow: column nowrap;
+            align-items: flex-start;
+
+            label {
+                margin-bottom: 5px;
+            }
+
+            select {
+                font-size: 18px;
+                border-radius: 5px;
+                padding: 5px;
+                border: 1px solid #cccccc;
+                width: 160px;
+            }
+        }
+
+        .edit_meeting_group_size,
+        .edit_meeting_name {
+            display: flex;
+            flex-flow: column nowrap;
+            align-items: flex-start;
+            width: 100%;
+
+            label {
+                margin-bottom: 5px;
+            }
+
+            input {
+                padding: 10px 5px;
+                font-size: 16px;
+                width: 100%;
+                border-radius: 5px;
+                border: 1px solid #cccccc;
+                outline: none;
+
+                &::placeholder {
+                    color: #cccccc;
+                    font-style: italic;
+                }
+
+                &.error {
+                    border: 1px solid red;
+
+                    &:focus {
+                        box-shadow: 0 0 3px 0 red;
+                    }
+                }
+
+                &:focus ~ .char_limit {
+                    opacity: 1;
+                }
+
+                &.error:focus ~ .char_limit {
+                    color: red;
+                }
+
+                &:focus {
+                    box-shadow: 0 0 3px 1px #41a3ff;
+                }
+            }
+
+            .char_limit {
+                color: #01973f;
+                margin-left: auto;
+                opacity: 0;
+                transition: opacity ease-in-out 100ms;
+
+                &.capped {
+                    font-weight: bold;
+                    color: #fa653b;
+                }
+            }
+        }
+
+        .show_meeting_duration,
+        .show_group_size {
+            font-size: 20px;
+        }
+
+        .show_meeting_name {
+            font-size: 28px;
             font-weight: bold;
             white-space: pre-wrap;
             text-align: left;
             color: #272727;
+            width: 100%;
         }
 
         .res_status {
@@ -52,7 +194,7 @@
         flex-flow: row nowrap;
         flex: 0 1 100%;
 
-        p {
+        span {
             font-size: 20px;
         }
 
@@ -137,9 +279,22 @@
 
             // Location Name
             h3 {
+                display: flex;
+                flex-flow: row nowrap;
+                align-items: center;
                 font-size: 32px;
                 color: #272727;
                 margin: 0;
+
+                i {
+                    margin-left: 10px;
+                    cursor: pointer;
+
+                    &:hover {
+                        color: gold;
+                    }
+                }
+
             }
 
             // Address
