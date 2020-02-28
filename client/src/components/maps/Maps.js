@@ -34,7 +34,7 @@ class Maps extends React.Component {
         const defaultTypes = ["restaurant", "cafe", "libary", "university", "book_store"];
 
         let types = [];
-        Object.keys(filters.type).map(key => {
+        Object.keys(filters.type).forEach(key => {
             if (filters.type[key]) {
                 types.push(key);
             }

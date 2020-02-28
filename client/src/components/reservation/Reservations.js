@@ -4,6 +4,7 @@ import ReservationCard from "./ReservationCard";
 import ReservationDetails from "./ReservationDetails";
 import "./Reservations.scss";
 import UserContext from "../../UserContext";
+import Loader from '../layouts/Loader';
 
 class Reservations extends React.Component {
     static contextType = UserContext;
@@ -62,7 +63,7 @@ class Reservations extends React.Component {
                     selectionStateIdx = index; // default 0 from function param
                 }
                 this.setState({
-                    reservationData: data,
+                    reservationData: data || {},
                     isFetching: false,
                     isFetched: true,
                     isError: false,
@@ -81,7 +82,89 @@ class Reservations extends React.Component {
     };
 
     cancelReservation = reservation_id => {
-        console.log(reservation_id);
+        const googleUser = this.context.user;
+        let token = googleUser.getAuthResponse().id_token;
+
+        fetch("/backend/users/reservations", {
+            method: "PATCH",
+            body: JSON.stringify({
+                id: reservation_id,
+                status: "CANCELLED",
+            }),
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: "Bearer " + token,
+            },
+        })
+            .then(response => {
+                response.json();
+            })
+            .then(response => {
+                console.log("Success", response);
+                // Refetch the updated data
+                this.fetchRequest(googleUser);
+            })
+            .catch(error => {
+                console.log("Error", error);
+            });
+    };
+
+    updateReservation = (data, index) => {
+        const googleUser = this.context.user;
+        let token = googleUser.getAuthResponse().id_token;
+
+        fetch("/backend/users/reservations", {
+            method: "PATCH",
+            body: JSON.stringify({
+                id: data.id,
+                group_size: data.group_size,
+                duration_minutes: data.duration_minutes,
+                date_time: data.date_time,
+                name: data.name,
+            }),
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: "Bearer " + token,
+            },
+        })
+            .then(response => {
+                response.json();
+            })
+            .then(response => {
+                console.log("Success", response);
+                // Refetch the updated data
+                this.fetchRequest(googleUser, index);
+            })
+            .catch(error => {
+                console.log("Error", error);
+            });
+    };
+
+    updateSavedLocation = (data, index) => {
+        const googleUser = this.context.user;
+        let token = googleUser.getAuthResponse().id_token;
+        fetch("/backend/users/savedLocations", {
+            method: "POST",
+            body: JSON.stringify({
+                places_id: data.places_id,
+                userId: data.user_id,
+                locationId: data.location_id,
+                nickname: data.nickname,
+            }),
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: "Bearer " + token,
+            },
+        })
+            .then(response => {
+                response.json();
+            })
+            .then(response => {
+                console.log("Success", response);
+            })
+            .catch(error => {
+                console.log("Error", error);
+            });
     };
 
     componentDidMount() {
@@ -93,10 +176,38 @@ class Reservations extends React.Component {
     }
 
     render() {
-        const { isFetching, reservationData, isSelected, isSelectedIdx } = this.state;
-        return isFetching ? (
-            <div>Loading...</div>
-        ) : (
+        const { isFetching, isError, reservationData, isSelected, isSelectedIdx } = this.state;
+
+        // Is the data loading?
+        if (isFetching) {
+            return <Loader />;
+        }
+
+        // If there was an error trying to fetch the data from the server.
+        if (isError) {
+            return (
+                <div className="reservation_wrapper">
+                    <h1>My Reservations</h1>
+                    <div className="reservation_window">
+                        There was an error loading your reservations. Please wait a moment and try again.
+                        {/* Put a button that allows the user to trigger the fetchRequest again */}
+                    </div>
+                </div>
+            );
+        }
+
+        // If the user has no reservations.
+        if (!isFetching && reservationData.reservations.length < 1 && !isError) {
+            return (
+                <div className="reservation_wrapper">
+                    <h1>My Reservations</h1>
+                    <div className="reservation_window">You do not have any reservations.</div>
+                </div>
+            );
+        }
+
+        // Return the reservation block assuming the user has no errors and is done fetching
+        return (
             <div className="reservation_wrapper">
                 <h1>My Reservations</h1>
                 <div className="reservation_window">
@@ -117,6 +228,8 @@ class Reservations extends React.Component {
                     <div className="reservation_detail_window">
                         <ReservationDetails
                             cancelReservation={this.cancelReservation}
+                            updateReservation={this.updateReservation}
+                            updateSavedLocation={this.updateSavedLocation}
                             reservations={reservationData.reservations}
                             selected={isSelected}
                             index={isSelectedIdx}

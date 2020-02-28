@@ -232,13 +232,6 @@ class Filters extends React.Component {
                         </div>
                     </div>
                 </span>
-                {/* <div className="input_group filter_price">
-                    <label className="label_header">Price Limit:</label>
-                    
-                </div>
-                <div className="input_group filter_type">
-                    
-                </div> */}
             </form>
         );
     }

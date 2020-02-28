@@ -83,9 +83,10 @@ router.get("/", function(req, res, next) {
         });
 });
 
-router.patch("/:reservation_id", function(req, res, next) {
+router.patch("/", function(req, res, next) {
     console.log("Reservation patch: " + JSON.stringify(req.body));
-    reservationId = req.params.reservation_id;
+    reservationId = req.body.id; // inline editing so we're not sending id through param
+    console.log(reservationId);
     var setClauseParts = [];
     var parameters = [];
     if (req.body.status != null) {

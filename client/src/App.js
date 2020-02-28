@@ -124,9 +124,7 @@ class App extends React.Component {
             <div className="App">
                 <UserContext.Provider value={userState}>
                     <CallbackContext.Provider value={this.state.callbacks}>
-                        <AuthButtonContext.Provider value={authState}>
-                            {this.renderRouter()}
-                        </AuthButtonContext.Provider>
+                        <AuthButtonContext.Provider value={authState}>{this.renderRouter()}</AuthButtonContext.Provider>
                     </CallbackContext.Provider>
                 </UserContext.Provider>
             </div>
