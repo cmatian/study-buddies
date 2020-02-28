@@ -11,6 +11,8 @@ var bodyParser = require("body-parser");
 require("dotenv").config(); // for process environments - only for development (remove for production)
 
 var signinRouter = require("./routes/signin");
+var locationsRouter = require("./routes/locations");
+var usersLocationsRouter = require("./routes/users_locations");
 var reservationsRouter = require("./routes/reservations");
 var ratingsRouter = require("./routes/ratings");
 var savedLocationsRouter = require("./routes/saved_locations");
@@ -46,6 +48,8 @@ app.use(express.static(`../client/build`));
 
 // Define Routes here
 app.use("/backend/signin", signinRouter);
+app.use("/backend/locations/for_place", locationsRouter);
+app.use("/backend/users/locations/for_place", usersLocationsRouter);
 app.use("/backend/users/reservations", reservationsRouter);
 app.use("/backend/users/ratings", ratingsRouter);
 app.use("/backend/users/savedLocations", savedLocationsRouter);
