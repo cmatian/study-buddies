@@ -14,7 +14,12 @@ router.get("/:places_id", function(req, res, next) {
     console.log("Location get: places ID = " + req.params.places_id);
     var placesId = req.params.places_id;
 
-    query("SELECT * from locations where places_id = ?", [placesId])
+    query("SELECT *, r.cost as rating_cost from locations l " +
+          "LEFT JOIN ratings AS r " +
+          "  ON r.location_id = l.location_id " +
+          "LEFT JOIN users AS u " +
+          "  ON u.user_id = r.user_id " +
+          "WHERE places_id = ?", [placesId])
         .then(dbResult => {
             if (dbResult.length == 0) {
                 console.log("no location");
@@ -22,16 +27,36 @@ router.get("/:places_id", function(req, res, next) {
                 res.json(JSON.stringify(apiResult));
             } else {
                 var row = dbResult[0];
-                console.log("location: " + JSON.stringify(row));
+                var ratings = [];
+                // each row will have distinct rating details
+                for (var i = 0; i < dbResult.length; i++) {
+                    ratingRow = dbResult[i];
+                    if (ratingRow.rating_id == null) {
+                        continue;
+                    }
+                    ratings.push({
+                        rating_id: ratingRow.rating_id,
+                        rating: ratingRow.rating,
+                        comment: ratingRow.comment,
+                        cost: ratingRow.rating_cost,
+                        user: {
+                            user_id: ratingRow.user_id,
+                            google_id: ratingRow.google_id,
+                            username: ratingRow.username,
+                        },
+                    });
+                }
                 location = {
                     location_id: row.location_id,
                     places_id: row.places_id,
                     name: row.name,
                     cost: row.cost,
                     business_type: row.business_type,
-                    average_rating: row.average_rating
+                    average_rating: row.average_rating,
+                    ratings: ratings,
                 };
                 var apiResult = { location: location };
+                console.log("apiResult: " + JSON.stringify(apiResult));
                 res.json(JSON.stringify(apiResult));
             }
         })
