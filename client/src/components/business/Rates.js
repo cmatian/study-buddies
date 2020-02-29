@@ -1,4 +1,5 @@
 import React from 'react';
+import { withRouter } from "react-router-dom";
 import "./Rates.scss";
 
 const stars = [0, 1, 2, 3, 4];
@@ -8,34 +9,83 @@ const costs = ["$", "$$", "$$$", "$$$$"];
 class Rates extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {
+        this.state = this.initialState;
+    }
+
+    get initialState() {
+        return {
             starRating: 0,
             review: "",
-            estimatedCost: 0,
-        };
+            estimatedCost: 0, 
+        }
     }
 
     // update state of star rating to cur selected
     handleStarClick = index => {
         this.setState({starRating: index + 1});
-    }
+    };
 
     // update state of cost to cur selected
     handleCostClick = index => {
         this.setState({estimatedCost: index + 1});
-    }
+    };
 
     // update state of review state on every key stroke
     handleChange = e => {
         this.setState({review: e.target.value});
+    };
+
+    // reset state
+    clearFrom = () => {
+        this.setState(this.initialState);
     }
 
-    clearFrom = () => {
-        this.setState({
-            starRating: 0,
-            review: "",
-            estimatedCost: 0,           
-        });
+    reviewValidation() {
+        if (this.state.starRating > 0 && this.state.review.length > 0 && this.state.estimatedCost > 0) {
+             this.handleSubmit();
+        } else {
+           alert("All input must be filled.")
+        }
+    }
+
+    handleSubmit = () => {
+        let auth2 = window.gapi.auth2.getAuthInstance();
+        let googleUser = auth2.currentUser.get();
+        let idToken = googleUser.getAuthResponse().id_token;
+
+        // convert cost to string to match varchar in db
+        let data = {
+            places_id: this.props.location.state.places_id,
+            name: this.props.location.state.name,            
+            rating: this.state.starRating,
+            comment: this.state.review,
+            cost: this.state.estimatedCost.toString(),
+
+        };
+
+        console.log('review:', data); 
+
+        fetch("/backend/users/ratings", {
+            method: "POST",
+            body: JSON.stringify(data),
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: "Bearer " + idToken,
+            },
+        })
+            .then(response => {
+                console.log("Success:", response.json());
+            })
+            .catch(error => {
+                console.error("Error", error);
+            });
+
+        this.handleRedriect();
+    };
+
+    // redirect user to map page after submitting review
+    handleRedriect = () => {
+        return this.props.history.goBack();
     }
 
     render() {
@@ -46,9 +96,9 @@ class Rates extends React.Component {
                     {stars.map((star, index) => {
                         {/* conditonal className to display stars selcted */}
                         const className = index <= this.state.starRating - 1 ? "star_filled" : "star";
-                        return <span 
+                        return <span
                             className={className} 
-                            key={index} 
+                            key={index.toString()} 
                             onClick={() => this.handleStarClick(index)}
                         >★</span>
                     })}
@@ -57,6 +107,7 @@ class Rates extends React.Component {
                     <form>
                         <textarea
                             id="user review"
+                            required
                             placeholder="Describe your study experience."
                             rows="10"
                             cols="40"
@@ -73,7 +124,9 @@ class Rates extends React.Component {
                     })}
                 </div>
                 <div>
-                    <button>Submit</button>
+                    <button 
+                        onClick={() => this.reviewValidation()}
+                    >Submit</button>
                     <button onClick={() => this.clearFrom()}>Cancel</button>
                 </div>
             </div>
@@ -81,4 +134,4 @@ class Rates extends React.Component {
     }
 }
 
-export default Rates;
+export default withRouter(Rates);

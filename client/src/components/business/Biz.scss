@@ -3,7 +3,7 @@
     bottom: 0;
     left: 0;
     max-width: 25%;
-    height: 93%;
+    height: 95%;
     width: 25%;
     background: #fff;
     overflow-y: auto;
@@ -21,14 +21,24 @@
     }
     .travel_detail_container{
         padding: 5px;
+        flex-direction: row;
+        justify-content: space-evenly;
+        display: flex;
     }
     .business_hours_container {
         padding: 5px;
     }
     .utility_buttons_container{
         padding: 10px;
+        flex-direction: row;
+        justify-content: space-evenly;
+        display: flex;
     }
     .view_review_container{
+        cursor: pointer;
         padding: 10px;
+        flex-direction: row;
+        justify-content: space-evenly;
+        display: flex;
     }
 }

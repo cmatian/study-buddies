@@ -1,0 +1,21 @@
+.review_item_wrapper{
+    margin: 15px;
+    padding: 10px;
+    border-radius: 15px;
+    border-style: solid;
+    border-width: 1px;
+    border-color: #a7b3b5;
+
+    .author_name{
+        padding-left: 15px;
+        float: left;
+    }
+
+    .stars_rating{
+        color: #edbd21;
+    }
+
+    .comments{
+        margin: 10px;
+    }
+}
