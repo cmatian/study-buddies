@@ -24,6 +24,10 @@
             order: 1;
             overflow: auto;
             padding: 20px;
+            border-top-width: 1px;
+            border-left-width: 1px;
+            border-color: rgba(0, 0, 0, 0.15);
+            border-style: solid;
         }
     }
 

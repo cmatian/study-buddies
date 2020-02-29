@@ -152,7 +152,7 @@ class Reserve extends React.Component {
                         />
                     </div>
                     <div className="input_group">
-                        <label htmlFor="group_size">Group Size (up to 8)</label>
+                        <label htmlFor="group_size">Group Size (1 to 8)</label>
                         <input
                             ref={this.groupSizeRef}
                             id="group_size"

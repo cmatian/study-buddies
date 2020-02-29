@@ -1,7 +1,9 @@
 import React from "react";
+import { withRouter } from "react-router-dom";
 import DatePicker from "react-datepicker";
 import { subDays, setHours, setMinutes, parseISO, getDay } from "date-fns";
 import DatePickerButton from "../layouts/form/DatePickerButton";
+import Loader from '../layouts/Loader';
 import "react-datepicker/dist/react-datepicker.css"; // DatePicker CSS import
 import "./ReservationDetails.scss";
 
@@ -11,10 +13,21 @@ class ReservationDetails extends React.Component {
         super(props);
 
         this.state = {
+            isEditing: false,
             details: {}, // Google Places Details
             oldindex: props.index,
             map: null,
-            formData: {},
+            formData: {
+                // This is a preserved copy of the reservation when it's loaded (from props)
+                name: props.reservations[this.props.index].name,
+                group_size: props.reservations[this.props.index].group_size,
+                duration_minutes: props.reservations[this.props.index].duration_minutes,
+                date_time: parseISO(props.reservations[this.props.index].date_time),
+            },
+            formErrors: {},
+            meeting_name: props.reservations[this.props.index].name,
+            meeting_group_size: props.reservations[this.props.index].group_size,
+            meeting_duration: props.reservations[this.props.index].duration_minutes,
             meeting_date_time: parseISO(props.reservations[this.props.index].date_time),
             initialTime: {
                 closed_days: [],
@@ -52,9 +65,9 @@ class ReservationDetails extends React.Component {
                 "user_ratings_total",
                 "formatted_phone_number",
                 "international_phone_number",
-                "opening_hours",
                 "price_level",
                 "website",
+                "opening_hours",
             ],
         };
         let servicePromise = new Promise((resolve, reject) => {
@@ -170,31 +183,32 @@ class ReservationDetails extends React.Component {
 
     handleChangeDateTime = (reservationId, date) => {
         this.setState({ meeting_date_time: date });
-        console.log("new date_time: ", date);
-        var auth2 = window.gapi.auth2.getAuthInstance();
-        var googleUser = auth2.currentUser.get();
-        var idToken = googleUser.getAuthResponse().id_token;
-        var data = {
-            //group_size: 7,
-            //duration_minutes: 45,
-            date_time: date,
-            //name: "jajaja",
-        };
-        console.log("reservation: " + JSON.stringify(data));
-        fetch("/backend/users/reservations/" + reservationId, {
-            method: "PATCH",
-            body: JSON.stringify(data),
-            headers: {
-                "Content-Type": "application/json",
-                Authorization: "Bearer " + idToken,
-            },
-        })
-            .then(response => {
-                console.log("Success:", response.json());
-            })
-            .catch(error => {
-                console.error("Error", error);
-            });
+        // console.log("new date_time: ", date);
+        // var auth2 = window.gapi.auth2.getAuthInstance();
+        // var googleUser = auth2.currentUser.get();
+        // var idToken = googleUser.getAuthResponse().id_token;
+        // var data = {
+        //     id: reservationId,
+        //     //group_size: 7,
+        //     //duration_minutes: 45,
+        //     date_time: date,
+        //     //name: "jajaja",
+        // };
+        // console.log("reservation: " + JSON.stringify(data));
+        // fetch("/backend/users/reservations/", {
+        //     method: "PATCH",
+        //     body: JSON.stringify(data),
+        //     headers: {
+        //         "Content-Type": "application/json",
+        //         Authorization: "Bearer " + idToken,
+        //     },
+        // })
+        //     .then(response => {
+        //         console.log("Success:", response.json());
+        //     })
+        //     .catch(error => {
+        //         console.error("Error", error);
+        //     });
     };
 
     // Need to initialize the selected date when the user opens the date box.
@@ -268,6 +282,96 @@ class ReservationDetails extends React.Component {
         );
     };
 
+    // Form Editing Handlers - editMeeting, editCancel, editSubmit
+    validateInput = event => {
+        let result = event.target.value.trim().length < 1;
+        this.setState({
+            formErrors: { [event.target.name]: result },
+        });
+    };
+
+    handleInputChange = event => {
+        this.validateInput(event);
+        this.setState({
+            [event.target.name]: event.target.value,
+        });
+    };
+
+    handleGroupSize = event => {
+        let size = event.target.value;
+
+        if (size >= 10) {
+            // Convert briefly to string
+            size.toString();
+            // Set size = to second char and convert back to int
+            size = parseInt(size[1]);
+        }
+
+        // If less than 1 set to 1
+        if (size < 1) {
+            size = 1;
+        }
+        // If greater than 8 set to 8
+        if (size > 8) {
+            size = 8;
+        }
+        this.setState({
+            [event.target.name]: size,
+        });
+    };
+
+    handleDurationChange = event => {
+        this.setState({ meeting_duration: event.target.value });
+    };
+
+    // Toggles the form state to show the edit buttons and the cancel/submit buttons
+    editMeeting = event => {
+        this.setState({
+            isEditing: true,
+        });
+    };
+
+    // Flushes the changes and resets them to original values
+    editCancel = event => {
+        const { formData } = this.state;
+        // Reset to the formData values
+        this.setState({
+            meeting_name: formData.name,
+            meeting_group_size: formData.group_size,
+            meeting_duration: formData.duration_minutes,
+            meeting_date_time: formData.date_time,
+            isEditing: false, // toggle editing off
+        });
+    };
+
+    editSubmit = event => {
+        const { meeting_name, meeting_group_size, meeting_date_time, meeting_duration } = this.state;
+        let payload = {
+            id: this.props.reservations[this.props.index].reservation_id,
+            name: meeting_name.trim(),
+            group_size: meeting_group_size,
+            date_time: meeting_date_time,
+            duration_minutes: meeting_duration,
+        };
+
+        this.setState({
+            isEditing: false,
+        }, this.props.updateReservation(payload, this.props.index));
+    };
+
+    // Save Location Handler
+    saveLocation = event => {
+        const { reservations, index, updateSavedLocation } = this.props;
+        const res = reservations[index];
+        let payload = {
+            places_id: res.location.places_id,
+            userId: res.user_id,
+            locationId: res.location.location_id,
+            nickname: res.location.name,
+        };
+        updateSavedLocation(payload, index);
+    };
+
     // Initialize the required Google API (Headless map + getDetails request)
     componentDidMount() {
         this.initMap();
@@ -283,10 +387,13 @@ class ReservationDetails extends React.Component {
         if (oldindex !== this.props.index && !isLoading) {
             this.setState(
                 {
-                    isLoading: true,
-                    isTimeInitialized: false, // reset initialization
-                    // Reset date time because we're switching to a different reservation
+                    meeting_name: this.props.reservations[this.props.index].name,
+                    meeting_group_size: this.props.reservations[this.props.index].group_size,
+                    meeting_duration: this.props.reservations[this.props.index].duration_minutes,
                     meeting_date_time: parseISO(this.props.reservations[this.props.index].date_time),
+                    isLoading: true,
+                    isEditing: false,
+                    isTimeInitialized: false, // reset initialization
                 },
                 // setState callback expects a function but async always returns a promise, so just wrap
                 // getDetails in an IIFE
@@ -296,139 +403,243 @@ class ReservationDetails extends React.Component {
     }
 
     render() {
-        const { details, initialTime, isLoading, meeting_date_time } = this.state;
+        const {
+            details,
+            formErrors,
+            isEditing,
+            isLoading,
+            initialTime,
+            meeting_name,
+            meeting_group_size,
+            meeting_duration,
+            meeting_date_time,
+        } = this.state;
         const reservation = this.props.reservations[this.props.index];
         const date_options = { weekday: "long", year: "numeric", month: "long", day: "numeric" };
         const reservation_id = reservation.reservation_id;
+        const char_length = this.state.meeting_name.length;
+        const char_limit = 50;
+
+
 
         return isLoading ? (
-            <div>Loading</div>
+            <Loader />
         ) : (
-            <form method="post" name="reservation_form" className="reservation_form">
-                <div className="content_group row spc_btwn">
-                    <div className="res_title">{reservation.name}</div>
-                    <div className={"res_status " + (reservation.status === "CANCELLED" ? "red" : "green")}>
-                        {reservation.status}
-                    </div>
-                </div>
-                <div className="content_group row">
-                    <div className="date_time_info_window">
-                        <p className="date">{meeting_date_time.toLocaleDateString(undefined, date_options)}</p>
-                        <p className="time">{meeting_date_time.toLocaleTimeString("en-US")}</p>
-                    </div>
-                    <DatePicker
-                        id="meeting_date_time"
-                        name="meeting_date_time"
-                        selected={meeting_date_time}
-                        onSelect={date => this.setOperationHours(date)}
-                        onChange={date => this.handleChangeDateTime(reservation_id, date)}
-                        onCalendarOpen={this.initDateTime}
-                        filterDate={date => this.getClosedDays(date)}
-                        minDate={subDays(new Date(), 0)}
-                        minTime={setHours(setMinutes(new Date(), initialTime.open.minutes), initialTime.open.hours)}
-                        maxTime={setHours(setMinutes(new Date(), initialTime.close.minutes), initialTime.close.hours)}
-                        value={"edit"}
-                        showTimeSelect
-                        withPortal
-                        timeIntervals={30}
-                        dateFormat="MMM d, yyyy - h:mm aa"
-                        customInput={<DatePickerButton />}
-                    />
-                </div>
-                <div className="location_details_window">
-                    <i className="material-icons location_type_icon">
-                        {(() => {
-                            switch (details.types[0]) {
-                                case "cafe":
-                                    return "local_cafe";
-                                case "library" || "bookstore":
-                                    return "local_library";
-                                case "restaurant":
-                                    return "restaurant";
-                                case "university":
-                                    return "school";
-                                default:
-                                    return "location_city";
-                            }
-                        })()}
-                    </i>
-                    <div className="location_primary_details">
-                        <h3>@ {details.name}</h3>
-                        <h4>
-                            <i className="material-icons">location_on</i>
-                            {details.formatted_address}
-                        </h4>
-                    </div>
-                    <div className="location_sub_details">
-                        <div className="sub_detail_box sub_hours">
-                            <div className="sub_title">Hours</div>
-                            <div className="sub_details">
-                                {details.opening_hours.weekday_text.map((item, idx) => {
-                                    let current = new Date().getDay();
-                                    // Set Sunday
-                                    if (current - 1 < 0) {
-                                        current = 6;
-                                        // Set Monday
-                                    } else if (current + 1 > 6) {
-                                        current = 0;
-                                    } else {
-                                        current -= 1;
-                                    }
-                                    return (
-                                        <p key={idx} className={current === idx ? "current_day" : ""}>
-                                            {item}
-                                        </p>
-                                    );
-                                })}
-                            </div>
+                <form method="post" name="reservation_form" className="reservation_form" autoComplete="off">
+                    <div className="content_group row spc_btwn">
+                        <div className={"res_status " + (reservation.status === "CANCELLED" ? "red" : "green")}>
+                            {reservation.status}
                         </div>
-                        <div className="sub_detail_box sub_contact">
-                            <div className="sub_title">Contact</div>
-                            <div className="sub_details">
-                                <p>
-                                    <span>Local:</span> <span>{details.formatted_phone_number}</span>
-                                </p>
-                                <p>
-                                    <span>Int'l:</span> <span>{details.international_phone_number}</span>
-                                </p>
-                                <p className="web_link">
-                                    {details.website ? (
-                                        <a target="_blank" rel="noopener noreferrer" href={details.website}>
-                                            Visit Official Website
+                        <div className="edit_form_toolbar">
+                            {isEditing && (
+                                <button type="button" className="cancel_edit_button" onClick={this.editCancel}>
+                                    Cancel
+                            </button>
+                            )}
+                            {!isEditing ? (
+                                <button type="button" className="meeting_edit_button" onClick={this.editMeeting}>
+                                    Edit Meeting
+                            </button>
+                            ) : (
+                                    <button type="button" className="submit_edit_button" onClick={this.editSubmit}>
+                                        Save Changes
+                            </button>
+                                )}
+                        </div>
+                    </div>
+                    <div className="content_group row spc_btwn">
+                        {isEditing ? (
+                            <div className="edit_meeting_name">
+                                <label htmlFor="meeting_name">
+                                    Change Meeting Name <span className="required_ast">*</span>
+                                </label>
+                                <input
+                                    maxLength={char_limit}
+                                    id="meeting_name"
+                                    name="meeting_name"
+                                    className={"meeting_name " + (formErrors.meeting_name ? "error" : "")}
+                                    type="text"
+                                    value={meeting_name}
+                                    onChange={this.handleInputChange}
+                                    placeholder="Required"
+                                />
+                                <span className={"char_limit " + (char_length < char_limit ? "" : "capped")}>
+                                    {char_length}/{char_limit}
+                                </span>
+                            </div>
+                        ) : (
+                                <span className="show_meeting_name">{reservation.name}</span>
+                            )}
+                    </div>
+                    <div className="content_group row">
+                        {isEditing ? (
+                            <div className="edit_meeting_group_size">
+                                <label htmlFor="meeting_group_size">Change Group Size (1 to 8) </label>
+                                <input
+                                    id="meeting_group_size"
+                                    name="meeting_group_size"
+                                    className="meeting_group_size"
+                                    type="number"
+                                    value={meeting_group_size}
+                                    onChange={this.handleGroupSize}
+                                />
+                            </div>
+                        ) : (
+                                <span className="show_group_size">Group Size: {reservation.group_size}</span>
+                            )}
+                    </div>
+                    <div className="content_group row">
+                        <div className="date_time_info_window">
+                            <span className="date">{meeting_date_time.toLocaleDateString(undefined, date_options)}</span>
+                            <span className="time">@ {meeting_date_time.toLocaleTimeString("en-US")}</span>
+                        </div>
+                        {isEditing && (
+                            <DatePicker
+                                id="meeting_date_time"
+                                name="meeting_date_time"
+                                selected={meeting_date_time}
+                                onSelect={date => this.setOperationHours(date)}
+                                onChange={date => this.handleChangeDateTime(reservation_id, date)}
+                                onCalendarOpen={this.initDateTime}
+                                filterDate={date => this.getClosedDays(date)}
+                                minDate={subDays(new Date(), 0)}
+                                minTime={setHours(setMinutes(new Date(), initialTime.open.minutes), initialTime.open.hours)}
+                                maxTime={setHours(
+                                    setMinutes(new Date(), initialTime.close.minutes),
+                                    initialTime.close.hours
+                                )}
+                                value={"edit"}
+                                showTimeSelect
+                                withPortal
+                                timeIntervals={30}
+                                dateFormat="MMM d, yyyy - h:mm aa"
+                                customInput={<DatePickerButton />}
+                            />
+                        )}
+                    </div>
+                    <div className="content_group row">
+                        {isEditing ? (
+                            <div className="edit_meeting_duration">
+                                <label htmlFor="meeting_duration">Change Meeting Duration</label>
+                                <select
+                                    id="meeting_duration"
+                                    className="meeting_duration"
+                                    value={meeting_duration}
+                                    onChange={this.handleDurationChange}
+                                >
+                                    <option value="15">15 Minutes</option>
+                                    <option value="30">30 Minutes</option>
+                                    <option value="45">45 Minutes</option>
+                                    <option value="60">60 Minutes</option>
+                                </select>
+                            </div>
+                        ) : (
+                                <span className="show_meeting_duration">Duration: {reservation.duration_minutes} minutes</span>
+                            )}
+                    </div>
+                    <div className="location_details_window">
+                        <i className="material-icons location_type_icon">
+                            {(() => {
+                                switch (details.types[0]) {
+                                    case "cafe":
+                                        return "local_cafe";
+                                    case "library" || "bookstore":
+                                        return "local_library";
+                                    case "restaurant":
+                                        return "restaurant";
+                                    case "university":
+                                        return "school";
+                                    default:
+                                        return "location_city";
+                                }
+                            })()}
+                        </i>
+                        <div className="location_primary_details">
+                            <h3>
+                                @{details.name}
+                                <i
+                                    className="material-icons save_location"
+                                    title="Save Location"
+                                    onClick={this.saveLocation}
+                                >
+                                    star
+                                </i>
+                            </h3>
+                            <h4>
+                                <i className="material-icons">location_on</i>
+                                {details.formatted_address}
+                            </h4>
+                        </div>
+                        <div className="location_sub_details">
+                            <div className="sub_detail_box sub_hours">
+                                <div className="sub_title">Hours</div>
+                                <div className="sub_details">
+                                    {details.opening_hours.weekday_text.map((item, idx) => {
+                                        let current = new Date().getDay();
+                                        // Set Sunday
+                                        if (current - 1 < 0) {
+                                            current = 6;
+                                            // Set Monday
+                                        } else if (current + 1 > 6) {
+                                            current = 0;
+                                        } else {
+                                            current -= 1;
+                                        }
+                                        return (
+                                            <p key={idx} className={current === idx ? "current_day" : ""}>
+                                                {item}
+                                            </p>
+                                        );
+                                    })}
+                                </div>
+                            </div>
+                            <div className="sub_detail_box sub_contact">
+                                <div className="sub_title">Contact</div>
+                                <div className="sub_details">
+                                    <p>
+                                        <span>Local:</span> <span>{details.formatted_phone_number}</span>
+                                    </p>
+                                    <p>
+                                        <span>Int'l:</span> <span>{details.international_phone_number}</span>
+                                    </p>
+                                    <p className="web_link">
+                                        {details.website ? (
+                                            <a target="_blank" rel="noopener noreferrer" href={details.website}>
+                                                Visit Official Website
                                         </a>
-                                    ) : (
-                                        "Website Unavailable"
-                                    )}
-                                </p>
+                                        ) : (
+                                                "Website Unavailable"
+                                            )}
+                                    </p>
+                                </div>
                             </div>
-                        </div>
-                        <div className="sub_detail_box sub_rating">
-                            <div className="sub_title">Rating</div>
-                            <div className="sub_details">
-                                {this.calculateRating(details.rating)}
-                                <span className="total_ratings">based on {details.user_ratings_total} rating(s).</span>
+                            <div className="sub_detail_box sub_rating">
+                                <div className="sub_title">Rating</div>
+                                <div className="sub_details">
+                                    {this.calculateRating(details.rating)}
+                                    <span className="total_ratings">based on {details.user_ratings_total} rating(s).</span>
+                                </div>
                             </div>
-                        </div>
-                        <div className="sub_detail_box sub_pricing">
-                            <div className="sub_title">Average Pricing</div>
-                            <div className="sub_details">{this.calculatePricing(details.price_level)}</div>
+                            <div className="sub_detail_box sub_pricing">
+                                <div className="sub_title">Average Pricing</div>
+                                <div className="sub_details">{this.calculatePricing(details.price_level)}</div>
+                            </div>
                         </div>
                     </div>
-                </div>
-                {reservation.status === "CANCELLED" ? (
-                    ""
-                ) : (
-                    <button
-                        type="button"
-                        onClick={() => this.props.cancelReservation(reservation.reservation_id)}
-                        className="btn_cancel_reservation"
-                    >
-                        Cancel Reservation
+                    {reservation.status === "CANCELLED" || isEditing ? (
+                        ""
+                    ) : (
+                            <button
+                                type="button"
+                                onClick={() => this.props.cancelReservation(reservation.reservation_id)}
+                                className="btn_cancel_reservation"
+                            >
+                                Cancel Reservation
                     </button>
-                )}
-            </form>
-        );
+                        )}
+                </form>
+            );
     }
 }
 
-export default ReservationDetails;
+export default withRouter(ReservationDetails);
