@@ -1,25 +1,57 @@
 import React from 'react';
 import { withRouter } from "react-router-dom";
+import ReviewList from "../rate/ReviewList"
 import "./Biz.scss";
 
 // Display extended details for matches display of hours, location, and distance
 class Biz extends React.Component {
-    handleRedriect = () => {
-        return this.props.history.push("biz/rate");
+    constructor(props) {
+        super(props);
+        this.state = ({
+            showGoogleReview: true, // on default show google review
+            showStudyReview: false,
+        });
     }
+
+    handleRedriect = () => {
+        const location = {
+            pathname: "biz/rate",
+            state: {
+                places_id: this.props.selectedPlaceDetail.place_id,
+                name: this.props.selectedPlaceDetail.name,
+            }
+        }
+
+        return this.props.history.push(location);
+    }
+
+    onGoogleSelect = () => {
+        this.setState({
+            showGoogleReview: true,
+            showStudyReview: false,
+        });
+    };
+
+    onStudySelect = () => {
+        this.setState({
+            showGoogleReview: false,
+            showStudyReview: true,
+        });
+    };
 
     render() {
         const {selectedPlace, selectedPlaceDetail, selectedPlaceDistance, onReservationSelect} = this.props;
+        let emptyObj = {};    // place holder till i get study review from db
 
         if (Object.keys(selectedPlaceDistance).length === 0 && selectedPlaceDistance.constructor === Object) {
             return null;
         } else {
-            let displayDistance = this.props.selectedPlaceDistance.rows[0].elements[0].status === 'NOT_FOUND' ? false : true;
+            let displayDistance = this.props.selectedPlaceDistance.rows[0].elements[0].status === "NOT_FOUND" ? false : true;
            
             return(
                 <div className="business_detail_wrapper">
                     <div className="business_name_container">
-                        {selectedPlace.name}
+                        <h2>{selectedPlace.name}</h2>
                     </div>
                     <img className = "image_container "src={selectedPlaceDetail.photos[0].getUrl()} alt=""></img>
                     <div className="business_addr_container">
@@ -28,30 +60,45 @@ class Biz extends React.Component {
                     {/* display distance only when available */}
                     {displayDistance ?
                         <div className="travel_detail_container">
-                            Distance: {selectedPlaceDistance.rows[0].elements[0].distance.text}
-                            <br/>
-                            Driving time: {selectedPlaceDistance.rows[0].elements[0].duration.text}
+                            <span>
+                               Distance: {selectedPlaceDistance.rows[0].elements[0].distance.text} 
+                            </span>
+                            <span>
+                                Driving time: {selectedPlaceDistance.rows[0].elements[0].duration.text}
+                            </span>
                         </div>
                     : null }
                     <div className="business_hours_container">
-                        Opening Hours:
+                        <b> Opening Hours: </b>
                         <br/>
                         {selectedPlaceDetail.opening_hours.weekday_text.map((text, index) => {
-                            return <div key={index}>{text}<br/></div>
+                            return <div key={index.toString()}>{text}<br/></div>
                         })}
                     </div>
                     <div className="utility_buttons_container">
-                        <button onClick={()=> onReservationSelect()}>Make Reservation</button>
+                        <button onClick={() => onReservationSelect()}>Make Reservation</button>
                         <button>Save</button>
-                        <button onClick={()=>this.handleRedriect()}>Write a Review</button>                    
+                        <button onClick={() => this.handleRedriect()}>Write a Review</button>                    
                     </div>
                     <div className="view_review_container">
-                        <div>
+                        <span onClick={() => this.onGoogleSelect()}>
                             Google Reviews
-                        </div>
-                        <div>
+                        </span>
+                        <span onClick={() => this.onStudySelect()}>
                             Study Buddies Reviews
-                        </div>
+                        </span>
+                    </div>
+                    <div>
+                        {this.state.showGoogleReview ? (
+                            <ReviewList 
+                                reviews={selectedPlaceDetail.reviews}
+                            />
+                        ) : (
+                            <ReviewList 
+                                reviews={emptyObj}
+                                // reviews={}
+                            />
+                        )}
                     </div>
                 </div>
             );                

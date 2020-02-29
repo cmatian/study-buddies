@@ -6,7 +6,6 @@ import './PlaceItem.scss'
 class PlaceItem extends React.Component {
     render() {
         const { place, onPlaceSelect } = this.props;
-        // console.log('place item props', this.props)
 
         let rating = place.rating === undefined ? 0 : place.rating;
         let estCost = place.price_level === undefined ? 'N/A' : place.price_level;

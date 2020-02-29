@@ -77,7 +77,6 @@ class Maps extends React.Component {
             } else {
                 console.log("Place service was not successful for the following reason: " + status);
             }
-            // console.log('places: ', this.state.places)
         });
     };
 
