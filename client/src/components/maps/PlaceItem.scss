@@ -1,4 +1,28 @@
 .place_item_card {
+    display: flex;
+    flex-flow: row nowrap;
+    font-size: 14px;
+    padding: 5px;
     cursor: pointer;
-    height: 100px;
+
+    &:not(.active):hover { // Pseudo-selector hover
+        background: rgba(0, 0, 0, .15);
+    }
+
+    &:not(.active).hover { // Class hover (when hovering on a pin)
+        background: rgba(0, 0, 0, 0.15);
+    }
+
+    &.active {
+        background: #9147ff;
+        color: #fff;
+    }
+
+    .name {
+        
+    }
+
+    .type {
+        margin-left: auto;
+    }
 }

@@ -1,9 +1,11 @@
 import React from "react";
+import ReactDOMServer from 'react-dom/server';
 import GoogleMap from "google-map-react";
 import Reserve from "../business/Reserve";
 import PlaceList from "./PlaceList";
 import PlaceSelected from "./PlaceSelected";
 import Biz from "../business/Biz";
+import PlaceDetail from './PlaceDetail';
 import "./Maps.scss"; // Styling
 
 const mapStyles = {
@@ -17,14 +19,19 @@ class Maps extends React.Component {
         this.state = {
             map: {},
             maps: {},
+            lastOpen: null,
             placeService: {},
             distanceService: {},
             places: [],
+            selectedIndex: 0,
             selectedPlace: null,
             selectedPlaceDetail: {},
             selectedPlaceDistance: {},
             showBusinessDetail: false,
             showMakeReservation: false,
+            isExpanded: true,
+            hoverTarget: null,
+            markerRefs: [],
         };
     }
 
@@ -62,17 +69,17 @@ class Maps extends React.Component {
             rankBy: maps.places.RankBy.DISTANCE,
             // radius: 30000,
         };
+
         // perform text search
         this.state.placeService.textSearch(request, (results, status) => {
             if (status === maps.places.PlacesServiceStatus.OK) {
                 // console.log('results ', results)
-                let placeLen = results.length > 10 ? 10 : results.length;
                 // add place obj to places list
                 this.setState({
-                    places: results.slice(0, placeLen),
+                    places: results.slice(0, 10), // slice will already read up to 10 items, dont need [].length
                 });
-                for (let i = 0; i < placeLen; i++) {
-                    this.addMarker(results[i], this.state.map, this.state.maps);
+                for (let i = 0; i < this.state.places.length; i++) {
+                    this.addMarker(results[i], this.state.map, this.state.maps, i);
                 }
             } else {
                 console.log("Place service was not successful for the following reason: " + status);
@@ -125,42 +132,79 @@ class Maps extends React.Component {
     };
 
     // add marker to map
-    addMarker(address, map, maps) {
+    addMarker(address, map, maps, index) {
+
+        const { markerRefs } = this.state;
+
         let LatLng = { lat: address.geometry.location.lat(), lng: address.geometry.location.lng() };
 
         map.setCenter(LatLng);
         let marker = new maps.Marker({
             map: map,
             position: LatLng,
+            animation: maps.Animation.DROP,
         });
 
         let infowindow = new maps.InfoWindow({
-            content: address.name,
+            content: ReactDOMServer.renderToString(<PlaceDetail data={address} />),
+        });
+
+        marker.addListener("mouseover", () => {
+            if (this.state.lastOpen) {
+                this.state.lastOpen.close();
+            }
+            this.setState({
+                lastOpen: infowindow,
+                hoverTarget: index,
+            });
+            infowindow.open(map, marker);
+        });
+
+        marker.addListener("mouseout", () => {
+            this.setState({
+                hoverTarget: null,
+            });
         });
 
         // add onclick event
         marker.addListener("click", () => {
             // update selectedPlace to clicked pin
-            this.onPlaceSelect(address);
-            // open and auto close infowindow after 2 sec
-            infowindow.open(map, marker);
-            setTimeout(() => {
-                infowindow.close();
-            }, "2000");
+            this.onPlaceSelect(address, index);
+        });
+
+        // We need to create a reference to our markers by storing it into state so that the PlaceItem can access their associated markers by reference
+
+        this.setState({
+            markerRefs: [
+                ...markerRefs,
+                {
+                    address, marker, infowindow
+                }
+            ]
         });
     }
 
     // set state for cur place selected and hide selected
-    onPlaceSelect = place => {
+    onPlaceSelect = (place, index) => {
+        const { map, markerRefs, lastOpen } = this.state;
+        if (lastOpen) {
+            lastOpen.close();
+        }
+
         this.setState({
+            selectedIndex: index,
             selectedPlace: place,
+            isExpanded: true,
             showBusinessDetail: false,
             showMakeReservation: false,
+            lastOpen: markerRefs[index].infowindow,
         });
         this.getPlaceDetail(place);
-        // OPTIONAL: zoom in to marker need to get latLng
-        // this.state.map.setZoom(14);
-        // this.state.map.setCenter();
+        map.setCenter({ lat: place.geometry.location.lat(), lng: place.geometry.location.lng() });
+        map.setZoom(13);
+
+        // Open the infowindow for the associated marker
+        markerRefs[index].infowindow.open(map, markerRefs[index].marker);
     };
 
     // func to update showBusiness state from child PlaceSelected
@@ -180,6 +224,12 @@ class Maps extends React.Component {
         });
     };
 
+    toggleSideMenu = () => {
+        this.setState(prevState => ({
+            isExpanded: !prevState.isExpanded,
+        }));
+    };
+
     render() {
         // console.log('this.props: ', this.props)
         const center = {
@@ -187,9 +237,11 @@ class Maps extends React.Component {
             lng: this.props.long,
         };
 
+        const { isExpanded } = this.state;
+
         return (
             <div className="map_wrapper">
-                <div className="place_list_container">
+                <div className={"place_list_container " + (isExpanded ? "expanded" : "")}>
                     <div>
                         <PlaceSelected
                             onDetailSelect={this.onDetailSelect}
@@ -197,10 +249,13 @@ class Maps extends React.Component {
                             onReservationSelect={this.onReservationSelect}
                         />
                     </div>
-                    <PlaceList onPlaceSelect={this.onPlaceSelect} places={this.state.places} />
+                    <PlaceList onPlaceSelect={this.onPlaceSelect} places={this.state.places} selected={this.state.selectedIndex} hover={this.state.hoverTarget} />
                 </div>
                 <div className="map_container">
-                    <div>
+                    <div className="toggle_side_menu" onClick={this.toggleSideMenu} title="Toggle Side Bar">
+                        <i className="material-icons">{isExpanded ? "arrow_back" : "arrow_forward"}</i>
+                    </div>
+                    <div style={mapStyles}>
                         {this.state.showBusinessDetail ? (
                             <Biz
                                 selectedPlace={this.state.selectedPlace}
@@ -209,8 +264,6 @@ class Maps extends React.Component {
                                 onReservationSelect={this.onReservationSelect}
                             />
                         ) : null}
-                    </div>
-                    <div style={mapStyles}>
                         {this.state.showMakeReservation ? (
                             <Reserve openingHours={this.state.selectedPlaceDetail.opening_hours} />
                         ) : null}
@@ -223,7 +276,7 @@ class Maps extends React.Component {
                         ></GoogleMap>
                     </div>
                 </div>
-            </div>
+            </div >
         );
     }
 }

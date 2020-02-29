@@ -1,21 +1,38 @@
 import React from 'react';
-import './PlaceItem.scss'
+import './PlaceItem.scss';
 
 // individual place item
 // displaying: name, rating, estimated cost
 class PlaceItem extends React.Component {
-    render() {
-        const { place, onPlaceSelect } = this.props;
+    getTypeString = (type) => {
+        switch (type) {
+            case "cafe":
+                return "Cafe";
+            case "library":
+                return "Library";
+            case "book_store":
+                return "Book Store";
+            case "restaurant":
+                return "Restaurant";
+            case "university":
+                return "University";
+            default:
+                return "Hot Spot";
+        }
+    };
 
-        let rating = place.rating === undefined ? 0 : place.rating;
-        let estCost = place.price_level === undefined ? 'N/A' : place.price_level;
+    render() {
+        const { place, onPlaceSelect, selected, index, hover } = this.props;
+
+        const rating = place.rating === undefined ? 0 : place.rating;
+        const type = place.types[0];
+        let active = selected === index; // bool
+        let shade = hover === index;
 
         // onclick update calls a call back function to update state of placeSlected
-        return(    
-            <div className="place_item_card" onClick={() => onPlaceSelect(place)}>
-                <div>{place.name}</div> 
-                <div>Rating: {rating}</div>
-                <div>Cost: {estCost}</div>
+        return (
+            <div className={"place_item_card " + (active ? "active " : "") + (shade ? "hover " : "")} onClick={() => onPlaceSelect(place)}>
+                <span className="name">{place.name}</span> <span className="type">{this.getTypeString(type)}</span>
             </div>
         );
     }

@@ -543,7 +543,9 @@ class ReservationDetails extends React.Component {
                                 switch (details.types[0]) {
                                     case "cafe":
                                         return "local_cafe";
-                                    case "library" || "bookstore":
+                                    case "library":
+                                        return "local_library";
+                                    case "book_store":
                                         return "local_library";
                                     case "restaurant":
                                         return "restaurant";
