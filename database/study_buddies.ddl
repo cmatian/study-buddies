@@ -34,6 +34,7 @@ CREATE TABLE saved_locations (
   FOREIGN KEY (user_id) REFERENCES users(user_id),
   FOREIGN KEY (location_id) REFERENCES locations(location_id)
 );
+ALTER TABLE `saved_locations` ADD UNIQUE `user_loc_index`(`user_id`, `location_id`);
 
 CREATE TABLE reservations (
   reservation_id INT NOT NULL AUTO_INCREMENT,
@@ -60,3 +61,4 @@ CREATE TABLE ratings (
   FOREIGN KEY (user_id) REFERENCES users(user_id),
   FOREIGN KEY (location_id) REFERENCES locations(location_id)
 );
+ALTER TABLE `ratings` ADD UNIQUE `user_loc_index`(`user_id`, `location_id`);
