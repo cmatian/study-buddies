@@ -2,12 +2,13 @@
     position: fixed;
     top: 0;
     left: 0;
-    max-width: 300px;
+    max-width: 250px;
     height: 100%;
     width: 100%;
     background: #fff;
+    padding-top: 53px;
     overflow-y: auto;
-    z-index: 9999999;
+    z-index: 1;
 
     .required_ast {
         color: red;
@@ -36,7 +37,7 @@
     .make_reservation_form {
         display: flex;
         flex-flow: column nowrap;
-        padding: 25px;
+        padding: 15px;
         height: 100%;
 
         h2 {

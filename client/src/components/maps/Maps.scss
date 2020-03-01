@@ -1,20 +1,56 @@
 .map_wrapper {
+    display: flex;
     width: 100%;
     height: 100%;
-    position: fixed;
-    margin-top: 53px;
+    padding-top: 53px;
 
+    .close_detail_menu,
+    .toggle_side_menu {
+        position: absolute;
+        top: 5px;
+        left: 5px;
+        z-index: 1;
+        border-radius: 5px;
+        background: #9147ff;
+        box-shadow: 2px 2px 2px 0 rgba(0, 0, 0, 0.4);
 
-    .place_list_container {  
-        position: static;
-        width: 25%;
-        height: 100%;
-        float: left;
-        overflow-y: scroll;
+        &:hover {
+            background: #6010d8;
+        }
+
+        i {
+            color: #fff;
+            padding: 5px;
+            cursor: pointer;
+        }
+
     }
-    .map_container {
-        width: 75%;
+
+    .place_list_container {
+        flex: 0;  
         height: 100%;
-        float: right;
+        overflow-x: hidden;
+        overflow-y: auto;
+        background: #fff;
+        z-index: 1;
+        transition: flex-basis ease-in-out 0.3s;
+
+        &.expanded {
+            flex: 0 0 250px;
+        }
+    }
+
+    .place_list_wrapper {
+        display: flex;
+        flex-flow: column nowrap;
+    }
+
+    .map_container {
+        flex: 0 1 100%;
+        position: relative;
     };
+
+    .gm-style .gm-style-iw-t::after {
+        top: -1px;
+    }
 };

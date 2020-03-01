@@ -2,11 +2,13 @@
     position: fixed;
     bottom: 0;
     left: 0;
-    max-width: 25%;
-    height: 95%;
-    width: 25%;
+    max-width: 250px;
+    height: 100%;
+    padding-top: 53px;
     background: #fff;
+    overflow-x: hidden;
     overflow-y: auto;
+    z-index: 1;
     
     .image_container {
         height: 200px;
