@@ -1,11 +1,14 @@
 var OAuth2Client = require("google-auth-library").OAuth2Client;
 var promisify = require("util").promisify;
+var fetch = require("node-fetch");
 
 var dbConnection = require("../database.js");
 
 var oauth2Client = new OAuth2Client(process.env.SB_OAUTH_CLIENT_ID);
 
 query = promisify(dbConnection.query).bind(dbConnection);
+
+var MAP_API_KEY = 'AIzaSyAcqq-JyxjqtfMZH01_2B_uevmrX-4e0Z4';
 
 class SharedQueries {
     static getUser(idToken) {
@@ -40,13 +43,31 @@ class SharedQueries {
                     return Promise.resolve(locationId);
                 } else {
                     console.log("New location, inserting place: " + placesId);
-                    return query("INSERT INTO locations (places_id) VALUES (?)", [placesId]).then(dbResult => {
-                        console.log("insert location result: ", dbResult);
-                        return Promise.resolve(dbResult.insertId);
-                    });
+                    return SharedQueries.getPlaceName(placesId)
+                        .then(placeName => {
+                            console.log("Place name: '" + placeName + "'");
+                            return query("INSERT INTO locations (places_id, name) " +
+                                         "VALUES (?, ?)", [placesId, placeName]);
+                        })
+                        .then(dbResult => {
+                            console.log("insert location result: ", dbResult);
+                            return Promise.resolve(dbResult.insertId);
+                        });
                 }
             });
+    }
 
+    static getPlaceName(placesId) {
+        var url = "https://maps.googleapis.com/maps/api/place/details/json?place_id=" +
+            placesId + "&fields=name&key=" + MAP_API_KEY;
+        return fetch(url, {
+            method: "GET"
+        })
+            .then(response => response.json())
+            .then(response => {
+                console.log("place data: " + JSON.stringify(response));
+                return response.result.name;
+            })
     }
 }
 
