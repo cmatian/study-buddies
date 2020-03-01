@@ -1,0 +1,68 @@
+.marker_place_detail {
+    display: flex;
+    flex-flow: column nowrap;
+    align-items: flex-start;
+
+    .header {
+        width: 100%;
+        text-align: center;
+        padding: 4px;
+        font-size: 16px;
+        overflow: hidden;
+    }
+
+    .address {
+        width: 100%;
+        text-align: center;
+        max-width: 190px;
+        margin: 0 auto;
+        font-size: 14px;
+        color: rgba(0, 0, 0, 0.65);
+
+    }
+
+    span.pricing {
+        border-radius: 3px;
+        padding: 2px 5px;
+
+        &.inexpensive {
+            background: #01973f;
+            color: #fff;
+        }
+    
+        &.moderate {
+            background: #79ca49;
+            color: #fff;
+        }
+    
+        &.pricey {
+            background: #ff8f26;
+            color: #fff;
+        }
+    
+        &.very_expensive {
+            background: #c60204;
+            color: #fff;
+        }
+        
+    }
+
+    span.rating {
+
+        &.green {
+            color: #01973f;
+        }
+
+        &.light_green {
+            color: #79ca49;
+        }
+
+        &.orange {
+
+        }
+
+        &.red {
+
+        }
+    }
+}
