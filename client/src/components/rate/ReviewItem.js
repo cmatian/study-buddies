@@ -4,11 +4,12 @@ import "./ReviewItem.scss";
 // individual review item
 // displaying: name, rating, txt
 class ReviewItem extends React.Component {
-    render() {
-         // console.log('place item props', review)       
+    render() {    
         const { review } = this.props;
         const stars = ["★", "★★", "★★★", "★★★★", "★★★★★"];
-        let idx = review.rating - 1;
+        const costs = ["$", "$$", "$$$", "$$$$"];
+        let idxStar = review.rating - 1;
+        let idxCost = review.cost - 1;
 
         // onclick update calls a call back function to update state of placeSlected
         return(  
@@ -16,8 +17,11 @@ class ReviewItem extends React.Component {
                 <div className="author_name">
                     {review.author_name}
                 </div>
+                <div>
+                    {costs[idxCost]}
+                </div>                
                 <div className="stars_rating">
-                    {stars[idx]}
+                    {stars[idxStar]}
                 </div>
                 <div className="comments">
                     {review.text}

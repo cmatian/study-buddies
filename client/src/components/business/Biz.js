@@ -10,6 +10,7 @@ class Biz extends React.Component {
         this.state = ({
             showGoogleReview: true, // on default show google review
             showStudyReview: false,
+            reviewDetail: {},
         });
     }
 
@@ -37,12 +38,38 @@ class Biz extends React.Component {
             showGoogleReview: false,
             showStudyReview: true,
         });
+        this.fetchReviews();
+    };
+
+    fetchReviews() {
+        let auth2 = window.gapi.auth2.getAuthInstance();
+        let googleUser = auth2.currentUser.get();
+        let idToken = googleUser.getAuthResponse().id_token;
+
+        let url = `/backend/locations/for_place/${this.props.selectedPlaceDetail.place_id}`;
+       
+        fetch(url, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: "Bearer " + idToken,
+            },
+        })
+            .then(response => response.json())
+            .then(data => {
+                console.log("Data: ", JSON.parse(data));
+                this.setState({reviewDetail: JSON.parse(data).location.ratings});
+            })
+            .catch(error => {
+                console.error("Error", error);
+            });
     };
 
     render() {
         const {selectedPlace, selectedPlaceDetail, selectedPlaceDistance, onReservationSelect} = this.props;
+        // console.log(selectedPlace);
         let emptyObj = {};    // place holder till i get study review from db
-
+       
         if (Object.keys(selectedPlaceDistance).length === 0 && selectedPlaceDistance.constructor === Object) {
             return null;
         } else {
@@ -96,7 +123,7 @@ class Biz extends React.Component {
                         ) : (
                             <ReviewList 
                                 reviews={emptyObj}
-                                // reviews={}
+                                reviews={this.state.reviewDetail}
                             />
                         )}
                     </div>
