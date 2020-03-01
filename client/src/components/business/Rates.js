@@ -56,7 +56,6 @@ class Rates extends React.Component {
         // convert cost to string to match varchar in db
         let data = {
             places_id: this.props.location.state.places_id,
-            name: this.props.location.state.name,            
             rating: this.state.starRating,
             comment: this.state.review,
             cost: this.state.estimatedCost.toString(),
