@@ -37,4 +37,27 @@ router.post("/", function(req, res, next) {
         });
 });
 
+router.delete("/for_place/:places_id", function(req, res, next) {
+    console.log("Location delete: places ID = " + req.params.places_id);
+    var placesId = req.params.places_id;
+
+    SharedQueries.getUser(req.token)
+        .then(userId => {
+            return query("DELETE s FROM saved_locations s " +
+                         "LEFT JOIN locations l " +
+                         "  ON l.location_id = s.location_id " +
+                         "WHERE s.user_id = ? " +
+                         "AND l.places_id = ?", [userId, placesId])
+        })
+        .then(dbResult => {
+            console.log("Delete result: ", dbResult);
+            res.json("{}");
+            return;
+        })
+        .catch(error => {
+            console.error("Error", error);
+            next(error);
+        });
+});
+
 module.exports = router;
