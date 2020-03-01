@@ -37,13 +37,14 @@ router.get("/:places_id", function(req, res, next) {
                     ratings.push({
                         rating_id: ratingRow.rating_id,
                         rating: ratingRow.rating,
-                        comment: ratingRow.comment,
+                        text: ratingRow.comment,    // change to text to match google api 
                         cost: ratingRow.rating_cost,
                         user: {
                             user_id: ratingRow.user_id,
                             google_id: ratingRow.google_id,
-                            username: ratingRow.username,
+                            // username: ratingRow.username,
                         },
+                        author_name: ratingRow.username,    // moved it to match google api
                     });
                 }
                 location = {
