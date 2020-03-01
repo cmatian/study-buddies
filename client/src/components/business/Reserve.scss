@@ -14,23 +14,29 @@
         color: red;
     }
 
+    .duration_notice {
+        text-align: left;
+        line-height: .85;
+
+        span {
+            font-size: 10px;
+            color: #272727;
+        }
+    }
+
     button.custom_datetime_input_button {
         appearance: none;
         border: none;
         padding: 15px;
-        border: 1px solid #cccccc;
+        color: #fff;
+        background: #41a3ff;
+        border: 1px solid #41a3ff;
         border-radius: 5px;
         width: 100%;
         cursor: pointer;
 
         &:hover {
-            background: rgba(0, 0, 0, 0.1);
-        }
-    }
-
-    .date_time_group {
-        > div {
-            width: 100%;
+            background: #1678d3;
         }
     }
 
@@ -41,6 +47,7 @@
         height: 100%;
 
         h2 {
+            font-size: 20px;
             margin-top: 0;
         }
 
@@ -86,6 +93,7 @@
         }
 
         label {
+            font-size: 14px;
             color: #272727;
             text-align: left;
             padding-bottom: 5px;
@@ -106,8 +114,8 @@
             width: 100%;
             border-radius: 5px;
             border: 1px solid #cccccc;
-            font-size: 16px;
-            padding: 10px 5px;
+            font-size: 14px;
+            padding: 7px 5px;
             outline: none;
 
             &::placeholder {
@@ -126,6 +134,14 @@
             &:focus {
                 box-shadow: 0 0 3px 0 red;
             }
+        }
+    }
+
+    .date_time_group {
+        margin-bottom: 10px;
+
+        > div {
+            width: 100%;
         }
     }
 }

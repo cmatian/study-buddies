@@ -32,7 +32,7 @@ class ReservationDetails extends React.Component {
             initialTime: {
                 closed_days: [],
                 open: { hours: 0, minutes: 0 }, // 12:00 am
-                close: { hours: 24, minutes: 0 }, // 12:00 am},
+                close: { hours: 23, minutes: 59 }, // 12:00 am},
             },
             isLoading: true, // loading is always assumed to be true (we setState later to set as false)
             isTimeInitialized: false,
@@ -114,8 +114,8 @@ class ReservationDetails extends React.Component {
         }, []);
     };
 
-    filterOpenDays = array => {
-        if (array.length < 1) {
+    filterOpenDays = (array, periods_idx) => {
+        if (array.length < 1 || !periods_idx[0].close) {
             return [];
         }
         return [0, 1, 2, 3, 4, 5, 6].filter(item => {
@@ -137,7 +137,7 @@ class ReservationDetails extends React.Component {
         // Convert periods_idx keys to an integer array for use (so we can set the open days)
         const openDays = this.convertStringToInt(Object.keys(periods_idx));
 
-        const closedDays = this.filterOpenDays(openDays);
+        const closedDays = this.filterOpenDays(openDays, periods_idx);
 
         // 1. User selects a day of the week which is filtered into a numeric value representing the day [0-6]
         let day = date.getDay();
@@ -152,8 +152,8 @@ class ReservationDetails extends React.Component {
                     minutes: periods_idx[day].open.minutes,
                 },
                 close: {
-                    hours: periods_idx[day].close.hours,
-                    minutes: periods_idx[day].close.minutes,
+                    hours: !periods_idx[day].close ? 23 : periods_idx[day].close.hours,
+                    minutes: !periods_idx[day].close ? 59 : periods_idx[day].close.minutes,
                 },
             };
         }
@@ -181,34 +181,8 @@ class ReservationDetails extends React.Component {
         });
     };
 
-    handleChangeDateTime = (reservationId, date) => {
+    handleChangeDateTime = (date) => {
         this.setState({ meeting_date_time: date });
-        // console.log("new date_time: ", date);
-        // var auth2 = window.gapi.auth2.getAuthInstance();
-        // var googleUser = auth2.currentUser.get();
-        // var idToken = googleUser.getAuthResponse().id_token;
-        // var data = {
-        //     id: reservationId,
-        //     //group_size: 7,
-        //     //duration_minutes: 45,
-        //     date_time: date,
-        //     //name: "jajaja",
-        // };
-        // console.log("reservation: " + JSON.stringify(data));
-        // fetch("/backend/users/reservations/", {
-        //     method: "PATCH",
-        //     body: JSON.stringify(data),
-        //     headers: {
-        //         "Content-Type": "application/json",
-        //         Authorization: "Bearer " + idToken,
-        //     },
-        // })
-        //     .then(response => {
-        //         console.log("Success:", response.json());
-        //     })
-        //     .catch(error => {
-        //         console.error("Error", error);
-        //     });
     };
 
     // Need to initialize the selected date when the user opens the date box.
@@ -434,17 +408,18 @@ class ReservationDetails extends React.Component {
                             {isEditing && (
                                 <button type="button" className="cancel_edit_button" onClick={this.editCancel}>
                                     Cancel
-                            </button>
+                                </button>
                             )}
-                            {!isEditing ? (
+                            {(!isEditing && reservation.status !== "CANCELLED") && (
                                 <button type="button" className="meeting_edit_button" onClick={this.editMeeting}>
                                     Edit Meeting
-                            </button>
-                            ) : (
-                                    <button type="button" className="submit_edit_button" onClick={this.editSubmit}>
-                                        Save Changes
-                            </button>
-                                )}
+                                </button>
+                            )}
+                            {isEditing &&
+                                <button type="button" className="submit_edit_button" onClick={this.editSubmit}>
+                                    Save Changes
+                                </button>
+                            }
                         </div>
                     </div>
                     <div className="content_group row spc_btwn">
@@ -499,15 +474,12 @@ class ReservationDetails extends React.Component {
                                 name="meeting_date_time"
                                 selected={meeting_date_time}
                                 onSelect={date => this.setOperationHours(date)}
-                                onChange={date => this.handleChangeDateTime(reservation_id, date)}
+                                onChange={date => this.handleChangeDateTime(date)}
                                 onCalendarOpen={this.initDateTime}
                                 filterDate={date => this.getClosedDays(date)}
                                 minDate={subDays(new Date(), 0)}
                                 minTime={setHours(setMinutes(new Date(), initialTime.open.minutes), initialTime.open.hours)}
-                                maxTime={setHours(
-                                    setMinutes(new Date(), initialTime.close.minutes),
-                                    initialTime.close.hours
-                                )}
+                                maxTime={setHours(setMinutes(new Date(), initialTime.close.minutes), initialTime.close.hours - 1)}
                                 value={"edit"}
                                 showTimeSelect
                                 withPortal

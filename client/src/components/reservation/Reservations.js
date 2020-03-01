@@ -85,10 +85,9 @@ class Reservations extends React.Component {
         const googleUser = this.context.user;
         let token = googleUser.getAuthResponse().id_token;
 
-        fetch("/backend/users/reservations", {
+        fetch(`/backend/users/reservations/${reservation_id}`, {
             method: "PATCH",
             body: JSON.stringify({
-                id: reservation_id,
                 status: "CANCELLED",
             }),
             headers: {
@@ -112,11 +111,10 @@ class Reservations extends React.Component {
     updateReservation = (data, index) => {
         const googleUser = this.context.user;
         let token = googleUser.getAuthResponse().id_token;
-
-        fetch("/backend/users/reservations", {
+        let reservation_id = data.id;
+        fetch(`/backend/users/reservations/${reservation_id}`, {
             method: "PATCH",
             body: JSON.stringify({
-                id: data.id,
                 group_size: data.group_size,
                 duration_minutes: data.duration_minutes,
                 date_time: data.date_time,

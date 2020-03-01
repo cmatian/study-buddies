@@ -10,7 +10,7 @@ var oauth2Client = new OAuth2Client(process.env.SB_OAUTH_CLIENT_ID);
 
 query = promisify(dbConnection.query).bind(dbConnection);
 
-router.post("/", function(req, res, next) {
+router.post("/", function (req, res, next) {
     var userId;
     var reservationStatus = "SUBMITTED";
     SharedQueries.getUser(req.token)
@@ -24,9 +24,9 @@ router.post("/", function(req, res, next) {
             console.log("dateTime: " + dateTime);
             return query(
                 "INSERT INTO reservations " +
-                    "(user_id, location_id, status, group_size, " +
-                    "duration_minutes, date_time, name) " +
-                    "VALUES (?, ?, ?, ?, ?, ?, ?)",
+                "(user_id, location_id, status, group_size, " +
+                "duration_minutes, date_time, name) " +
+                "VALUES (?, ?, ?, ?, ?, ?, ?)",
                 [userId, locationId, reservationStatus, data.group_size, data.duration_minutes, dateTime, data.name]
             );
         })
@@ -41,7 +41,7 @@ router.post("/", function(req, res, next) {
         });
 });
 
-router.get("/", function(req, res, next) {
+router.get("/", function (req, res, next) {
     SharedQueries.getUser(req.token)
         .then(userId => {
             return query(
@@ -96,10 +96,9 @@ router.get("/", function(req, res, next) {
         });
 });
 
-router.patch("/", function(req, res, next) {
+router.patch("/:reservation_id", function (req, res, next) {
     console.log("Reservation patch: " + JSON.stringify(req.body));
-    reservationId = req.body.id; // inline editing so we're not sending id through param
-    console.log(reservationId);
+    reservationId = req.params.reservation_id;
     var setClauseParts = [];
     var parameters = [];
     if (req.body.status != null) {

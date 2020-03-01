@@ -231,7 +231,6 @@ class Maps extends React.Component {
 
     // func to updadate showMakeReservation to display reserve component
     onReservationSelect = () => {
-        console.log('Reservation');
         this.setState({
             showBusinessDetail: false,
             showMakeReservation: true,
@@ -264,8 +263,8 @@ class Maps extends React.Component {
                     <PlaceList onPlaceSelect={this.onPlaceSelect} places={this.state.places} selected={this.state.selectedIndex} hover={this.state.hoverTarget} />
                 </div>
                 <div className="map_container">
-                    {/* Don't show list toggle when detail menu is visible */}
-                    {!this.state.showBusinessDetail &&
+                    {/* Don't show list toggle when detail/reservation menu is visible */}
+                    {(!this.state.showBusinessDetail && !this.state.showMakeReservation) &&
                         <div className="toggle_side_menu" onClick={this.toggleSideMenu} title="Toggle Side Bar">
                             <i className="material-icons">{isExpanded ? "arrow_back" : "arrow_forward"}</i>
                         </div>
@@ -276,7 +275,7 @@ class Maps extends React.Component {
                             <i className="material-icons">close</i>
                         </div>
                     }
-                    {/* Show business detail close button when detail bar is visible */}
+                    {/* Show business reservation close button when reserve bar is visible */}
                     {this.state.showMakeReservation &&
                         <div className="close_detail_menu" onClick={this.closeReservations} title="Close Reservations Side Bar">
                             <i className="material-icons">close</i>
@@ -295,7 +294,8 @@ class Maps extends React.Component {
 
                         {/* Reservation Form */}
                         {this.state.showMakeReservation &&
-                            <Reserve openingHours={this.state.selectedPlaceDetail.opening_hours} />
+                            // Send all selectedPlaceDetails to the form
+                            <Reserve data={this.state.selectedPlaceDetail} />
                         }
 
                         {/* Google Map + Pins */}
