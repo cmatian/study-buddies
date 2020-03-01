@@ -1,31 +1,31 @@
 import React from 'react';
+import './PlaceSelected.scss';
 
 // display currently selected place with detail information
 class PlaceSelected extends React.Component {
     render() {
-        if (!this.props.place) {
-            return <div>Loading..</div>;
-        } else {
-            const {place, onDetailSelect, onReservationSelect} = this.props;
-            let rating = place.rating === undefined ? 0 : place.rating;
-            let estCost = place.price_level === undefined ? 'N/A' : place.price_level;
 
-            // console.log('PlaceSelected props: ', this.props);
-            return(
-                <div>
-                    <div className="place_selected_wrapper" onClick={()=> onDetailSelect()}>
-                        <div>{place.name}</div>
-                        <div>Address: {place.formatted_address}</div>
-                        <div>Rating: {rating}</div>
-                        <div>Cost: {estCost}</div>
-                    </div>
-                    <div>
-                        <button onClick={()=>onReservationSelect()}>Make Reservation</button>
-                    </div>
-                </div>
-
-            );            
-        }
+        const { place, onDetailSelect, onReservationSelect } = this.props;
+        return (
+            <div className="focus_wrapper">
+                {!this.props.place ? (
+                    <div className="blank">Select a location</div>
+                ) : (
+                        <>
+                            <span className="sticky">Current Focus</span>
+                            <div className="focus_details">
+                                <div className="title">{place.name}</div>
+                                <div className="address">{place.formatted_address}</div>
+                            </div >
+                            <div className="focus_toolbar">
+                                <button className="reservation" onClick={() => onReservationSelect()}>Make Reservation</button>
+                                <button className="details" onClick={() => onDetailSelect()}>Details</button>
+                            </div>
+                        </>
+                    )
+                }
+            </div>
+        );
     }
 }
 export default PlaceSelected;

@@ -5,11 +5,11 @@
     padding: 5px;
     cursor: pointer;
 
-    &:not(.active):hover { // Pseudo-selector hover
+    &:not(.active):hover { // Pseudo-selector hover on the item itself
         background: rgba(0, 0, 0, .15);
     }
 
-    &:not(.active).hover { // Class hover (when hovering on a pin)
+    &:not(.active).hover { // Class hover (when hovering on a pin over the map)
         background: rgba(0, 0, 0, 0.15);
     }
 
@@ -19,7 +19,7 @@
     }
 
     .name {
-        
+        white-space: nowrap;
     }
 
     .type {

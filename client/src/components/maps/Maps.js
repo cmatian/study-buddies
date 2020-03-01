@@ -178,7 +178,7 @@ class Maps extends React.Component {
             markerRefs: [
                 ...markerRefs,
                 {
-                    address, marker, infowindow
+                    marker, infowindow
                 }
             ]
         });
@@ -201,7 +201,7 @@ class Maps extends React.Component {
         });
         this.getPlaceDetail(place);
         map.setCenter({ lat: place.geometry.location.lat(), lng: place.geometry.location.lng() });
-        map.setZoom(13);
+        map.setZoom(14);
 
         // Open the infowindow for the associated marker
         markerRefs[index].infowindow.open(map, markerRefs[index].marker);
@@ -209,15 +209,29 @@ class Maps extends React.Component {
 
     // func to update showBusiness state from child PlaceSelected
     onDetailSelect = () => {
+        console.log('Detail');
         this.setState({
-            showBusinessDetail: true,
-            showMakeReservation: false,
+            showBusinessDetail: true, // show details
+            showMakeReservation: false, // hide reservations
         });
         this.getDistanceDetail();
     };
 
+    closeDetails = () => {
+        this.setState({
+            showBusinessDetail: false,
+        });
+    };
+
+    closeReservations = () => {
+        this.setState({
+            showMakeReservation: false,
+        });
+    };
+
     // func to updadate showMakeReservation to display reserve component
     onReservationSelect = () => {
+        console.log('Reservation');
         this.setState({
             showBusinessDetail: false,
             showMakeReservation: true,
@@ -242,31 +256,49 @@ class Maps extends React.Component {
         return (
             <div className="map_wrapper">
                 <div className={"place_list_container " + (isExpanded ? "expanded" : "")}>
-                    <div>
-                        <PlaceSelected
-                            onDetailSelect={this.onDetailSelect}
-                            place={this.state.selectedPlace}
-                            onReservationSelect={this.onReservationSelect}
-                        />
-                    </div>
+                    <PlaceSelected
+                        onDetailSelect={this.onDetailSelect}
+                        place={this.state.selectedPlace}
+                        onReservationSelect={this.onReservationSelect}
+                    />
                     <PlaceList onPlaceSelect={this.onPlaceSelect} places={this.state.places} selected={this.state.selectedIndex} hover={this.state.hoverTarget} />
                 </div>
                 <div className="map_container">
-                    <div className="toggle_side_menu" onClick={this.toggleSideMenu} title="Toggle Side Bar">
-                        <i className="material-icons">{isExpanded ? "arrow_back" : "arrow_forward"}</i>
-                    </div>
+                    {/* Don't show list toggle when detail menu is visible */}
+                    {!this.state.showBusinessDetail &&
+                        <div className="toggle_side_menu" onClick={this.toggleSideMenu} title="Toggle Side Bar">
+                            <i className="material-icons">{isExpanded ? "arrow_back" : "arrow_forward"}</i>
+                        </div>
+                    }
+                    {/* Show business detail close button when detail bar is visible */}
+                    {this.state.showBusinessDetail &&
+                        <div className="close_detail_menu" onClick={this.closeDetails} title="Close Detail Side Bar">
+                            <i className="material-icons">close</i>
+                        </div>
+                    }
+                    {/* Show business detail close button when detail bar is visible */}
+                    {this.state.showMakeReservation &&
+                        <div className="close_detail_menu" onClick={this.closeReservations} title="Close Reservations Side Bar">
+                            <i className="material-icons">close</i>
+                        </div>
+                    }
                     <div style={mapStyles}>
-                        {this.state.showBusinessDetail ? (
+                        {/* Business Details */}
+                        {this.state.showBusinessDetail &&
                             <Biz
                                 selectedPlace={this.state.selectedPlace}
                                 selectedPlaceDetail={this.state.selectedPlaceDetail}
                                 selectedPlaceDistance={this.state.selectedPlaceDistance}
                                 onReservationSelect={this.onReservationSelect}
                             />
-                        ) : null}
-                        {this.state.showMakeReservation ? (
+                        }
+
+                        {/* Reservation Form */}
+                        {this.state.showMakeReservation &&
                             <Reserve openingHours={this.state.selectedPlaceDetail.opening_hours} />
-                        ) : null}
+                        }
+
+                        {/* Google Map + Pins */}
                         <GoogleMap
                             bootstrapURLKeys={{ key: "AIzaSyC4YLPSKd-b0RxRh5kqx8QDnf9yMDioK0Y" }}
                             center={center}

@@ -2,7 +2,9 @@ import React from 'react';
 import './PlaceDetail.scss';
 
 const PlaceDetail = (props) => {
-    const { data } = props;
+    const { data, details, reservation } = props;
+
+    console.log(typeof details, typeof reservation);
 
     const ratingColor = () => {
         let color = '';
