@@ -19,6 +19,11 @@ export default ({ close }) => (
                     Map
                 </NavLink>
             </li>
+            <li>
+                <NavLink exact to="/maps/users/saved" activeClassName="active" onClick={close}>
+                    My Locations
+                </NavLink>
+            </li>
         </ul>
     </div>
 );

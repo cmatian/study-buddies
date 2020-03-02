@@ -47,8 +47,8 @@ class Nav extends React.Component {
                         </li>
                         <li>
                             <NavLink exact to="/maps/users/saved" activeClassName="active">
-                                    My Locations
-                            </NavLink> 
+                                My Locations
+                            </NavLink>
                         </li>
                         <li className="user">
                             <AuthNavButton />
