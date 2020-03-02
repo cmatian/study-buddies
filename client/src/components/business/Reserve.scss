@@ -1,14 +1,19 @@
 .make_reservation_wrapper {
-    position: fixed;
     top: 0;
     left: 0;
-    max-width: 250px;
     height: 100%;
     width: 100%;
     background: #fff;
-    padding-top: 53px;
     overflow-y: auto;
     z-index: 1;
+
+    &.desktop {
+        max-width: 250px;
+    }
+
+    &.mobile {
+        max-height: 250px;
+    }
 
     .placeid_error {
         text-align: left;

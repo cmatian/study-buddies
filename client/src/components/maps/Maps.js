@@ -8,6 +8,7 @@ import Biz from "../business/Biz";
 import PlaceDetail from './PlaceDetail';
 import Search from '../search/Search';
 import Filters from '../search/Filters';
+import ResponsiveLayout from "../layouts/ResponsiveLayout";
 import "./Maps.scss"; // Styling
 
 const mapStyles = {
@@ -266,6 +267,16 @@ class Maps extends React.Component {
     };
 
     render() {
+        return (
+            <ResponsiveLayout
+                breakPoint={500}
+                renderDesktop={() => this.renderParameterized(false)}
+                renderMobile={() => this.renderParameterized(true)}
+                />
+        );
+    }
+
+    renderParameterized(isMobile) {
         // console.log('this.props: ', this.props)
         const center = {
             lat: this.props.lat,
@@ -274,8 +285,10 @@ class Maps extends React.Component {
 
         const { isExpanded, isSearching } = this.state;
 
+        const modeClass = isMobile ? "mobile" : "desktop";
+
         return (
-            <div className="map_wrapper">
+            <div className={"map_wrapper " + modeClass}>
                 {isSearching &&
                     <div className="search_wrapper">
                         <span className="close_search" onClick={this.toggleSearch}>
@@ -294,13 +307,32 @@ class Maps extends React.Component {
                         </div>
                     </div>
                 }
-                <div className={"place_list_container " + (isExpanded ? "expanded" : "")}>
-                    <PlaceSelected
-                        onDetailSelect={this.onDetailSelect}
-                        place={this.state.selectedPlace}
-                        onReservationSelect={this.onReservationSelect}
-                    />
-                    <PlaceList onPlaceSelect={this.onPlaceSelect} places={this.state.places} selected={this.state.selectedIndex} hover={this.state.hoverTarget} />
+                <div className={"sidebar_container " + (isExpanded ? "expanded" : "")}>
+                    {!this.state.showBusinessDetail && !this.state.showMakeReservation &&
+                        <div className={"place_list_container"}>
+                            <PlaceSelected
+                                onDetailSelect={this.onDetailSelect}
+                                place={this.state.selectedPlace}
+                                onReservationSelect={this.onReservationSelect}
+                            />
+                            <PlaceList onPlaceSelect={this.onPlaceSelect} places={this.state.places} selected={this.state.selectedIndex} hover={this.state.hoverTarget} />
+                        </div>
+                    }
+                    {/* Business Details */}
+                    {this.state.showBusinessDetail &&
+                        <Biz
+                            selectedPlace={this.state.selectedPlace}
+                            selectedPlaceDetail={this.state.selectedPlaceDetail}
+                            selectedPlaceDistance={this.state.selectedPlaceDistance}
+                            onReservationSelect={this.onReservationSelect}
+                        />
+                    }
+
+                    {/* Reservation Form */}
+                    {this.state.showMakeReservation &&
+                        // Send all selectedPlaceDetails to the form
+                        <Reserve data={this.state.selectedPlaceDetail} />
+                    }
                 </div>
                 <div className="map_container">
                     {/* Don't show list toggle when detail/reservation menu is visible */}
@@ -325,22 +357,6 @@ class Maps extends React.Component {
                         <i className="material-icons">search</i>
                     </div>
                     <div style={mapStyles}>
-                        {/* Business Details */}
-                        {this.state.showBusinessDetail &&
-                            <Biz
-                                selectedPlace={this.state.selectedPlace}
-                                selectedPlaceDetail={this.state.selectedPlaceDetail}
-                                selectedPlaceDistance={this.state.selectedPlaceDistance}
-                                onReservationSelect={this.onReservationSelect}
-                            />
-                        }
-
-                        {/* Reservation Form */}
-                        {this.state.showMakeReservation &&
-                            // Send all selectedPlaceDetails to the form
-                            <Reserve data={this.state.selectedPlaceDetail} />
-                        }
-
                         {/* Google Map + Pins */}
                         <GoogleMap
                             bootstrapURLKeys={{ key: "AIzaSyC4YLPSKd-b0RxRh5kqx8QDnf9yMDioK0Y" }}

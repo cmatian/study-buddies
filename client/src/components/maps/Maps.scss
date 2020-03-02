@@ -4,6 +4,10 @@
     height: 100%;
     padding-top: 53px;
 
+    &.mobile {
+        flex-direction: column;
+    }
+
     .search_button {
         position: absolute;
         z-index: 1;
@@ -47,7 +51,7 @@
 
     }
 
-    .place_list_container {
+    .sidebar_container {
         flex: 0;  
         height: 100%;
         overflow-x: hidden;
