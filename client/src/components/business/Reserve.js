@@ -3,7 +3,7 @@ import DatePicker from "react-datepicker";
 import DatePickerButton from "../layouts/form/DatePickerButton";
 import Loader from '../layouts/Loader';
 import ReserveStatus from './ReserveStatus';
-import { subDays, setHours, setMinutes, getDay } from "date-fns";
+import { subDays, setHours, setMinutes, getDay, parseISO } from "date-fns";
 import "react-datepicker/dist/react-datepicker.css"; // DatePicker CSS import
 import "./Reserve.scss";
 
@@ -22,12 +22,13 @@ class Reserve extends React.Component {
             duration: "60", // Default 60
             location: this.props.data.formatted_address,
             locationName: this.props.data.name,
-            locationPlaceId: this.props.data.place_id,
+            locationPlaceId: this.props.data.place_id || "",
             meeting_date_time: "",
             initialTime: {
                 closed_days: [],
+                injectHours: [],
                 open: { hours: 0, minutes: 0 }, // 12:00 am
-                close: { hours: 23, minutes: 59 }, // 11:00 pm},
+                close: { hours: 23, minutes: 0 }, // 11:00 pm},
             },
             isTimeInitialized: false,
             errors: {},
@@ -127,7 +128,6 @@ class Reserve extends React.Component {
     setOperationHours = (date, req = false) => {
         const { periods } = this.props.data.opening_hours;
         let { initialTime } = this.state;
-
         // Generate a key value pair from the periods array that google provides us.
         const periods_idx = this.indexTimePeriods(periods, "day");
 
@@ -139,9 +139,28 @@ class Reserve extends React.Component {
         // 1. User selects a day of the week which is filtered into a numeric value representing the day [0-6]
         let day = date.getDay();
 
+        // add the day by 1 to match google's day order
+        day += 1;
+        if (day > 6) {
+            day = 0;
+        }
+
         // 2. Match the selected day to the periods_idx where the key is the day value.
         //    Update the initialTime to the new values.
         if (periods_idx[day]) {
+            let closeHour = null;
+            let closeMin = null;
+
+            if (periods_idx[day].close) {
+                closeHour = periods_idx[day].close.hours;
+                closeMin = periods_idx[day].close.minutes;
+            }
+
+            // This will catch overflow issue and force the hour to 23
+            if (closeHour && closeHour < periods_idx[day].open.hours) {
+                closeHour = 23;
+            }
+
             initialTime = {
                 closed_days: closedDays,
                 open: {
@@ -149,8 +168,8 @@ class Reserve extends React.Component {
                     minutes: periods_idx[day].open.minutes,
                 },
                 close: {
-                    hours: !periods_idx[day].close ? 23 : periods_idx[day].close.hours,
-                    minutes: !periods_idx[day].close ? 59 : periods_idx[day].close.minutes,
+                    hours: !closeHour ? 23 : closeHour,
+                    minutes: !closeMin ? 59 : closeMin,
                 },
             };
         }
@@ -220,7 +239,7 @@ class Reserve extends React.Component {
         var googleUser = auth2.currentUser.get();
         var idToken = googleUser.getAuthResponse().id_token;
         var data = {
-            places_id: this.state.locationPlaceId || "ChIJN1t_tDeuEmsRUsoyG83frY4",
+            places_id: this.state.locationPlaceId,
             group_size: this.state.group_size,
             duration_minutes: 60,
             date: this.state.meeting_date_time.toISOString().split('T')[0],
@@ -274,19 +293,17 @@ class Reserve extends React.Component {
         },
             this.submitPayload()
         );
-
-
     };
 
     // Determines the state of the form submission button
     canSubmit = () => {
-        const { meeting_name, meeting_date_time } = this.state;
-        return meeting_name.length > 0 && typeof meeting_date_time === "object";
+        const { meeting_name, meeting_date_time, locationPlaceId } = this.state;
+        return meeting_name.length > 0 && typeof meeting_date_time === "object" && locationPlaceId.length > 0;
     };
 
     render() {
         const { data } = this.props;
-        const { errors, initialTime, isSubmitting, isError, isErrorMessage, isSuccess } = this.state;
+        const { errors, initialTime, isSubmitting, isError, isErrorMessage, isSuccess, locationPlaceId } = this.state;
         const disabled = this.canSubmit();
         return (
             <div className="make_reservation_wrapper">
@@ -306,96 +323,103 @@ class Reserve extends React.Component {
                             onSubmit={event => this.handleSubmit(event)}
                         >
                             <h2>Make a Reservation</h2>
-                            <div className="input_group">
-                                <label htmlFor="meeting_name">
-                                    Meeting Name <span className="required_ast">*</span>
-                                </label>
-                                <input
-                                    maxLength="50"
-                                    ref={this.meetingNameRef}
-                                    id="meeting_name"
-                                    type="text"
-                                    name="meeting_name"
-                                    value={this.state.meeting_name}
-                                    onChange={this.handleChange}
-                                    onBlur={this.handleBlur}
-                                    className={errors.meeting_name ? "error" : ""}
-                                    placeholder="CS 467 Study Session"
-                                    readOnly={isSubmitting ? true : false}
-                                />
-                            </div>
-                            <div className="input_group">
-                                <label htmlFor="group_size">Group Size (1 to 8)</label>
-                                <input
-                                    ref={this.groupSizeRef}
-                                    id="group_size"
-                                    type="number"
-                                    max="8"
-                                    name="group_size"
-                                    value={this.state.group_size}
-                                    onChange={this.handleGroupSize}
-                                    readOnly={isSubmitting ? true : false}
-                                />
-                            </div>
-                            <div className="input_group">
-                                <label htmlFor="locationName">Location Name</label>
-                                <input
-                                    id="locationName"
-                                    type="text"
-                                    name="locationName"
-                                    value={data.name || ''}
-                                    onChange={this.handleChange}
-                                    readOnly
-                                />
-                            </div>
-                            <div className="input_group">
-                                <label htmlFor="location">Location Address</label>
-                                <input
-                                    ref={this.meetingLocationRef}
-                                    id="location"
-                                    type="text"
-                                    name="location"
-                                    value={data.formatted_address || ''}
-                                    onChange={this.handleChange}
-                                    readOnly
-                                />
-                            </div>
-                            <div className="input_group date_time_group">
-                                <label htmlFor="meeting_date_time">
-                                    Date & Time <span className="required_ast">*</span>
-                                </label>
-                                <DatePicker
-                                    ref={this.meetingDateTimeRef}
-                                    id="meeting_date_time"
-                                    name="meeting_date_time"
-                                    selected={this.state.meeting_date_time}
-                                    onChange={date => this.handleChangeDateTime(date)}
-                                    onCalendarOpen={this.initDateTime}
-                                    filterDate={date => this.getClosedDays(date)}
-                                    minDate={subDays(new Date(), 0)}
-                                    minTime={setHours(setMinutes(
-                                        // Validate the current minute
-                                        new Date(), initialTime.open.minutes), (
-                                        // Validate the current hour against the open hours
-                                        this.compareDate(this.state.meeting_date_time)
-                                    ))}
-                                    maxTime={setHours(setMinutes(new Date(), initialTime.close.minutes), initialTime.close.hours)}
-                                    showTimeSelect
-                                    withPortal
-                                    timeIntervals={30}
-                                    dateFormat="MMM d, yyyy - h:mm aa"
-                                    customInput={<DatePickerButton />}
-                                    readOnly={isSubmitting ? true : false}
-                                />
-                            </div>
-                            <div className="duration_notice">
-                                <span>
-                                    Meeting durations default to 60 minutes. You may change the duration after submission in your reservations page.
-                    </span>
-                            </div>
-                            <button type="submit" disabled={!disabled || isSubmitting}>
-                                {isSubmitting ? "Submitting..." : "Confirm Reservation"}
-                            </button>
+                            {/* Error Catch for bad place id generation */}
+                            {!locationPlaceId.length > 1 ?
+                                <span className="placeid_error">
+                                    Error: The form was unable to parse the places id for the selected location. Please close the form and try a fresh reservation submission.
+                                </span>
+                                :
+                                <>
+                                    <div className="input_group">
+                                        <label htmlFor="meeting_name">
+                                            Meeting Name <span className="required_ast">*</span>
+                                        </label>
+                                        <input
+                                            maxLength="50"
+                                            ref={this.meetingNameRef}
+                                            id="meeting_name"
+                                            type="text"
+                                            name="meeting_name"
+                                            value={this.state.meeting_name}
+                                            onChange={this.handleChange}
+                                            onBlur={this.handleBlur}
+                                            className={errors.meeting_name ? "error" : ""}
+                                            placeholder="CS 467 Study Session"
+                                            readOnly={isSubmitting ? true : false}
+                                        />
+                                    </div>
+                                    <div className="input_group">
+                                        <label htmlFor="group_size">Group Size (1 to 8)</label>
+                                        <input
+                                            ref={this.groupSizeRef}
+                                            id="group_size"
+                                            type="number"
+                                            max="8"
+                                            name="group_size"
+                                            value={this.state.group_size}
+                                            onChange={this.handleGroupSize}
+                                            readOnly={isSubmitting ? true : false}
+                                        />
+                                    </div>
+                                    <div className="input_group">
+                                        <label htmlFor="locationName">Location Name</label>
+                                        <input
+                                            id="locationName"
+                                            type="text"
+                                            name="locationName"
+                                            value={data.name || ''}
+                                            onChange={this.handleChange}
+                                            readOnly
+                                        />
+                                    </div>
+                                    <div className="input_group">
+                                        <label htmlFor="location">Location Address</label>
+                                        <input
+                                            ref={this.meetingLocationRef}
+                                            id="location"
+                                            type="text"
+                                            name="location"
+                                            value={data.formatted_address || ''}
+                                            onChange={this.handleChange}
+                                            readOnly
+                                        />
+                                    </div>
+                                    <div className="input_group date_time_group">
+                                        <label htmlFor="meeting_date_time">
+                                            Date & Time <span className="required_ast">*</span>
+                                        </label>
+                                        <DatePicker
+                                            ref={this.meetingDateTimeRef}
+                                            id="meeting_date_time"
+                                            name="meeting_date_time"
+                                            selected={this.state.meeting_date_time}
+                                            onSelect={date => this.setOperationHours(date)}
+                                            onChange={date => this.handleChangeDateTime(date)}
+                                            onCalendarOpen={this.initDateTime}
+                                            filterDate={date => this.getClosedDays(date)}
+                                            minDate={subDays(new Date(), 0)}
+                                            minTime={setHours(setMinutes(new Date(), initialTime.open.minutes),
+                                                this.compareDate(this.state.meeting_date_time)
+                                            )}
+                                            maxTime={setHours(setMinutes(new Date(), initialTime.close.minutes), initialTime.close.hours)}
+                                            showTimeSelect
+                                            withPortal
+                                            timeIntervals={30}
+                                            dateFormat="MMM d, yyyy - h:mm aa"
+                                            customInput={<DatePickerButton />}
+                                            readOnly={isSubmitting ? true : false}
+                                        />
+                                    </div>
+                                    <div className="duration_notice">
+                                        <span>
+                                            Meeting durations default to 60 minutes. You may change the duration after submission in your reservations page.
+                                        </span>
+                                    </div>
+                                    <button type="submit" disabled={!disabled || isSubmitting}>
+                                        {isSubmitting ? "Submitting..." : "Confirm Reservation"}
+                                    </button>
+                                </>
+                            }
                         </form>
                     )
                 }

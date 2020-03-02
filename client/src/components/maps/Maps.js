@@ -6,6 +6,8 @@ import PlaceList from "./PlaceList";
 import PlaceSelected from "./PlaceSelected";
 import Biz from "../business/Biz";
 import PlaceDetail from './PlaceDetail';
+import Search from '../search/Search';
+import Filters from '../search/Filters';
 import "./Maps.scss"; // Styling
 
 const mapStyles = {
@@ -30,6 +32,7 @@ class Maps extends React.Component {
             showBusinessDetail: false,
             showMakeReservation: false,
             isExpanded: true,
+            isSearching: false,
             hoverTarget: null,
             markerRefs: [],
         };
@@ -47,6 +50,19 @@ class Maps extends React.Component {
             }
         });
         return types.length > 0 ? types : defaultTypes;
+    };
+
+    newMapSearch = () => {
+        // Dump markerRefs so it fills up with new references
+        this.setState({
+            markerRefs: [],
+            selectedPlace: null,
+            showBusinessDetail: false,
+            showMakeReservation: false,
+            isSearching: false,
+        },
+            this.handleApiLoaded({ map: this.state.map, maps: this.state.maps })
+        );
     };
 
     // map is google map and maps = maps api
@@ -243,6 +259,12 @@ class Maps extends React.Component {
         }));
     };
 
+    toggleSearch = () => {
+        this.setState(prevState => ({
+            isSearching: !prevState.isSearching,
+        }));
+    };
+
     render() {
         // console.log('this.props: ', this.props)
         const center = {
@@ -250,10 +272,28 @@ class Maps extends React.Component {
             lng: this.props.long,
         };
 
-        const { isExpanded } = this.state;
+        const { isExpanded, isSearching } = this.state;
 
         return (
             <div className="map_wrapper">
+                {isSearching &&
+                    <div className="search_wrapper">
+                        <span className="close_search" onClick={this.toggleSearch}>
+                            <i className="material-icons">close</i>
+                        </span>
+                        <div className="search_container">
+                            <span className="title">New Area Search</span>
+                            <Search
+                                lat={this.props.lat}
+                                long={this.props.long}
+                                updateUserCoord={this.props.updateUserCoord}
+                                getUserCoord={this.props.getUserCoord}
+                                newSearch={this.newMapSearch}
+                            />
+                            <Filters updateFilters={this.props.updateFilters} filters={this.props.filters} />
+                        </div>
+                    </div>
+                }
                 <div className={"place_list_container " + (isExpanded ? "expanded" : "")}>
                     <PlaceSelected
                         onDetailSelect={this.onDetailSelect}
@@ -281,6 +321,9 @@ class Maps extends React.Component {
                             <i className="material-icons">close</i>
                         </div>
                     }
+                    <div className="search_button" onClick={this.toggleSearch} title="Search in a new area">
+                        <i className="material-icons">search</i>
+                    </div>
                     <div style={mapStyles}>
                         {/* Business Details */}
                         {this.state.showBusinessDetail &&

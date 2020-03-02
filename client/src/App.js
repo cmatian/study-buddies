@@ -156,7 +156,15 @@ class App extends React.Component {
                         path="/maps"
                         exact
                         render={() => {
-                            return <Maps lat={this.state.lat} long={this.state.long} filters={this.state.filters} />;
+                            return (
+                                <Maps
+                                    lat={this.state.lat}
+                                    long={this.state.long}
+                                    filters={this.state.filters}
+                                    updateFilters={this.updateFilters}
+                                    updateUserCoord={this.updateUserCoord}
+                                    getUserCoord={this.getUserCoord}
+                                />);
                         }}
                     ></Route>
                     <Route path="/maps/search" exact component={Search}></Route>

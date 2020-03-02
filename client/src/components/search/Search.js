@@ -15,7 +15,10 @@ class Search extends React.Component {
     }
 
     handleRedirect = () => {
-        if (this.state.address !== "") {
+        if (this.props.newSearch && this.state.address !== "") {
+            return this.props.newSearch();
+        }
+        else if (!this.props.newSearch && this.state.address !== "") {
             return this.props.history.push("/maps");
         }
         console.log("An address is required.");
@@ -70,7 +73,7 @@ class Search extends React.Component {
                             <div className="input_icon_container">
                                 <input
                                     {...getInputProps({
-                                        placeholder: "E.g. 101 California Drive, Millbrae, CA, 94030",
+                                        placeholder: "E.g., 543 Tombstone Lane",
                                         className: "location_search_input",
                                     })}
                                     onFocus={this.handleFocus}

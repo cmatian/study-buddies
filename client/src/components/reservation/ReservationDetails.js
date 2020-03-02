@@ -32,7 +32,7 @@ class ReservationDetails extends React.Component {
             initialTime: {
                 closed_days: [],
                 open: { hours: 0, minutes: 0 }, // 12:00 am
-                close: { hours: 23, minutes: 59 }, // 12:00 am},
+                close: { hours: 23, minutes: 59 }, // 11:59 pm},
             },
             isLoading: true, // loading is always assumed to be true (we setState later to set as false)
             isTimeInitialized: false,
@@ -141,6 +141,11 @@ class ReservationDetails extends React.Component {
 
         // 1. User selects a day of the week which is filtered into a numeric value representing the day [0-6]
         let day = date.getDay();
+        // add the day by 1 to match google's day order
+        day += 1;
+        if (day > 6) {
+            day = 0;
+        }
 
         // 2. Match the selected day to the periods_idx where the key is the day value.
         //    Update the initialTime to the new values.
@@ -565,14 +570,9 @@ class ReservationDetails extends React.Component {
                                 <div className="sub_details">
                                     {details.opening_hours.weekday_text.map((item, idx) => {
                                         let current = new Date().getDay();
-                                        // Set Sunday
-                                        if (current - 1 < 0) {
+                                        current -= 1;
+                                        if (current < 0) {
                                             current = 6;
-                                            // Set Monday
-                                        } else if (current + 1 > 6) {
-                                            current = 0;
-                                        } else {
-                                            current -= 1;
                                         }
                                         return (
                                             <p key={idx} className={current === idx ? "current_day" : ""}>
@@ -620,7 +620,7 @@ class ReservationDetails extends React.Component {
                     ) : (
                             <button
                                 type="button"
-                                onClick={() => this.props.cancelReservation(reservation.reservation_id)}
+                                onClick={() => this.props.cancelReservation(reservation.reservation_id, this.props.index)}
                                 className="btn_cancel_reservation"
                             >
                                 Cancel Reservation
