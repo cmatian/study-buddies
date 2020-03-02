@@ -34,6 +34,9 @@ const PlaceDetail = (props) => {
             case 5:
                 color = 'green';
                 break;
+            default:
+                color = 'green';
+                break;
         }
 
         return (

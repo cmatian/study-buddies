@@ -23,8 +23,6 @@ class PlaceItem extends React.Component {
 
     render() {
         const { place, onPlaceSelect, selected, index, hover } = this.props;
-
-        const rating = place.rating === undefined ? 0 : place.rating;
         const type = place.types[0];
         let active = selected === index; // bool
         let shade = hover === index;

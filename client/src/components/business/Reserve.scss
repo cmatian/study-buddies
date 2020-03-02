@@ -10,6 +10,107 @@
     overflow-y: auto;
     z-index: 1;
 
+
+    // ReserveStatus.js
+    .success_container, .error_container {
+        display: flex;
+        flex-flow: column nowrap;
+        justify-content: center;
+        align-items: center;
+        height: 100%;
+        padding: 15px;
+
+        .header {
+            display: flex;
+            flex-flow: column nowrap;
+
+            i {
+                font-size: 60px;
+                text-align: center;
+                margin-bottom: 10px;
+
+                &.success {
+                    color: #79ca49; 
+
+                    & ~ .title {
+                        color: #79ca49;
+                    }
+                }
+
+                &.error {
+                    color: #ff0000;
+
+                    & ~ .title {
+                        color: #ff0000;
+                    }
+                }
+            }
+
+            .title {
+                font-size: 20px;
+                text-align: center;
+            }
+        }
+
+        .body {
+            display: flex;
+            flex-flow: row wrap;
+            justify-content: center;
+
+
+            .text {
+                font-size: 14px;
+                color: #272727;
+
+                &:last-of-type {
+                    margin-top: 0;
+                }
+            }
+
+            .reservation_link {
+                color: #fff;
+                padding: 8px 16px;
+                font-size: 14px;
+                background: #41a3ff;
+                transition: background ease-in-out 150ms;
+                text-decoration: none;
+                border-radius: 4px;
+
+                &:hover {
+                    background: #1678d3;
+                }
+            }
+        }
+
+    }
+
+
+    .loading_overlay {
+        position: fixed;
+        width: 100%;
+        height: 100%;
+        top: 0;
+        margin: 0 auto;
+        display: flex;
+        flex-flow: column nowrap;
+        align-items: center;
+        justify-content: center;
+        background: rgba(255, 255, 255, .75);
+        z-index: 999;
+
+        .loading_text {
+            font-family: "Pacifico", cursive;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, .75);
+            font-size: 24px;
+            color: #73f79f;
+        }
+
+        // Override the height of the loader_container (in <Loader />) to display items correctly
+        .loader_container {
+            height: unset;
+        }
+    }
+
     .required_ast {
         color: red;
     }
@@ -107,6 +208,7 @@
 
         input:read-only,
         input[readonly] {
+            background: #e7e7e7;
             cursor: default;
         }
 

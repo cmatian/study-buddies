@@ -334,16 +334,32 @@ class ReservationDetails extends React.Component {
     };
 
     // Save Location Handler
-    saveLocation = event => {
-        const { reservations, index, updateSavedLocation } = this.props;
+    toggleSavedLocation = event => {
+        const { reservations, index, addSavedLocation, deleteSavedLocation } = this.props;
         const res = reservations[index];
-        let payload = {
-            places_id: res.location.places_id,
-            userId: res.user_id,
-            locationId: res.location.location_id,
-            nickname: res.location.name,
-        };
-        updateSavedLocation(payload, index);
+        const toggleState = res.saved_location;
+
+        // If the location is saved the toggle state will not be null, so we remove the saved_location from the table
+        if (toggleState) {
+            let payload = {
+                user_id: res.user_id,
+                places_id: res.location.places_id,
+            };
+            // Delete from saved locations
+            deleteSavedLocation(payload, index);
+        }
+        // Otherwise it's a non-existent entry and we need to add it to saved_locations
+        else {
+            let payload = {
+                places_id: res.location.places_id,
+                userId: res.user_id,
+                locationId: res.location.location_id,
+                nickname: res.location.name,
+            };
+            // Add to saved locations
+            addSavedLocation(payload, index);
+        }
+
     };
 
     // Initialize the required Google API (Headless map + getDetails request)
@@ -390,11 +406,8 @@ class ReservationDetails extends React.Component {
         } = this.state;
         const reservation = this.props.reservations[this.props.index];
         const date_options = { weekday: "long", year: "numeric", month: "long", day: "numeric" };
-        const reservation_id = reservation.reservation_id;
         const char_length = this.state.meeting_name.length;
         const char_limit = 50;
-
-
 
         return isLoading ? (
             <Loader />
@@ -532,9 +545,11 @@ class ReservationDetails extends React.Component {
                             <h3>
                                 @{details.name}
                                 <i
-                                    className="material-icons save_location"
-                                    title="Save Location"
-                                    onClick={this.saveLocation}
+                                    className={"material-icons save_location " + (
+                                        reservation.saved_location !== null && reservation.saved_location.saved_location_id ? "gold" : ""
+                                    )}
+                                    title={reservation.saved_location !== null && reservation.saved_location.saved_location_id ? "Remove from Saved Locations" : "Save Location"}
+                                    onClick={this.toggleSavedLocation}
                                 >
                                     star
                                 </i>
