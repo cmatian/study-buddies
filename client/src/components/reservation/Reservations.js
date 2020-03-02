@@ -85,10 +85,9 @@ class Reservations extends React.Component {
         const googleUser = this.context.user;
         let token = googleUser.getAuthResponse().id_token;
 
-        fetch("/backend/users/reservations", {
+        fetch(`/backend/users/reservations/${reservation_id}`, {
             method: "PATCH",
             body: JSON.stringify({
-                id: reservation_id,
                 status: "CANCELLED",
             }),
             headers: {
@@ -112,11 +111,10 @@ class Reservations extends React.Component {
     updateReservation = (data, index) => {
         const googleUser = this.context.user;
         let token = googleUser.getAuthResponse().id_token;
-
-        fetch("/backend/users/reservations", {
+        let reservation_id = data.id;
+        fetch(`/backend/users/reservations/${reservation_id}`, {
             method: "PATCH",
             body: JSON.stringify({
-                id: data.id,
                 group_size: data.group_size,
                 duration_minutes: data.duration_minutes,
                 date_time: data.date_time,
@@ -140,7 +138,7 @@ class Reservations extends React.Component {
             });
     };
 
-    updateSavedLocation = (data, index) => {
+    addSavedLocation = (data, index) => {
         const googleUser = this.context.user;
         let token = googleUser.getAuthResponse().id_token;
         fetch("/backend/users/savedLocations", {
@@ -161,6 +159,30 @@ class Reservations extends React.Component {
             })
             .then(response => {
                 console.log("Success", response);
+                this.fetchRequest(googleUser, index);
+            })
+            .catch(error => {
+                console.log("Error", error);
+            });
+    };
+
+    deleteSavedLocation = (data, index) => {
+        const googleUser = this.context.user;
+        let token = googleUser.getAuthResponse().id_token;
+        fetch(`/backend/users/savedLocations/for_place/${data.places_id}`, {
+            method: "DELETE",
+            body: JSON.stringify({
+                places_id: data.places_id,
+                userId: data.user_id,
+            }),
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: "Bearer " + token,
+            },
+        })
+            .then(response => {
+                console.log("Success", response);
+                this.fetchRequest(googleUser, index);
             })
             .catch(error => {
                 console.log("Error", error);
@@ -229,7 +251,8 @@ class Reservations extends React.Component {
                         <ReservationDetails
                             cancelReservation={this.cancelReservation}
                             updateReservation={this.updateReservation}
-                            updateSavedLocation={this.updateSavedLocation}
+                            deleteSavedLocation={this.deleteSavedLocation}
+                            addSavedLocation={this.addSavedLocation}
                             reservations={reservationData.reservations}
                             selected={isSelected}
                             index={isSelectedIdx}
