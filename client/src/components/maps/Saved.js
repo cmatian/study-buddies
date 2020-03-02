@@ -1,10 +1,12 @@
-import React from 'react';
+import React from "react";
+import SavedList from "../save/SavedList";
+import "./Saved.scss";
 
 class Saved extends React.Component {
     render() {
         return(
-            <div>
-                My saved locations page
+            <div className="saved_wrapper">
+                <SavedList />
             </div>
         );
     }

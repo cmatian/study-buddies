@@ -65,6 +65,36 @@ class Biz extends React.Component {
             });
     };
 
+    handleSavedLocation = () => {
+        const {selectedPlaceDetail} = this.props;
+        let auth2 = window.gapi.auth2.getAuthInstance();
+        let googleUser = auth2.currentUser.get();
+        let idToken = googleUser.getAuthResponse().id_token;
+        
+        let data = {
+            places_id: selectedPlaceDetail.place_id,
+            userId: googleUser,
+            nickname: selectedPlaceDetail.name,            
+        }
+
+        console.log("Saved location data: ", data);
+
+        fetch("/backend/users/savedLocations", {
+            method: "POST",
+            body: JSON.stringify(data),
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: "Bearer " + idToken,
+            },
+        })
+            .then(response => {
+                console.log("Success", response.json());
+            })
+            .catch(error => {
+                console.log("Error", error);
+            });
+    };
+
     render() {
         const {selectedPlace, selectedPlaceDetail, selectedPlaceDistance, onReservationSelect} = this.props;
         // console.log(selectedPlace);
@@ -104,7 +134,7 @@ class Biz extends React.Component {
                     </div>
                     <div className="utility_buttons_container">
                         <button onClick={() => onReservationSelect()}>Make Reservation</button>
-                        <button>Save</button>
+                        <button onClick={() => this.handleSavedLocation()}>Save</button>
                         <button onClick={() => this.handleRedriect()}>Write a Review</button>                    
                     </div>
                     <div className="view_review_container">
