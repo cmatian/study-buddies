@@ -12,11 +12,19 @@
         min-height: 0;
         height: auto;
 
+        @media screen and (max-width: 500px) {
+            flex-direction: column;
+        }
+
         .reservation_cards {
             display: flex;
             flex-flow: column nowrap;
             flex: 0 0 300px;
             overflow-y: auto;
+
+            @media screen and (max-width: 500px) {
+                flex: 0 0 200px;
+            }
         }
 
         .reservation_detail_window {
