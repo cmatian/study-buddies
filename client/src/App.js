@@ -14,6 +14,7 @@ import Signin from "./components/auth/Signin";
 import CallbackContext from "./CallbackContext";
 import UserContext from "./UserContext";
 import AuthButtonContext from "./AuthButtonContext";
+import WindowSizeProvider from './WindowSizeContext'
 
 // App specific styling
 import "./App.scss";
@@ -124,7 +125,11 @@ class App extends React.Component {
             <div className="App">
                 <UserContext.Provider value={userState}>
                     <CallbackContext.Provider value={this.state.callbacks}>
-                        <AuthButtonContext.Provider value={authState}>{this.renderRouter()}</AuthButtonContext.Provider>
+                        <AuthButtonContext.Provider value={authState}>
+                            <WindowSizeProvider>
+                                {this.renderRouter()}
+                            </WindowSizeProvider>
+                        </AuthButtonContext.Provider>
                     </CallbackContext.Provider>
                 </UserContext.Provider>
             </div>

@@ -1,7 +1,9 @@
 import React from "react";
 import { NavLink, withRouter } from "react-router-dom";
 import AuthNavButton from "../auth/AuthNavButton";
-import "./Nav.scss"; // CSS
+import ResponsiveLayout from "./ResponsiveLayout";
+import MobileNav from "./MobileNav";
+import "./Nav.scss";
 
 class Nav extends React.Component {
     constructor(props) {
@@ -10,6 +12,18 @@ class Nav extends React.Component {
     }
 
     render() {
+        return (
+            <ResponsiveLayout
+                breakPoint={767}
+                renderDesktop={() => this.renderDesktopNav()}
+                renderMobile={() => (
+                    <MobileNav/>
+                )}
+                />
+        )
+    }
+
+    renderDesktopNav() {
         return (
             <nav className={window.location.pathname === "/" ? "home" : "default"}>
                 <div>
