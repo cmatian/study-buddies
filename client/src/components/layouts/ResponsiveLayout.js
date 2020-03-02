@@ -2,7 +2,7 @@
 
 import { useWindowSize } from '../../WindowSizeContext'
 
-const ResponsiveLayout = ({ breakPoint = 414, renderMobile, renderDesktop }) => {
+const ResponsiveLayout = ({ breakPoint = 400, renderMobile, renderDesktop }) => {
   const { width } = useWindowSize()
   return width > breakPoint ? renderDesktop() : renderMobile()
 }

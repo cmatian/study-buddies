@@ -1,14 +1,19 @@
 .business_detail_wrapper {
-    position: fixed;
     bottom: 0;
     left: 0;
-    max-width: 250px;
     height: 100%;
-    padding-top: 53px;
     background: #fff;
     overflow-x: hidden;
     overflow-y: auto;
     z-index: 1;
+
+    &.desktop {
+        max-width: 250px;
+    }
+
+    &.mobile {
+        max-height: 250px;
+    }
     
     .image_container {
         height: 200px;

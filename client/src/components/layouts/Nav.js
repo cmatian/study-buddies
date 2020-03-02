@@ -14,7 +14,7 @@ class Nav extends React.Component {
     render() {
         return (
             <ResponsiveLayout
-                breakPoint={767}
+                breakPoint={500}
                 renderDesktop={() => this.renderDesktopNav()}
                 renderMobile={() => (
                     <MobileNav/>
