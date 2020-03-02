@@ -14,15 +14,13 @@ class Nav extends React.Component {
             <nav className={window.location.pathname === "/" ? "home" : "default"}>
                 <div>
                     <ul>
-                        {window.location.pathname !== "/" ? (
+                        {window.location.pathname !== "/" &&
                             <li className="logo">
                                 <NavLink exact to="/" activeClassName="active">
                                     Study Buddies
                                 </NavLink>
                             </li>
-                        ) : (
-                            ""
-                        )}
+                        }
                         <li>
                             <NavLink exact to="/users/reservations" activeClassName="active">
                                 My Reservations
@@ -34,7 +32,7 @@ class Nav extends React.Component {
                             </NavLink>
                         </li>
                         <li className="user">
-                            <AuthNavButton/>
+                            <AuthNavButton />
                         </li>
                     </ul>
                 </div>

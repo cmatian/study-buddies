@@ -81,7 +81,7 @@ class Reservations extends React.Component {
         throw new Error("There was an issue with the initialization.");
     };
 
-    cancelReservation = reservation_id => {
+    cancelReservation = (reservation_id, index) => {
         const googleUser = this.context.user;
         let token = googleUser.getAuthResponse().id_token;
 
@@ -101,7 +101,7 @@ class Reservations extends React.Component {
             .then(response => {
                 console.log("Success", response);
                 // Refetch the updated data
-                this.fetchRequest(googleUser);
+                this.fetchRequest(googleUser, index);
             })
             .catch(error => {
                 console.log("Error", error);

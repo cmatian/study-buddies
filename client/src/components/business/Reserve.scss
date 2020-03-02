@@ -10,6 +10,13 @@
     overflow-y: auto;
     z-index: 1;
 
+    .placeid_error {
+        text-align: left;
+        font-size: 12px;
+        margin-top: -10px;
+        margin-bottom: 10px;
+        color: red;
+    }
 
     // ReserveStatus.js
     .success_container, .error_container {
