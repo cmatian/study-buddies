@@ -6,6 +6,9 @@ import PlaceList from "./PlaceList";
 import PlaceSelected from "./PlaceSelected";
 import Biz from "../business/Biz";
 import PlaceDetail from './PlaceDetail';
+import Search from '../search/Search';
+import Filters from '../search/Filters';
+import ResponsiveLayout from "../layouts/ResponsiveLayout";
 import "./Maps.scss"; // Styling
 
 const mapStyles = {
@@ -30,6 +33,7 @@ class Maps extends React.Component {
             showBusinessDetail: false,
             showMakeReservation: false,
             isExpanded: true,
+            isSearching: false,
             hoverTarget: null,
             markerRefs: [],
         };
@@ -47,6 +51,19 @@ class Maps extends React.Component {
             }
         });
         return types.length > 0 ? types : defaultTypes;
+    };
+
+    newMapSearch = () => {
+        // Dump markerRefs so it fills up with new references
+        this.setState({
+            markerRefs: [],
+            selectedPlace: null,
+            showBusinessDetail: false,
+            showMakeReservation: false,
+            isSearching: false,
+        },
+            this.handleApiLoaded({ map: this.state.map, maps: this.state.maps })
+        );
     };
 
     // map is google map and maps = maps api
@@ -231,7 +248,6 @@ class Maps extends React.Component {
 
     // func to updadate showMakeReservation to display reserve component
     onReservationSelect = () => {
-        console.log('Reservation');
         this.setState({
             showBusinessDetail: false,
             showMakeReservation: true,
@@ -244,28 +260,83 @@ class Maps extends React.Component {
         }));
     };
 
+    toggleSearch = () => {
+        this.setState(prevState => ({
+            isSearching: !prevState.isSearching,
+        }));
+    };
+
     render() {
+        return (
+            <ResponsiveLayout
+                breakPoint={500}
+                renderDesktop={() => this.renderParameterized(false)}
+                renderMobile={() => this.renderParameterized(true)}
+                />
+        );
+    }
+
+    renderParameterized(isMobile) {
         // console.log('this.props: ', this.props)
         const center = {
             lat: this.props.lat,
             lng: this.props.long,
         };
 
-        const { isExpanded } = this.state;
+        const { isExpanded, isSearching } = this.state;
+
+        const modeClass = isMobile ? "mobile" : "desktop";
 
         return (
-            <div className="map_wrapper">
-                <div className={"place_list_container " + (isExpanded ? "expanded" : "")}>
-                    <PlaceSelected
-                        onDetailSelect={this.onDetailSelect}
-                        place={this.state.selectedPlace}
-                        onReservationSelect={this.onReservationSelect}
-                    />
-                    <PlaceList onPlaceSelect={this.onPlaceSelect} places={this.state.places} selected={this.state.selectedIndex} hover={this.state.hoverTarget} />
+            <div className={"map_wrapper " + modeClass}>
+                {isSearching &&
+                    <div className="search_wrapper">
+                        <span className="close_search" onClick={this.toggleSearch}>
+                            <i className="material-icons">close</i>
+                        </span>
+                        <div className="search_container">
+                            <span className="title">New Area Search</span>
+                            <Search
+                                lat={this.props.lat}
+                                long={this.props.long}
+                                updateUserCoord={this.props.updateUserCoord}
+                                getUserCoord={this.props.getUserCoord}
+                                newSearch={this.newMapSearch}
+                            />
+                            <Filters updateFilters={this.props.updateFilters} filters={this.props.filters} />
+                        </div>
+                    </div>
+                }
+                <div className={"sidebar_container " + (isExpanded ? "expanded" : "")}>
+                    {!this.state.showBusinessDetail && !this.state.showMakeReservation &&
+                        <div className={"place_list_container"}>
+                            <PlaceSelected
+                                onDetailSelect={this.onDetailSelect}
+                                place={this.state.selectedPlace}
+                                onReservationSelect={this.onReservationSelect}
+                            />
+                            <PlaceList onPlaceSelect={this.onPlaceSelect} places={this.state.places} selected={this.state.selectedIndex} hover={this.state.hoverTarget} />
+                        </div>
+                    }
+                    {/* Business Details */}
+                    {this.state.showBusinessDetail &&
+                        <Biz
+                            selectedPlace={this.state.selectedPlace}
+                            selectedPlaceDetail={this.state.selectedPlaceDetail}
+                            selectedPlaceDistance={this.state.selectedPlaceDistance}
+                            onReservationSelect={this.onReservationSelect}
+                        />
+                    }
+
+                    {/* Reservation Form */}
+                    {this.state.showMakeReservation &&
+                        // Send all selectedPlaceDetails to the form
+                        <Reserve data={this.state.selectedPlaceDetail} />
+                    }
                 </div>
                 <div className="map_container">
-                    {/* Don't show list toggle when detail menu is visible */}
-                    {!this.state.showBusinessDetail &&
+                    {/* Don't show list toggle when detail/reservation menu is visible */}
+                    {(!this.state.showBusinessDetail && !this.state.showMakeReservation) &&
                         <div className="toggle_side_menu" onClick={this.toggleSideMenu} title="Toggle Side Bar">
                             <i className="material-icons">{isExpanded ? "arrow_back" : "arrow_forward"}</i>
                         </div>
@@ -276,28 +347,16 @@ class Maps extends React.Component {
                             <i className="material-icons">close</i>
                         </div>
                     }
-                    {/* Show business detail close button when detail bar is visible */}
+                    {/* Show business reservation close button when reserve bar is visible */}
                     {this.state.showMakeReservation &&
                         <div className="close_detail_menu" onClick={this.closeReservations} title="Close Reservations Side Bar">
                             <i className="material-icons">close</i>
                         </div>
                     }
+                    <div className="search_button" onClick={this.toggleSearch} title="Search in a new area">
+                        <i className="material-icons">search</i>
+                    </div>
                     <div style={mapStyles}>
-                        {/* Business Details */}
-                        {this.state.showBusinessDetail &&
-                            <Biz
-                                selectedPlace={this.state.selectedPlace}
-                                selectedPlaceDetail={this.state.selectedPlaceDetail}
-                                selectedPlaceDistance={this.state.selectedPlaceDistance}
-                                onReservationSelect={this.onReservationSelect}
-                            />
-                        }
-
-                        {/* Reservation Form */}
-                        {this.state.showMakeReservation &&
-                            <Reserve openingHours={this.state.selectedPlaceDetail.opening_hours} />
-                        }
-
                         {/* Google Map + Pins */}
                         <GoogleMap
                             bootstrapURLKeys={{ key: "AIzaSyC4YLPSKd-b0RxRh5kqx8QDnf9yMDioK0Y" }}

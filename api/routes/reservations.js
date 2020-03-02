@@ -10,7 +10,7 @@ var oauth2Client = new OAuth2Client(process.env.SB_OAUTH_CLIENT_ID);
 
 query = promisify(dbConnection.query).bind(dbConnection);
 
-router.post("/", function(req, res, next) {
+router.post("/", function (req, res, next) {
     var userId;
     var reservationStatus = "SUBMITTED";
     SharedQueries.getUser(req.token)
@@ -24,9 +24,9 @@ router.post("/", function(req, res, next) {
             console.log("dateTime: " + dateTime);
             return query(
                 "INSERT INTO reservations " +
-                    "(user_id, location_id, status, group_size, " +
-                    "duration_minutes, date_time, name) " +
-                    "VALUES (?, ?, ?, ?, ?, ?, ?)",
+                "(user_id, location_id, status, group_size, " +
+                "duration_minutes, date_time, name) " +
+                "VALUES (?, ?, ?, ?, ?, ?, ?)",
                 [userId, locationId, reservationStatus, data.group_size, data.duration_minutes, dateTime, data.name]
             );
         })
@@ -41,13 +41,19 @@ router.post("/", function(req, res, next) {
         });
 });
 
-router.get("/", function(req, res, next) {
+router.get("/", function (req, res, next) {
     SharedQueries.getUser(req.token)
         .then(userId => {
             return query(
-                "SELECT *, r.name as meeting_name, l.name as location_name FROM reservations AS r " +
-                    "JOIN locations AS l ON r.location_id = l.location_id " +
-                    "where user_id = ?",
+                "SELECT r.*, r.name as meeting_name, l.*, l.name as location_name, " +
+                    "  s.saved_location_id, s.nickname " +
+                    "FROM reservations AS r " +
+                    "JOIN locations AS l " +
+                    "  ON r.location_id = l.location_id " +
+                    "LEFT JOIN saved_locations as s " +
+                    "  ON s.location_id = l.location_id " +
+                    "  AND s.user_id = r.user_id " +
+                    "where r.user_id = ?",
                 [userId]
             );
         })
@@ -55,7 +61,13 @@ router.get("/", function(req, res, next) {
             var resultReservations = [];
             for (var i = 0; i < dbResult.length; i++) {
                 row = dbResult[i];
-                console.log("reservation: " + JSON.stringify(row));
+                var saved_location = null;
+                if (row.saved_location_id != null) {
+                    saved_location = {
+                        saved_location_id: row.saved_location_id,
+                        nickname: row.nickname
+                    };
+                }
                 resultReservations.push({
                     reservation_id: row.reservation_id,
                     user_id: row.user_id,
@@ -72,6 +84,7 @@ router.get("/", function(req, res, next) {
                         business_type: row.business_type,
                         average_rating: row.average_rating,
                     },
+                    saved_location: saved_location,
                 });
             }
             var apiResult = { reservations: resultReservations };
@@ -83,10 +96,9 @@ router.get("/", function(req, res, next) {
         });
 });
 
-router.patch("/", function(req, res, next) {
+router.patch("/:reservation_id", function (req, res, next) {
     console.log("Reservation patch: " + JSON.stringify(req.body));
-    reservationId = req.body.id; // inline editing so we're not sending id through param
-    console.log(reservationId);
+    reservationId = req.params.reservation_id;
     var setClauseParts = [];
     var parameters = [];
     if (req.body.status != null) {
