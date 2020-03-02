@@ -255,18 +255,15 @@
         border: 1px solid #d3d3d3;
         border-radius: 10px;
 
-        // Icon
-        .location_type_icon {
-            position: absolute;
-            font-size: 40px;
-            color: #9147ff;
-            right: 10px;
-            top: 10px;
-        }
-
         .location_primary_details {
             text-align: left;
             margin-bottom: 10px;
+
+            .location_type_icon {
+                font-size: 40px;
+                color: #9147ff;
+                margin-left: auto;
+            }
 
             &:after {
                 content: "";
@@ -281,12 +278,12 @@
             h3 {
                 display: flex;
                 flex-flow: row nowrap;
-                align-items: baseline;
+                align-items: flex-start;
                 font-size: 32px;
                 color: #272727;
                 margin: 0;
 
-                i {
+                i.save_location {
                     margin-left: 10px;
                     cursor: pointer;
                     background: #f7f7f7;
@@ -326,6 +323,10 @@
             display: flex;
             flex-flow: row nowrap;
             justify-content: space-evenly;
+
+            @media screen and (max-width: 500px) {
+                flex-direction: column;
+            }
 
             .sub_detail_box {
                 flex: 0 1 100%;

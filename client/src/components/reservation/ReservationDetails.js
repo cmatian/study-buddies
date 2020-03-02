@@ -528,37 +528,39 @@ class ReservationDetails extends React.Component {
                             )}
                     </div>
                     <div className="location_details_window">
-                        <i className="material-icons location_type_icon">
-                            {(() => {
-                                switch (details.types[0]) {
-                                    case "cafe":
-                                        return "local_cafe";
-                                    case "library":
-                                        return "local_library";
-                                    case "book_store":
-                                        return "local_library";
-                                    case "restaurant":
-                                        return "restaurant";
-                                    case "university":
-                                        return "school";
-                                    default:
-                                        return "location_city";
-                                }
-                            })()}
-                        </i>
                         <div className="location_primary_details">
-                            <h3>
-                                @{details.name}
-                                <i
-                                    className={"material-icons save_location " + (
-                                        reservation.saved_location !== null && reservation.saved_location.saved_location_id ? "gold" : ""
-                                    )}
-                                    title={reservation.saved_location !== null && reservation.saved_location.saved_location_id ? "Remove from Saved Locations" : "Save Location"}
-                                    onClick={this.toggleSavedLocation}
-                                >
-                                    star
-                                </i>
-                            </h3>
+                            <div className="location_toprow_details">
+                                <h3>
+                                    @{details.name}
+                                    <i
+                                        className={"material-icons save_location " + (
+                                            reservation.saved_location !== null && reservation.saved_location.saved_location_id ? "gold" : ""
+                                        )}
+                                        title={reservation.saved_location !== null && reservation.saved_location.saved_location_id ? "Remove from Saved Locations" : "Save Location"}
+                                        onClick={this.toggleSavedLocation}
+                    >
+                                        star
+                                    </i>
+                                    <i className="material-icons location_type_icon">
+                                        {(() => {
+                                            switch (details.types[0]) {
+                                                case "cafe":
+                                                    return "local_cafe";
+                                                case "library":
+                                                    return "local_library";
+                                                case "book_store":
+                                                    return "local_library";
+                                                case "restaurant":
+                                                    return "restaurant";
+                                                case "university":
+                                                    return "school";
+                                                default:
+                                                    return "location_city";
+                                            }
+                                        })()}
+                                    </i>
+                                </h3>
+                            </div>
                             <h4>
                                 <i className="material-icons">location_on</i>
                                 {details.formatted_address}
