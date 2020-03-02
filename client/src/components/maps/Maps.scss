@@ -4,7 +4,7 @@
     height: 100%;
     padding-top: 53px;
 
-    &.mobile {
+    @media screen and (max-width: 500px) {
         flex-direction: column;
     }
 

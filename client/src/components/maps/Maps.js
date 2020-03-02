@@ -267,16 +267,6 @@ class Maps extends React.Component {
     };
 
     render() {
-        return (
-            <ResponsiveLayout
-                breakPoint={500}
-                renderDesktop={() => this.renderParameterized(false)}
-                renderMobile={() => this.renderParameterized(true)}
-                />
-        );
-    }
-
-    renderParameterized(isMobile) {
         // console.log('this.props: ', this.props)
         const center = {
             lat: this.props.lat,
@@ -285,10 +275,8 @@ class Maps extends React.Component {
 
         const { isExpanded, isSearching } = this.state;
 
-        const modeClass = isMobile ? "mobile" : "desktop";
-
         return (
-            <div className={"map_wrapper " + modeClass}>
+            <div className="map_wrapper">
                 {isSearching &&
                     <div className="search_wrapper">
                         <span className="close_search" onClick={this.toggleSearch}>

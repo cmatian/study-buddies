@@ -7,11 +7,11 @@
     overflow-y: auto;
     z-index: 1;
 
-    &.desktop {
+    @media screen and (min-width: 500px) {
         max-width: 250px;
     }
 
-    &.mobile {
+    @media screen and (max-width: 500px) {
         max-height: 250px;
     }
 
