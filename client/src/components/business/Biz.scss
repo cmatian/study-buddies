@@ -7,45 +7,144 @@
     overflow-y: auto;
     z-index: 1;
 
-    &.desktop {
+    @media screen and (min-width: 500px) {
         max-width: 250px;
     }
 
-    &.mobile {
+    @media screen and (max-width: 500px) {
         max-height: 250px;
     }
     
     .image_container {
-        height: 200px;
-        width: 300px;
+        width: 100%;
     }
+
     .business_name_container {
-        font-size: 20px;
-        padding: 10px;
+        font-size: 18px;
+        padding: 5px;
+        text-align: center;
+
+        h2 {
+            margin: 0;
+            color: #272727;
+        }
     }
+
     .business_addr_container {
-        padding: 10px;
+        padding: 5px;
+        font-size: 14px;
+        color: rgba(0, 0, 0, 0.65);
+        text-align: center;
     }
+
     .travel_detail_container{
+        font-size: 12px;
+        text-align: center;
         padding: 5px;
         flex-direction: row;
         justify-content: space-evenly;
         display: flex;
+        color: rgba(0, 0, 0, 0.65);
+
+        span.sub {
+            font-weight: bold;
+            color: rgba( 0, 0, 0, 1);
+        }
     }
+
     .business_hours_container {
         padding: 5px;
+        font-size: 12px;
+        text-align: center;
+        margin-bottom: 10px;
+
+        .title {
+            margin-bottom: 5px;
+        }
+
+        .day {
+            &.current_day {
+                color: #9147ff;
+                font-weight: bold;
+            }
+        }
     }
+
     .utility_buttons_container{
-        padding: 10px;
-        flex-direction: row;
-        justify-content: space-evenly;
         display: flex;
+        flex-flow: column nowrap;
+
+        .reservation_button {
+            margin-bottom: 15px;
+        }
+
+        button {
+            background: #41a3ff;
+            appearance: none;
+            border: none;
+            cursor: pointer;
+            padding: 10px 5px;
+            margin-top: -4px;
+            color: #fff;
+            transition: background ease-in 150ms;
+
+            &:hover {
+                background: #1678d3
+            }
+        }
     }
-    .view_review_container{
-        cursor: pointer;
-        padding: 10px;
-        flex-direction: row;
-        justify-content: space-evenly;
+
+    .review_button_container {
         display: flex;
+        flex-flow: row nowrap;
+        justify-content: center;
+        flex: 0 1;
+        margin-bottom: 15px;
+
+        button {
+            background: #9147ff;
+            appearance: none;
+            flex: 0 1 100%;
+            border: none;
+            cursor: pointer;
+            padding: 10px 5px;
+            color: #fff;
+            transition: background ease-in 150ms;
+
+            &:hover {
+                background: #6010d8;
+            }
+        }
+    }
+
+    .view_review_container{
+        display: flex;
+        flex-flow: row nowrap;
+        justify-content: space-evenly;
+        align-items: center;
+        cursor: pointer;
+        padding: 5px;
+        font-size: 14px;
+        border-bottom: 2px solid rgba(0, 0, 0, 0.1);
+
+        span {
+            background: #fff;
+            padding: 5px;
+            border-radius: 4px;
+
+            &.selected {
+                color: #fff;
+                background: rgba(0, 0, 0, 0.5);
+            }
+        }
+
+        span:first-of-type {
+            flex: 0 1 50%;
+        }
+
+        span:last-of-type {
+            flex: 0 1 50%;
+        }
+
     }
 }

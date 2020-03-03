@@ -367,6 +367,21 @@ class ReservationDetails extends React.Component {
 
     };
 
+    reviewRedirect = () => {
+        const { reservations, index } = this.props;
+
+        const location = {
+            pathname: "/biz/rate",
+            state: {
+                places_id: reservations[index].location.places_id,
+                name: reservations[index].location.name,
+                referral: "/users/reservations",
+            }
+        };
+
+        return this.props.history.push(location);
+    };
+
     // Initialize the required Google API (Headless map + getDetails request)
     componentDidMount() {
         this.initMap();
@@ -528,37 +543,39 @@ class ReservationDetails extends React.Component {
                             )}
                     </div>
                     <div className="location_details_window">
-                        <i className="material-icons location_type_icon">
-                            {(() => {
-                                switch (details.types[0]) {
-                                    case "cafe":
-                                        return "local_cafe";
-                                    case "library":
-                                        return "local_library";
-                                    case "book_store":
-                                        return "local_library";
-                                    case "restaurant":
-                                        return "restaurant";
-                                    case "university":
-                                        return "school";
-                                    default:
-                                        return "location_city";
-                                }
-                            })()}
-                        </i>
                         <div className="location_primary_details">
-                            <h3>
-                                @{details.name}
-                                <i
-                                    className={"material-icons save_location " + (
-                                        reservation.saved_location !== null && reservation.saved_location.saved_location_id ? "gold" : ""
-                                    )}
-                                    title={reservation.saved_location !== null && reservation.saved_location.saved_location_id ? "Remove from Saved Locations" : "Save Location"}
-                                    onClick={this.toggleSavedLocation}
-                                >
-                                    star
-                                </i>
-                            </h3>
+                            <div className="location_toprow_details">
+                                <h3>
+                                    @{details.name}
+                                    <i
+                                        className={"material-icons save_location " + (
+                                            reservation.saved_location !== null && reservation.saved_location.saved_location_id ? "gold" : ""
+                                        )}
+                                        title={reservation.saved_location !== null && reservation.saved_location.saved_location_id ? "Remove from Saved Locations" : "Save Location"}
+                                        onClick={this.toggleSavedLocation}
+                                    >
+                                        star
+                                    </i>
+                                    <i className="material-icons location_type_icon">
+                                        {(() => {
+                                            switch (details.types[0]) {
+                                                case "cafe":
+                                                    return "local_cafe";
+                                                case "library":
+                                                    return "local_library";
+                                                case "book_store":
+                                                    return "local_library";
+                                                case "restaurant":
+                                                    return "restaurant";
+                                                case "university":
+                                                    return "school";
+                                                default:
+                                                    return "location_city";
+                                            }
+                                        })()}
+                                    </i>
+                                </h3>
+                            </div>
                             <h4>
                                 <i className="material-icons">location_on</i>
                                 {details.formatted_address}
@@ -607,6 +624,7 @@ class ReservationDetails extends React.Component {
                                 <div className="sub_details">
                                     {this.calculateRating(details.rating)}
                                     <span className="total_ratings">based on {details.user_ratings_total} rating(s).</span>
+                                    <span className="submit_review" onClick={this.reviewRedirect}>Review</span>
                                 </div>
                             </div>
                             <div className="sub_detail_box sub_pricing">
