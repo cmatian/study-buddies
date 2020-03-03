@@ -367,6 +367,21 @@ class ReservationDetails extends React.Component {
 
     };
 
+    reviewRedirect = () => {
+        const { reservations, index } = this.props;
+
+        const location = {
+            pathname: "/biz/rate",
+            state: {
+                places_id: reservations[index].location.places_id,
+                name: reservations[index].location.name,
+                referral: "/users/reservations",
+            }
+        };
+
+        return this.props.history.push(location);
+    };
+
     // Initialize the required Google API (Headless map + getDetails request)
     componentDidMount() {
         this.initMap();
@@ -538,7 +553,7 @@ class ReservationDetails extends React.Component {
                                         )}
                                         title={reservation.saved_location !== null && reservation.saved_location.saved_location_id ? "Remove from Saved Locations" : "Save Location"}
                                         onClick={this.toggleSavedLocation}
-                    >
+                                    >
                                         star
                                     </i>
                                     <i className="material-icons location_type_icon">
@@ -609,6 +624,7 @@ class ReservationDetails extends React.Component {
                                 <div className="sub_details">
                                     {this.calculateRating(details.rating)}
                                     <span className="total_ratings">based on {details.user_ratings_total} rating(s).</span>
+                                    <span className="submit_review" onClick={this.reviewRedirect}>Review</span>
                                 </div>
                             </div>
                             <div className="sub_detail_box sub_pricing">
