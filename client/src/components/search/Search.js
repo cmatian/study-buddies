@@ -49,8 +49,14 @@ class Search extends React.Component {
     handleSelect = address => {
         geocodeByAddress(address)
             .then(results => getLatLng(results[0]))
-            .then(latLng => this.props.updateUserCoord(latLng.lat, latLng.lng))
+            .then(latLng => {
+                this.props.updateUserCoord(latLng.lat, latLng.lng);
+                if (this.props.newSearch && this.state.address !== "") {
+                    this.props.newSearch();
+                }
+            })
             .catch(error => console.error("Error", error));
+
         this.handleChange(address);
     };
 

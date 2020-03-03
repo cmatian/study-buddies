@@ -20,6 +20,7 @@ class Maps extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
+            mapKey: 1,
             map: {},
             maps: {},
             lastOpen: null,
@@ -34,6 +35,7 @@ class Maps extends React.Component {
             showMakeReservation: false,
             isExpanded: true,
             isSearching: false,
+            noResults: false,
             hoverTarget: null,
             markerRefs: [],
         };
@@ -55,15 +57,16 @@ class Maps extends React.Component {
 
     newMapSearch = () => {
         // Dump markerRefs so it fills up with new references
+        // It's also very important that we toggle the keys because that will cause the map to load fresh pins
         this.setState({
             markerRefs: [],
+            mapKey: (this.state.mapKey === 1 ? 2 : 1), // toggling keys causes the map to refresh
             selectedPlace: null,
             showBusinessDetail: false,
             showMakeReservation: false,
             isSearching: false,
-        },
-            this.handleApiLoaded({ map: this.state.map, maps: this.state.maps })
-        );
+            noResults: false,
+        });
     };
 
     // map is google map and maps = maps api
@@ -100,6 +103,11 @@ class Maps extends React.Component {
                 }
             } else {
                 console.log("Place service was not successful for the following reason: " + status);
+                this.setState({
+                    places: [], // dump the places list in the event we can't find any valid locations
+                    markerRefs: [], // dump markerRefs
+                    noResults: true,
+                });
             }
         });
     };
@@ -273,7 +281,7 @@ class Maps extends React.Component {
             lng: this.props.long,
         };
 
-        const { isExpanded, isSearching } = this.state;
+        const { isExpanded, isSearching, noResults } = this.state;
 
         return (
             <div className="map_wrapper">
@@ -303,7 +311,12 @@ class Maps extends React.Component {
                                 place={this.state.selectedPlace}
                                 onReservationSelect={this.onReservationSelect}
                             />
-                            <PlaceList onPlaceSelect={this.onPlaceSelect} places={this.state.places} selected={this.state.selectedIndex} hover={this.state.hoverTarget} />
+                            {noResults ? (
+                                <div className="No Results">No Results</div>
+                            ) : (
+                                    <PlaceList onPlaceSelect={this.onPlaceSelect} places={this.state.places} selected={this.state.selectedIndex} hover={this.state.hoverTarget} />
+                                )
+                            }
                         </div>
                     }
                     {/* Business Details */}
@@ -347,6 +360,7 @@ class Maps extends React.Component {
                     <div style={mapStyles}>
                         {/* Google Map + Pins */}
                         <GoogleMap
+                            key={this.state.mapKey}
                             bootstrapURLKeys={{ key: "AIzaSyC4YLPSKd-b0RxRh5kqx8QDnf9yMDioK0Y" }}
                             center={center}
                             defaultZoom={12}
