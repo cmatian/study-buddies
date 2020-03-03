@@ -454,6 +454,16 @@
                     font-size: 12px;
                     color: grey;
                 }
+
+                span.submit_review {
+                    margin-top: auto;
+                    color: #41a3ff;
+                    cursor: pointer;
+                    text-decoration: underline;
+                    &:hover {
+                        color: #1678d3;
+                    }
+                }
             }
 
             // Pricing Details
