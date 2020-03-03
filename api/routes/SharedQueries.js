@@ -8,7 +8,7 @@ var oauth2Client = new OAuth2Client(process.env.SB_OAUTH_CLIENT_ID);
 
 query = promisify(dbConnection.query).bind(dbConnection);
 
-var MAP_API_KEY = 'AIzaSyAcqq-JyxjqtfMZH01_2B_uevmrX-4e0Z4';
+var MAP_API_KEY = 'AIzaSyC4YLPSKd-b0RxRh5kqx8QDnf9yMDioK0Y';
 
 class SharedQueries {
     static getUser(idToken) {
