@@ -2,9 +2,6 @@ import React from 'react';
 import { withRouter } from "react-router-dom";
 import "./Rates.scss";
 
-const stars = [0, 1, 2, 3, 4];
-const costs = ["$", "$$", "$$$", "$$$$"];
-
 // Page for submitting a rating + review + estimated cost
 class Rates extends React.Component {
     constructor(props) {
@@ -59,7 +56,6 @@ class Rates extends React.Component {
             rating: this.state.starRating,
             comment: this.state.review,
             cost: this.state.estimatedCost.toString(),
-
         };
 
         console.log('review:', data); 
@@ -88,6 +84,9 @@ class Rates extends React.Component {
     }
 
     render() {
+        const stars = [0, 1, 2, 3, 4];
+        const costs = ["$", "$$", "$$$", "$$$$"];
+
         return(
             <div className="review_wrapper">
                 <div>

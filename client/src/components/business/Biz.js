@@ -74,7 +74,7 @@ class Biz extends React.Component {
         let data = {
             places_id: selectedPlaceDetail.place_id,
             userId: googleUser,
-            nickname: selectedPlaceDetail.name,            
+            nickname: selectedPlaceDetail.name, 
         }
 
         console.log("Saved location data: ", data);
@@ -152,7 +152,6 @@ class Biz extends React.Component {
                             />
                         ) : (
                             <ReviewList 
-                                reviews={emptyObj}
                                 reviews={this.state.reviewDetail}
                             />
                         )}

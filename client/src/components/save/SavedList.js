@@ -1,9 +1,19 @@
 import React from "react";
+import SavedItem from "./SavedItem";
+import PlaceItem from "../maps/PlaceItem";
 
 class SavedList extends React.Component {
-    // componentDidMount() {
-    //     this.fetchSavedLocations();
-    // }
+    constructor(props) {
+        super(props);
+
+        this.state = ({
+            savedLocations: {},
+        });
+    }
+
+    componentDidMount() {
+        this.fetchSavedLocations();
+    }
 
     fetchSavedLocations() {
         let auth2 = window.gapi.auth2.getAuthInstance();
@@ -21,6 +31,7 @@ class SavedList extends React.Component {
             .then(response => response.json())
             .then(data => {
                 console.log("Data: ", JSON.parse(data));
+                this.setState({savedLocations: JSON.parse(data.saved_locations)});
             })
             .catch(error => {
                 console.error("Error", error);
@@ -29,8 +40,15 @@ class SavedList extends React.Component {
 
     render() {
         return(
-            <div>
-                SavedList
+            <div> {
+                this.state.savedLocations.map((savedLocation) => {
+                    return (
+                        <PlaceItem 
+                        saved_locations = {savedLocation}
+                        />
+                    );
+                })
+            }
             </div>
         );
     }
