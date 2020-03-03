@@ -90,7 +90,7 @@ class Rates extends React.Component {
     render() {
         return(
             <div className="review_wrapper">
-                <div>
+                <div className="star_rating">
                     Star Rating: 
                     {stars.map((star, index) => {
                         {/* conditonal className to display stars selcted */}
@@ -102,7 +102,7 @@ class Rates extends React.Component {
                         >★</span>
                     })}
                 </div>
-                <div>
+                <div className="user_review">
                     <form>
                         <textarea
                             id="user review"
@@ -122,7 +122,7 @@ class Rates extends React.Component {
                         return <span className={className} key={index} onClick={() => this.handleCostClick(index)}>{costs[index]}</span>
                     })}
                 </div>
-                <div>
+                <div className="button_container">
                     <button 
                         onClick={() => this.reviewValidation()}
                     >Submit</button>

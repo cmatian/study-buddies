@@ -1,21 +1,40 @@
-.review_wrapper{
-    margin: 200px;
-    .estimated_cost_container{
-        flex-direction: row;
-        justify-content: space-evenly;
+.review_wrapper {
+    margin: 15px;
+    margin-top: 88px;
+
+    .star_rating {
+        .star_filled {
+            color: #edbd21;
+        }
+        .star {
+            color: #8c8777;
+        }
+    }
+
+    .user_review {
+        margin-top: 15px;
+    }
+
+    .estimated_cost_container {
         display: flex;
-        .cost_selected{ 
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+        margin-top: 15px;
+
+        .cost_selected {
+            color: #edbd21;
             font-weight: bold;
-            font-size: 23px;
+            margin-left: 15px;
         }
         .cost {
             border-style: none;
+            margin-left: 15px;
+            color: #8c8777;
         }
     }
-    .star_filled {
-        color: #edbd21;
-    }
-    .star{
-        color: #8c8777;
+
+    .button_container {
+        margin-top: 15px;
     }
 }
