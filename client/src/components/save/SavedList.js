@@ -7,10 +7,11 @@ class SavedList extends React.Component {
         super(props);
 
         this.state = ({
-            savedLocations: {},
+            savedLocations: [],
         });
     }
 
+    // on inital load get saved location
     componentDidMount() {
         this.fetchSavedLocations();
     }
@@ -31,24 +32,53 @@ class SavedList extends React.Component {
             .then(response => response.json())
             .then(data => {
                 console.log("Data: ", JSON.parse(data));
-                this.setState({savedLocations: JSON.parse(data.saved_locations)});
+                this.setState({savedLocations: JSON.parse(data).saved_locations});
             })
             .catch(error => {
                 console.error("Error", error);
             });
     };
 
+    onDelete(places_id) {
+        console.log("in on delete: ")
+        // let auth2 = window.gapi.auth2.getAuthInstance();
+        // let googleUser = auth2.currentUser.get();
+        // let idToken = googleUser.getAuthResponse().id_token;
+        // console.log(this.state.savedLocations)
+        // let url = `/backend/users/savedLocations/for_place/${places_id}`;
+        // console.log(url);
+        // fetch(url, {
+        //     method: "DELETE",
+        //     headers: {
+        //         "Content-Type": "application/json",
+        //         Authorization: "Bearer " + idToken,
+        //     },
+        // })
+        //     .then(response => response.json())
+        //     .then(data => {
+        //         console.log("Data: ", JSON.parse(data));
+        //     })
+        //     .catch(error => {
+        //         console.error("Error", error);
+        //     });
+        // this.fetchSavedLocations();
+    };
+
     render() {
         return(
-            <div> {
+            <div> { 
                 this.state.savedLocations.map((savedLocation) => {
+                    console.log("places_id: ", savedLocation.location.places_id)
+                    let places_id = savedLocation.location.places_id;
                     return (
-                        <PlaceItem 
-                        saved_locations = {savedLocation}
+                        <SavedItem 
+                            key= {places_id}
+                            savedLocation = {savedLocation}
+                            onDelete = {() => this.onDelete()}
                         />
                     );
                 })
-            }
+            } 
             </div>
         );
     }

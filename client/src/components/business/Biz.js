@@ -74,7 +74,6 @@ class Biz extends React.Component {
         const { selectedPlace, selectedPlaceDetail, selectedPlaceDistance, onReservationSelect } = this.props;
         const { showGoogleReview, showStudyReview } = this.state;
         // console.log(selectedPlace);
-        let emptyObj = {};    // place holder till i get study review from db
 
         if (Object.keys(selectedPlaceDistance).length === 0 && selectedPlaceDistance.constructor === Object) {
             return null;
