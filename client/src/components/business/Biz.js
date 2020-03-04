@@ -1,7 +1,6 @@
 import React from 'react';
 import { withRouter } from "react-router-dom";
 import ReviewList from "../rate/ReviewList";
-import Loader from '../layouts/Loader';
 import "./Biz.scss";
 
 // Display extended details for matches display of hours, location, and distance
@@ -20,6 +19,7 @@ class Biz extends React.Component {
             pathname: "/biz/rate",
             state: {
                 places_id: this.props.selectedPlaceDetail.place_id,
+                picture: this.props.selectedPlaceDetail.photos[0].getUrl(),
                 name: this.props.selectedPlaceDetail.name,
                 referral: "/maps"
             }
