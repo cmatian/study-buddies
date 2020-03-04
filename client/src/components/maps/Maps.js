@@ -40,20 +40,6 @@ class Maps extends React.Component {
         };
     }
 
-    // Returns a formatted array of the filters
-    setTypeFilter = () => {
-        const { filters } = this.props;
-        const defaultTypes = ["restaurant", "cafe", "libary", "university", "book_store"];
-
-        let types = [];
-        Object.keys(filters.type).forEach(key => {
-            if (filters.type[key]) {
-                types.push(key);
-            }
-        });
-        return types.length > 0 ? types : defaultTypes;
-    };
-
     newMapSearch = () => {
         // Dump markerRefs so it fills up with new references
         // It's also very important that we toggle the keys because that will cause the map to load fresh pins
@@ -80,17 +66,16 @@ class Maps extends React.Component {
 
         let request = {
             location: new maps.LatLng(this.props.lat, this.props.long),
-            type: this.setTypeFilter(),
+            type: "cafe",
             maxPriceLevel: this.props.filters.maxPriceLevel,
             openNow: this.props.filters.openNow,
-            query: "study spots",
             // can only use rankBy or radius can't use both
             rankBy: maps.places.RankBy.DISTANCE,
             // radius: 30000,
         };
 
         // perform text search
-        this.state.placeService.textSearch(request, (results, status) => {
+        this.state.placeService.nearbySearch(request, (results, status) => {
             if (status === maps.places.PlacesServiceStatus.OK) {
                 // console.log('results ', results)
                 // add place obj to places list
@@ -121,7 +106,6 @@ class Maps extends React.Component {
         // perform get detail
         this.state.placeService.getDetails(detailRequest, (results, status) => {
             if (status === this.state.maps.places.PlacesServiceStatus.OK) {
-                // console.log('in getPlaceDetail results', results)
                 this.setState({
                     selectedPlaceDetail: results,
                 });
@@ -134,7 +118,7 @@ class Maps extends React.Component {
     // call getDistanceMatrix and save result to selectedPlaceDistance
     getDistanceDetail = () => {
         let origin = { lat: this.props.lat, lng: this.props.long };
-        let destination = this.state.selectedPlace.formatted_address;
+        let destination = this.state.selectedPlaceDetail.formatted_address;
 
         let distanceRequest = {
             origins: [origin],
@@ -223,6 +207,7 @@ class Maps extends React.Component {
             showMakeReservation: false,
             lastOpen: markerRefs[index].infowindow,
         });
+        console.log(place);
         this.getPlaceDetail(place);
         map.setCenter({ lat: place.geometry.location.lat(), lng: place.geometry.location.lng() });
         map.setZoom(14);
