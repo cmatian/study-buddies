@@ -3,6 +3,10 @@
     justify-content: center;
     padding: 106px 15px 15px;
 
+    .required_ast {
+        color: red;
+    }
+
     .review_container {
         width: 100%;
         max-width: 650px;
@@ -78,21 +82,47 @@
         label {
             margin-bottom: 5px;
             font-size: 16px;
-            text-align: left;
+            align-self: flex-start;
+
+            &.error {
+                color: red;
+            }
         }
 
         textarea {
             padding: 5px;
             max-width: 620px;
             width: 100%;
+            outline: none;
+
+            &:focus {
+                box-shadow: 0 0 3px 1px #41a3ff;
+            }
+
+            &.error {
+                border: 1px solid red;
+
+                &:focus {
+                    box-shadow: 0 0 3px 0 red;
+                }
+            }
+        }
+
+        .textarea_details {
+            display: flex;
+        }
+
+        .label_error {
+            color: red;
+            font-size: 14px;
         }
 
         .max_length {
-            text-align: right;
+            margin-left: auto;
             font-size: 14px;
             color: #272727;
 
-            &.error {
+            &.overflow {
                 color: red;
             }
         }
@@ -129,6 +159,44 @@
     }
 
     .button_container {
-        margin-top: 15px;
+        display: flex;
+        flex-flow: row nowrap;
+        padding: 15px;
+
+        .submit_button {
+            padding: 10px 15px;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            border: 1px solid #41a3ff;
+            color: #fff;
+            background: #41a3ff;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background ease-out 150ms;
+            outline: 0;
+
+            &:hover {
+                background: #1678d3;
+                color: #fff;
+            }
+        }
+
+        .cancel_button {
+            outline: 0;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            border: none;
+            color: #ca2525;
+            background: #fff;
+            cursor: pointer;
+            margin-right: auto;
+
+            &:hover {
+                text-decoration: underline;
+                color: #a30404;
+            }
+        }
     }
 }

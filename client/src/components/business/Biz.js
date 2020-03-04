@@ -1,7 +1,6 @@
 import React from 'react';
 import { withRouter } from "react-router-dom";
 import ReviewList from "../rate/ReviewList";
-import Loader from '../layouts/Loader';
 import "./Biz.scss";
 
 // Display extended details for matches display of hours, location, and distance
