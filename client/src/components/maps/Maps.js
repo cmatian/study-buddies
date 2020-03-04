@@ -8,7 +8,6 @@ import Biz from "../business/Biz";
 import PlaceDetail from './PlaceDetail';
 import Search from '../search/Search';
 import Filters from '../search/Filters';
-import ResponsiveLayout from "../layouts/ResponsiveLayout";
 import "./Maps.scss"; // Styling
 
 const mapStyles = {
