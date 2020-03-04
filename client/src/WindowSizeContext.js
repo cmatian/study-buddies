@@ -1,6 +1,6 @@
 // Based on https://github.com/pdeona/responsive-layout-hooks/blob/master/src/components/WindowDimensionsProvider/index.js
 
-import React, { createContext, useContext, useState, useEffect } from 'react'
+import React from 'react'
 
 export const WindowSizeContext = React.createContext(null);
 
@@ -10,8 +10,8 @@ const windowSize = () => ({
 })
 
 const WindowSizeProvider = ({ children }) => {
-    const [dimensions, setDimensions] = useState(windowSize());
-    useEffect(() => {
+    const [dimensions, setDimensions] = React.useState(windowSize());
+    React.useEffect(() => {
         const handleResize = () => {
             setDimensions(windowSize())
         }
@@ -28,5 +28,5 @@ const WindowSizeProvider = ({ children }) => {
 export default WindowSizeProvider;
 
 export const useWindowSize = () => {
-    return useContext(WindowSizeContext)
+    return React.useContext(WindowSizeContext)
 };
