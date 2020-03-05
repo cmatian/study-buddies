@@ -66,7 +66,7 @@ class Nav extends React.Component {
                                 My Locations
                             </NavLink>
                         </li>
-                        <li className="user">
+                        <li>
                             <AuthNavButton />
                         </li>
                     </ul>
