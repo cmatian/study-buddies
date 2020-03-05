@@ -261,8 +261,8 @@ class Maps extends React.Component {
     render() {
         // console.log('this.props: ', this.props)
         const center = {
-            lat: this.props.lat,
-            lng: this.props.long,
+            lat: this.props.lat || 44.5637806,
+            lng: this.props.long || -123.2794443,
         };
 
         const { isExpanded, isSearching, noResults } = this.state;
@@ -277,6 +277,7 @@ class Maps extends React.Component {
                         <div className="search_container">
                             <span className="title">New Area Search</span>
                             <Search
+                                geocodeError={this.props.geocodeError}
                                 lat={this.props.lat}
                                 long={this.props.long}
                                 updateUserCoord={this.props.updateUserCoord}

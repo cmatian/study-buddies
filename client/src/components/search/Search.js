@@ -65,7 +65,6 @@ class Search extends React.Component {
 
     // onclick of submit button redirect to maps
     render() {
-        console.log(this.props.geocodeError);
         return (
             <PlacesAutocomplete
                 value={this.state.address}
