@@ -3,8 +3,7 @@ import ReviewItem from './ReviewItem';
 
 class ReviewList extends React.Component {       
 
-    render() {
-        console.log('reviewList props: ', this.props);    
+    render() {  
         const { reviews } = this.props;
         if (Object.keys(reviews).length === 0 && reviews.constructor === Object) {
             return(<div>There currently are no reviews.</div>);

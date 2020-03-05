@@ -73,7 +73,6 @@ class Rates extends React.Component {
             rating: this.state.starRating,
             comment: this.state.user_review,
             cost: this.state.estimatedCost.toString(),
-
         };
 
         console.log('review:', data);

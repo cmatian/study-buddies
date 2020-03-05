@@ -21,7 +21,7 @@ class Biz extends React.Component {
                 places_id: this.props.selectedPlaceDetail.place_id,
                 picture: this.props.selectedPlaceDetail.photos[0].getUrl(),
                 name: this.props.selectedPlaceDetail.name,
-                referral: "/maps"
+                referral: "/maps",
             }
         };
 
@@ -74,7 +74,6 @@ class Biz extends React.Component {
         const { selectedPlace, selectedPlaceDetail, selectedPlaceDistance, onReservationSelect } = this.props;
         const { showGoogleReview, showStudyReview } = this.state;
         // console.log(selectedPlace);
-        let emptyObj = {};    // place holder till i get study review from db
 
         if (Object.keys(selectedPlaceDistance).length === 0 && selectedPlaceDistance.constructor === Object) {
             return null;
@@ -136,11 +135,10 @@ class Biz extends React.Component {
                                 reviews={selectedPlaceDetail.reviews}
                             />
                         ) : (
-                                <ReviewList
-                                    reviews={emptyObj}
-                                    reviews={this.state.reviewDetail}
-                                />
-                            )}
+                            <ReviewList 
+                                reviews={this.state.reviewDetail}
+                            />
+                        )}
                     </div>
                 </div>
             );
