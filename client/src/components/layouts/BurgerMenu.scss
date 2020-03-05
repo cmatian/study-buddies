@@ -1,0 +1,10 @@
+
+div.menu {
+    a {
+        &.disabled {
+            pointer-events: none;
+            cursor: default;
+            color: gray;
+        }
+    }
+}
