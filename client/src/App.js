@@ -4,7 +4,6 @@ import Nav from "./components/layouts/Nav";
 import Home from "./components/layouts/Home";
 import Maps from "./components/maps/Maps";
 import Search from "./components/search/Search";
-import BizDetail from "./components/business/BizDetail";
 import Rates from "./components/business/Rates";
 import Reserve from "./components/business/Reserve";
 import Reservations from "./components/reservation/Reservations";
@@ -172,7 +171,6 @@ class App extends React.Component {
                     <Route path="/maps/search" exact component={Search}></Route>
                     <Route path="/biz/rate" exact component={Rates}></Route>
                     <Route path="/biz/reserve" exact component={Reserve}></Route>
-                    <Route path="/biz/:bizId" exact component={BizDetail}></Route>
                     <Route path="/users/reservations" exact component={Reservations}></Route>
                     <Route path="/maps/users/saved" exact component={Saved}></Route>
                     <Route path="/signin" exact component={Signin}></Route>
