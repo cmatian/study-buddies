@@ -34,6 +34,11 @@ class BurgerMenu extends React.Component {
                         </NavLink>
                     </li>
                     <li>
+                        <NavLink exact to="/maps" activeClassName="active" onClick={close}>
+                            Map
+                        </NavLink>
+                    </li>
+                    <li>
                         <NavLink exact to="/users/reservations" activeClassName="active"
                                  className={protectedNavClassName}
                                  onClick={this.handleProtectedClick}>
@@ -41,12 +46,9 @@ class BurgerMenu extends React.Component {
                         </NavLink>
                     </li>
                     <li>
-                        <NavLink exact to="/maps" activeClassName="active" onClick={close}>
-                            Map
-                        </NavLink>
-                    </li>
-                    <li>
-                        <NavLink exact to="/maps/users/saved" activeClassName="active" onClick={close}>
+                        <NavLink exact to="/maps/users/saved" activeClassName="active"
+                                 className={protectedNavClassName}
+                                 onClick={this.handleProtectedClick}>
                             My Locations
                         </NavLink>
                     </li>

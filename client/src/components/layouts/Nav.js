@@ -48,6 +48,11 @@ class Nav extends React.Component {
                             </li>
                         }
                         <li>
+                            <NavLink exact to="/maps" activeClassName="active">
+                                Map
+                            </NavLink>
+                        </li>
+                        <li>
                             <NavLink exact to="/users/reservations" activeClassName="active"
                                  className={protectedNavClassName}
                                  onClick={this.handleProtectedClick}>
@@ -55,12 +60,9 @@ class Nav extends React.Component {
                             </NavLink>
                         </li>
                         <li>
-                            <NavLink exact to="/maps" activeClassName="active">
-                                Map
-                            </NavLink>
-                        </li>
-                        <li>
-                            <NavLink exact to="/maps/users/saved" activeClassName="active">
+                            <NavLink exact to="/maps/users/saved" activeClassName="active"
+                                 className={protectedNavClassName}
+                                 onClick={this.handleProtectedClick}>
                                 My Locations
                             </NavLink>
                         </li>
