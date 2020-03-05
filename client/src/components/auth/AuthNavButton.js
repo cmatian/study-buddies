@@ -12,7 +12,7 @@ class AuthNavButton extends React.Component {
             gapiInitted: false
         };
     }
-    
+
     componentDidMount() {
         this.initGapi();
     }
@@ -24,7 +24,7 @@ class AuthNavButton extends React.Component {
     initGapi() {
         var authBtnContext = this.context;
         if (!this.state.gapiInitted) {
-            this.setState({...this.state, gapiInitted: true});
+            this.setState({ ...this.state, gapiInitted: true });
             window.gapi.load('auth2', () => {
                 window.gapi.auth2.init({
                     client_id: '619292312007-4q3t96220pemll7ocger1j381pvo093k.apps.googleusercontent.com'
@@ -57,9 +57,6 @@ class AuthNavButton extends React.Component {
     render() {
         var authBtnContext = this.context;
         var path = "/signin";
-        if (authBtnContext.isAuthenticated) {
-            path = "/signout";
-        }
         var buttonText = "Sign In";
         if (!authBtnContext.isUserChecked) {
             buttonText = "(checking user...)";
