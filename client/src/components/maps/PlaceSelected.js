@@ -1,11 +1,24 @@
 import React from 'react';
+import UserContext from "../../UserContext";
 import './PlaceSelected.scss';
 
 // display currently selected place with detail information
 class PlaceSelected extends React.Component {
-    render() {
+    static contextType = UserContext;
 
-        const { place, onDetailSelect, onReservationSelect } = this.props;
+    onReservationSelect = event => {
+        const userContext = this.context;
+        if (!userContext.isAuthenticated) {
+            event.preventDefault();
+        } else {
+            this.props.onReservationSelect();
+        }
+    }
+
+    render() {
+        const userContext = this.context;
+        const protectedClassName = userContext.isAuthenticated ? "" : "disabled";
+        const { place, onDetailSelect } = this.props;
         return (
             <div className="focus_wrapper">
                 {!this.props.place ? (
@@ -18,7 +31,10 @@ class PlaceSelected extends React.Component {
                                 <div className="address">{place.formatted_address}</div>
                             </div >
                             <div className="focus_toolbar">
-                                <button className="reservation" onClick={() => onReservationSelect()}>Make Reservation</button>
+                                <button className={"reservation " + protectedClassName}
+                                        onClick={this.onReservationSelect}>
+                                    Make Reservation
+                                </button>
                                 <button className="details" onClick={() => onDetailSelect()}>Details</button>
                             </div>
                         </>
