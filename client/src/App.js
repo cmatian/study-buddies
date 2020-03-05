@@ -26,6 +26,7 @@ class App extends React.Component {
         this.state = {
             lat: null,
             long: null,
+            geocodeError: null,
             // Default Values
             filters: {
                 openNow: true,
@@ -51,7 +52,13 @@ class App extends React.Component {
                 // set state
                 this.setState({ ...this.state, lat: position.coords.latitude, long: position.coords.longitude });
             },
-            err => console.log(err)
+            (err) => {
+                this.setState({
+                    ...this.state,
+                    geocodeError: err.code,
+                });
+                console.log(err);
+            }
         );
     };
 
@@ -137,6 +144,7 @@ class App extends React.Component {
                         render={() => {
                             return (
                                 <Home
+                                    geocodeError={this.state.geocodeError}
                                     lat={this.state.lat}
                                     long={this.state.long}
                                     updateUserCoord={this.updateUserCoord}
@@ -153,6 +161,7 @@ class App extends React.Component {
                         render={() => {
                             return (
                                 <Maps
+                                    geocodeError={this.state.geocodeError}
                                     lat={this.state.lat}
                                     long={this.state.long}
                                     filters={this.state.filters}

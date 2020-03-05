@@ -88,7 +88,7 @@ class Search extends React.Component {
                                     onFocus={this.handleFocus}
                                     onBlur={this.handleBlur}
                                 />
-                                <i className="material-icons" title="Use my location" onClick={this.handleLocClick}>
+                                <i className={"material-icons " + (this.props.geocodeError === 1 ? "no_geo" : "")} title="Use my location" onClick={this.handleLocClick}>
                                     location_on
                                 </i>
                             </div>

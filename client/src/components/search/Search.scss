@@ -42,6 +42,11 @@ $purpleColorHover: #772ce8;
         &:hover {
             color: $purpleColorHover;
         }
+
+        &.no_geo {
+            pointer-events: none;
+            opacity: 0;
+        }
     }
 
     .location_search_input {
