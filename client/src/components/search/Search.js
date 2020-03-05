@@ -26,6 +26,9 @@ class Search extends React.Component {
 
     handleLocClick = () => {
         this.props.getUserCoord(); // Update the coords using the user's current location
+        if (this.props.newSearch) {
+            return this.props.newSearch();
+        }
         return this.props.history.push("/maps");
     };
 

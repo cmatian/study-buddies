@@ -29,13 +29,7 @@ class App extends React.Component {
             // Default Values
             filters: {
                 openNow: true,
-                type: {
-                    cafe: true,
-                    library: true,
-                    university: true,
-                    book_store: true,
-                    restaurant: true,
-                },
+                type: 'cafe',
                 minPriceLevel: 0,
                 maxPriceLevel: 4,
             },

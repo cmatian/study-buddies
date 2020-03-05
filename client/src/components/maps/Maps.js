@@ -66,7 +66,7 @@ class Maps extends React.Component {
 
         let request = {
             location: new maps.LatLng(this.props.lat, this.props.long),
-            type: "cafe",
+            type: this.props.filters.type,
             maxPriceLevel: this.props.filters.maxPriceLevel,
             openNow: this.props.filters.openNow,
             // can only use rankBy or radius can't use both
@@ -74,7 +74,7 @@ class Maps extends React.Component {
             // radius: 30000,
         };
 
-        // perform text search
+        // perform nearbySearch
         this.state.placeService.nearbySearch(request, (results, status) => {
             if (status === maps.places.PlacesServiceStatus.OK) {
                 // console.log('results ', results)
