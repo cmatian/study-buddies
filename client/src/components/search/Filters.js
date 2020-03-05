@@ -15,7 +15,7 @@ class Filters extends React.Component {
     }
 
     // Handle Change
-    handleChange = (event, locationType = false) => {
+    handleChange = (event) => {
         const { filters } = this.props;
         const target = event.target;
         let value = target.type === "checkbox" ? target.checked : target.value;
@@ -24,21 +24,7 @@ class Filters extends React.Component {
             value = parseInt(value);
         }
 
-        let newFilters = {};
-
-        if (locationType) {
-            newFilters = {
-                ...filters,
-                type: {
-                    ...filters.type,
-                    [target.name]: value,
-                },
-            };
-            this.props.updateFilters(newFilters);
-            return;
-        }
-
-        newFilters = {
+        let newFilters = {
             ...filters,
             [target.name]: value,
         };
@@ -88,6 +74,7 @@ class Filters extends React.Component {
         const { filters } = this.props; // filters prop
         const { type } = filters;
         const current = parseInt(filters.maxPriceLevel);
+        const currType = filters.type;
         return (
             <form className="form_filters">
                 <span className="fp_wrapper" ref={node => (this.priceFilterRef = node)}>
@@ -170,64 +157,69 @@ class Filters extends React.Component {
                         <i className="material-icons">keyboard_arrow_down</i>
                     </button>
                     <div className={"flex_container " + (this.state.showTypesFilter ? "visible" : "")}>
-                        <div className={"flex_item " + (type.book_store ? "active" : "")}>
-                            <label htmlFor="filter_bookstore">
-                                <input
-                                    id="filter_bookstore"
-                                    type="checkbox"
-                                    name="book_store"
-                                    checked={type.book_store}
-                                    onChange={event => this.handleChange(event, true)}
-                                />
-                                Book Store
-                            </label>
-                        </div>
-                        <div className={"flex_item " + (type.cafe ? "active" : "")}>
+                        <div className={"flex_item " + (type === "cafe" ? "active" : "")}>
                             <label htmlFor="filter_cafe">
                                 <input
                                     id="filter_cafe"
-                                    type="checkbox"
-                                    name="cafe"
-                                    checked={type.cafe}
-                                    onChange={event => this.handleChange(event, true)}
+                                    type="radio"
+                                    name="type"
+                                    value="cafe"
+                                    checked={type === "cafe"}
+                                    onChange={this.handleChange}
                                 />
                                 Cafe
                             </label>
                         </div>
-                        <div className={"flex_item " + (type.restaurant ? "active" : "")}>
+                        <div className={"flex_item " + (type === "library" ? "active" : "")}>
+                            <label htmlFor="filter_library">
+                                <input
+                                    id="filter_library"
+                                    type="radio"
+                                    name="type"
+                                    checked={type === "library"}
+                                    value="library"
+                                    onChange={this.handleChange}
+                                />
+                                Library
+                            </label>
+                        </div>
+                        <div className={"flex_item " + (type === "book_store" ? "active" : "")}>
+                            <label htmlFor="filter_bookstore">
+                                <input
+                                    id="filter_bookstore"
+                                    type="radio"
+                                    name="type"
+                                    value="book_store"
+                                    checked={type === "book_store"}
+                                    onChange={this.handleChange}
+                                />
+                                Book Store
+                            </label>
+                        </div>
+                        <div className={"flex_item " + (type === "restaurant" ? "active" : "")}>
                             <label htmlFor="filter_restaurant">
                                 <input
                                     id="filter_restaurant"
-                                    type="checkbox"
-                                    name="restaurant"
-                                    checked={type.restaurant}
-                                    onChange={event => this.handleChange(event, true)}
+                                    type="radio"
+                                    name="type"
+                                    value="restaurant"
+                                    checked={type === "restaurant"}
+                                    onChange={this.handleChange}
                                 />
                                 Restaurant
                             </label>
                         </div>
-                        <div className={"flex_item " + (type.university ? "active" : "")}>
+                        <div className={"flex_item " + (type === "university" ? "active" : "")}>
                             <label htmlFor="filter_university">
                                 <input
                                     id="filter_university"
-                                    type="checkbox"
-                                    name="university"
-                                    checked={type.university}
-                                    onChange={event => this.handleChange(event, true)}
+                                    type="radio"
+                                    name="type"
+                                    value="university"
+                                    checked={type === "university"}
+                                    onChange={this.handleChange}
                                 />
                                 University
-                            </label>
-                        </div>
-                        <div className={"flex_item " + (type.library ? "active" : "")}>
-                            <label htmlFor="filter_library">
-                                <input
-                                    id="filter_library"
-                                    type="checkbox"
-                                    name="library"
-                                    checked={type.library}
-                                    onChange={event => this.handleChange(event, true)}
-                                />
-                                Library
                             </label>
                         </div>
                     </div>
