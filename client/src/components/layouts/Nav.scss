@@ -77,10 +77,6 @@ nav {
                 display: none;
             }
 
-            li.user {
-                margin-left: auto !important;
-            }
-
             li {
                 &:not(:first-of-type) {
                     margin-left: 15px;
