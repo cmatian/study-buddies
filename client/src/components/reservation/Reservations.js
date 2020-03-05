@@ -1,5 +1,5 @@
 import React from "react";
-// import { Redirect } from "react-router-dom";
+import { Redirect } from "react-router-dom";
 import ReservationCard from "./ReservationCard";
 import ReservationDetails from "./ReservationDetails";
 import "./Reservations.scss";
@@ -18,7 +18,7 @@ class Reservations extends React.Component {
             reservationData: {},
             isSelected: null, // This is the reservation id of the card that is selected
             isSelectedIdx: null,
-            id_token: null,
+            needsSignin: false,
         };
     }
 
@@ -30,6 +30,7 @@ class Reservations extends React.Component {
             return;
         }
         this.setState({
+            ...this.state,
             isSelected: parseInt(itemkey),
             isSelectedIdx: parseInt(itemidx),
         });
@@ -37,8 +38,18 @@ class Reservations extends React.Component {
 
     maybeFetchData() {
         const userContext = this.context;
-        if (!this.state.isFetched && userContext.isAuthenticated) {
-            this.fetchRequest(userContext.user);
+        if (!this.state.isFetched) {
+            if (userContext.isAuthenticated) {
+                this.fetchRequest(userContext.user);
+            } else if (userContext.isUserChecked) {
+                this.setState({
+                    ...this.state,
+                    isFetching: false,
+                    isFetched: true,
+                    isError: false,
+                    needsSignin: true,
+                });
+            }
         }
     }
 
@@ -63,6 +74,7 @@ class Reservations extends React.Component {
                     selectionStateIdx = index; // default 0 from function param
                 }
                 this.setState({
+                    ...this.state,
                     reservationData: data || {},
                     isFetching: false,
                     isFetched: true,
@@ -73,7 +85,12 @@ class Reservations extends React.Component {
             })
             .catch(error => {
                 console.error("Error", error);
-                this.setState({ ...this.state, isFetching: false, isError: true, isFetched: true });
+                this.setState({
+                    ...this.state,
+                    isFetching: false,
+                    isError: true,
+                    isFetched: true
+                });
             });
     };
 
@@ -198,7 +215,11 @@ class Reservations extends React.Component {
     }
 
     render() {
-        const { isFetching, isError, reservationData, isSelected, isSelectedIdx } = this.state;
+        const { isFetching, isError, reservationData, isSelected, isSelectedIdx, needsSignin } = this.state;
+
+        if (needsSignin) {
+            return <Redirect to="/signin"/>;
+        }
 
         // Is the data loading?
         if (isFetching) {

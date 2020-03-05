@@ -44,6 +44,12 @@ nav {
                 height: inherit;
                 color: black;
                 transition: ease-in-out 150ms;
+
+                &.disabled {
+                    pointer-events: none;
+                    cursor: default;
+                    color: gray;
+                }
             }
         }
     }
@@ -83,6 +89,11 @@ nav {
                 a {
                     border: 1px solid #fff;
                     color: #fff;
+
+                    &.disabled {
+                        border: 1px solid gray;
+                        color: gray;
+                    }
 
                     &:hover {
                         background: rgba(145, 71, 255, 0.5);

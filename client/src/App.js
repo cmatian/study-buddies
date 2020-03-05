@@ -81,10 +81,6 @@ class App extends React.Component {
     onSigninSuccess(googleUser) {
         this.setState({ ...this.state, user: googleUser, isUserChecked: true, isAuthenticated: true });
         var profile = googleUser.getBasicProfile();
-        console.log("ID: " + profile.getId()); // Do not send to your backend! Use an ID token instead.
-        console.log("Name: " + profile.getName());
-        console.log("Image URL: " + profile.getImageUrl());
-        console.log("Email: " + profile.getEmail()); // This is null if the 'email' scope is not present.
         var idToken = googleUser.getAuthResponse().id_token;
         var data = { idToken: idToken };
         fetch("/backend/signin", {
@@ -114,6 +110,7 @@ class App extends React.Component {
     render() {
         var userState = {
             user: this.state.user,
+            isUserChecked: this.state.isUserChecked,
             isAuthenticated: this.state.isAuthenticated,
         };
         var authState = {
