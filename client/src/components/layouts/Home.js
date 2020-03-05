@@ -36,6 +36,7 @@ class Home extends React.Component {
                 <Header headerTitle="Study Buddies" />
                 <div className="content_wrapper">
                     <Search
+                        geocodeError={this.props.geocodeError}
                         lat={this.props.lat}
                         long={this.props.long}
                         updateUserCoord={this.props.updateUserCoord}

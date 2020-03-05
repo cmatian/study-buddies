@@ -65,6 +65,7 @@ class Search extends React.Component {
 
     // onclick of submit button redirect to maps
     render() {
+        console.log(this.props.geocodeError);
         return (
             <PlacesAutocomplete
                 value={this.state.address}
@@ -88,7 +89,7 @@ class Search extends React.Component {
                                     onFocus={this.handleFocus}
                                     onBlur={this.handleBlur}
                                 />
-                                <i className="material-icons" title="Use my location" onClick={this.handleLocClick}>
+                                <i className={"material-icons " + (this.props.geocodeError === 1 ? "no_geo" : "")} title="Use my location" onClick={this.handleLocClick}>
                                     location_on
                                 </i>
                             </div>
