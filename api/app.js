@@ -16,7 +16,6 @@ var usersLocationsRouter = require("./routes/users_locations");
 var reservationsRouter = require("./routes/reservations");
 var ratingsRouter = require("./routes/ratings");
 var savedLocationsRouter = require("./routes/saved_locations");
-var auth = require("./auth.js");
 
 var app = express();
 
@@ -40,9 +39,6 @@ app.use(
         saveUninitialized: false,
     })
 );
-
-// Must come after session initialization
-auth.init(app);
 
 app.use(express.static(`../client/build`));
 
