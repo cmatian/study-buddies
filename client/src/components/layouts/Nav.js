@@ -3,9 +3,12 @@ import { NavLink, withRouter } from "react-router-dom";
 import AuthNavButton from "../auth/AuthNavButton";
 import ResponsiveLayout from "./ResponsiveLayout";
 import MobileNav from "./MobileNav";
+import UserContext from "../../UserContext";
 import "./Nav.scss";
 
 class Nav extends React.Component {
+    static contextType = UserContext;
+
     constructor(props) {
         super(props);
         this.state = {};
@@ -23,7 +26,16 @@ class Nav extends React.Component {
         )
     }
 
+    handleProtectedClick = event => {
+        const userContext = this.context;
+        if (!userContext.isAuthenticated) {
+            event.preventDefault();
+        }
+    }
+
     renderDesktopNav() {
+        const userContext = this.context;
+        const protectedNavClassName = userContext.isAuthenticated ? "" : "disabled";
         return (
             <nav className={window.location.pathname === "/" ? "home" : "default"}>
                 <div>
@@ -36,7 +48,9 @@ class Nav extends React.Component {
                             </li>
                         }
                         <li>
-                            <NavLink exact to="/users/reservations" activeClassName="active">
+                            <NavLink exact to="/users/reservations" activeClassName="active"
+                                 className={protectedNavClassName}
+                                 onClick={this.handleProtectedClick}>
                                 My Reservations
                             </NavLink>
                         </li>
