@@ -2,6 +2,9 @@ import React from 'react';
 import { withRouter } from "react-router-dom";
 import "./Rates.scss";
 
+const stars = [0, 1, 2, 3, 4];
+const costs = ["$", "$$", "$$$", "$$$$"];
+
 // Page for submitting a rating + review + estimated cost
 class Rates extends React.Component {
     constructor(props) {

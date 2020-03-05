@@ -11,7 +11,7 @@ class SavedItem extends React.Component {
             <div>
                 {savedLocation.nickname}
                 <button 
-                    onClick={() => onDelete()}
+                    onClick={() => onDelete(savedLocation.location.places_id)}
                 > delete
                 </button>
             </div>

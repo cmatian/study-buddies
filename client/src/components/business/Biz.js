@@ -21,7 +21,7 @@ class Biz extends React.Component {
                 places_id: this.props.selectedPlaceDetail.place_id,
                 picture: this.props.selectedPlaceDetail.photos[0].getUrl(),
                 name: this.props.selectedPlaceDetail.name,
-                referral: "/maps"
+                referral: "/maps",
             }
         };
 
