@@ -21,11 +21,9 @@ class Signin extends React.Component {
 
     componentDidUpdate() {
         this.init();
-        console.log('Updated!');
     }
 
     init() {
-        console.log(window.gapi.signin2);
         var callbackContext = this.context;
         if (!this.state.initialized) {
             this.setState({
@@ -47,7 +45,6 @@ class Signin extends React.Component {
 
     render() {
         const { user } = this.props; // Different context that we consume for checking if a user is logged in
-        console.log(user.isUserChecked, user.isAuthenticated);
 
         return (
             <div className="signin_wrapper">
