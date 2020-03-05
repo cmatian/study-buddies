@@ -13,7 +13,7 @@ import Signin from "./components/auth/Signin";
 import CallbackContext from "./CallbackContext";
 import UserContext from "./UserContext";
 import AuthButtonContext from "./AuthButtonContext";
-import WindowSizeProvider from './WindowSizeContext'
+import WindowSizeProvider from './WindowSizeContext';
 
 // App specific styling
 import "./App.scss";
@@ -173,8 +173,19 @@ class App extends React.Component {
                     <Route path="/biz/reserve" exact component={Reserve}></Route>
                     <Route path="/users/reservations" exact component={Reservations}></Route>
                     <Route path="/maps/users/saved" exact component={Saved}></Route>
-                    <Route path="/signin" exact component={Signin}></Route>
-                    <Route path="/signout" exact component={Signin}></Route>
+                    <Route path="/signin" exact render={() => {
+                        return (
+                            <UserContext.Consumer>
+                                {userState => (
+                                    <CallbackContext.Consumer>
+                                        {() => (
+                                            <Signin user={userState} />
+                                        )}
+                                    </CallbackContext.Consumer>
+                                )}
+                            </UserContext.Consumer>
+                        );
+                    }}></Route>
                     <Route component={NotFound}></Route>
                 </Switch>
             </BrowserRouter>
