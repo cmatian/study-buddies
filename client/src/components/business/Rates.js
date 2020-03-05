@@ -125,7 +125,6 @@ class Rates extends React.Component {
                                 <div className="rating_title"> How was your visit? <span className="required_ast">*</span></div>
                                 <div className="star_container">
                                     {stars.map((star, index) => {
-                                        {/* conditonal className to display stars selcted */ }
                                         const className = index <= this.state.starRating - 1 ? "star" : "star_outline";
                                         return (
                                             <i
@@ -143,7 +142,7 @@ class Rates extends React.Component {
                                 <div className="cost_title">How was the pricing? <span className="required_ast">*</span></div>
                                 <div className="price_container">
                                     {costs.map((cost, index) => {
-                                        const className = index == this.state.estimatedCost - 1 ? "cost_selected" : "cost";
+                                        const className = index === this.state.estimatedCost - 1 ? "cost_selected" : "cost";
                                         return (
                                             <span
                                                 className={className}

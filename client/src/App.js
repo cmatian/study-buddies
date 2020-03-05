@@ -13,7 +13,7 @@ import Signin from "./components/auth/Signin";
 import CallbackContext from "./CallbackContext";
 import UserContext from "./UserContext";
 import AuthButtonContext from "./AuthButtonContext";
-import WindowSizeProvider from './WindowSizeContext'
+import WindowSizeProvider from './WindowSizeContext';
 
 // App specific styling
 import "./App.scss";
