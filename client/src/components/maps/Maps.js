@@ -74,9 +74,7 @@ class Maps extends React.Component {
             // radius: 30000,
         };
 
-        console.log(request);
-
-        // perform text search
+        // perform nearbySearch
         this.state.placeService.nearbySearch(request, (results, status) => {
             if (status === maps.places.PlacesServiceStatus.OK) {
                 // console.log('results ', results)
