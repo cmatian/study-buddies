@@ -50,6 +50,12 @@
             &:hover {
                 background: #1678d3;
             }
+
+            &.disabled {
+                cursor: default;
+                pointer-events: none;
+                background: lightgray;
+            }
         }
 
         .details {

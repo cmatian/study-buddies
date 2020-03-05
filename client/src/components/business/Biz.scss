@@ -91,6 +91,12 @@
             &:hover {
                 background: #1678d3
             }
+
+            &.disabled {
+                cursor: default;
+                pointer-events: none;
+                background: lightgray;
+            }
         }
     }
 
@@ -113,6 +119,12 @@
 
             &:hover {
                 background: #6010d8;
+            }
+
+            &.disabled {
+                cursor: default;
+                pointer-events: none;
+                background: lightgray;
             }
         }
     }

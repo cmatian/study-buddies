@@ -1,10 +1,13 @@
 import React from 'react';
 import { withRouter } from "react-router-dom";
 import ReviewList from "../rate/ReviewList";
+import UserContext from "../../UserContext";
 import "./Biz.scss";
 
 // Display extended details for matches display of hours, location, and distance
 class Biz extends React.Component {
+    static contextType = UserContext;
+
     constructor(props) {
         super(props);
         this.state = ({
@@ -14,18 +17,23 @@ class Biz extends React.Component {
         });
     }
 
-    handleRedriect = () => {
-        const location = {
-            pathname: "/biz/rate",
-            state: {
-                places_id: this.props.selectedPlaceDetail.place_id,
-                picture: this.props.selectedPlaceDetail.photos[0].getUrl(),
-                name: this.props.selectedPlaceDetail.name,
-                referral: "/maps",
-            }
-        };
+    onRateSelect = event => {
+        const userContext = this.context;
+        if (!userContext.isAuthenticated) {
+            event.preventDefault();
+        } else {
+            const location = {
+                pathname: "/biz/rate",
+                state: {
+                    places_id: this.props.selectedPlaceDetail.place_id,
+                    picture: this.props.selectedPlaceDetail.photos[0].getUrl(),
+                    name: this.props.selectedPlaceDetail.name,
+                    referral: "/maps",
+                }
+            };
 
-        return this.props.history.push(location);
+            return this.props.history.push(location);
+        }
     };
 
     onGoogleSelect = () => {
@@ -43,6 +51,15 @@ class Biz extends React.Component {
             this.fetchReviews()
         );
     };
+
+    onReservationSelect = event => {
+        const userContext = this.context;
+        if (!userContext.isAuthenticated) {
+            event.preventDefault();
+        } else {
+            this.props.onReservationSelect();
+        }
+    }
 
     fetchReviews() {
         let auth2 = window.gapi.auth2.getAuthInstance();
@@ -71,7 +88,9 @@ class Biz extends React.Component {
     };
 
     render() {
-        const { selectedPlace, selectedPlaceDetail, selectedPlaceDistance, onReservationSelect } = this.props;
+        const userContext = this.context;
+        const protectedClassName = userContext.isAuthenticated ? "" : "disabled";
+        const { selectedPlace, selectedPlaceDetail, selectedPlaceDistance } = this.props;
         const { showGoogleReview, showStudyReview } = this.state;
         // console.log(selectedPlace);
 
@@ -84,7 +103,10 @@ class Biz extends React.Component {
                 <div className="business_detail_wrapper">
                     <img className="image_container " src={selectedPlaceDetail.photos[0].getUrl()} alt=""></img>
                     <div className="utility_buttons_container">
-                        <button className="reservation_button" onClick={() => onReservationSelect()}>Make Reservation</button>
+                        <button className={"reservation_button " + protectedClassName}
+                                onClick={this.onReservationSelect}>
+                            Make Reservation
+                        </button>
                     </div>
                     <div className="business_name_container">
                         <h2>{selectedPlace.name}</h2>
@@ -119,7 +141,9 @@ class Biz extends React.Component {
                         })}
                     </div>
                     <div className="review_button_container">
-                        <button className="review_button" onClick={this.handleRedriect}>Submit a Review</button>
+                        <button className={"review_button " + protectedClassName} onClick={this.onRateSelect}>
+                            Submit a Review
+                        </button>
                     </div>
                     <div className="view_review_container">
                         <span onClick={this.onGoogleSelect} className={showGoogleReview ? "selected" : ""}>
