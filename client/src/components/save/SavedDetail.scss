@@ -1,0 +1,157 @@
+$green: #01973f;
+$lightgreen: #79ca49;
+$orange: #ff8f26;
+$red: #c60204;
+
+.saved_details_wrapper {
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: center;
+    padding-top: 53px;
+
+    .header {
+        display: flex;
+        flex-flow: column wrap;
+        padding: 15px;
+
+        h1 {
+            padding: 10px;
+            text-align: left;
+            color: #272727;
+            margin: 0;
+            margin-top: 10px;
+            border-radius: 5px; 
+
+            .aux_text {
+                color: rgba(0, 0, 0, 0.40);
+            }
+        }
+    }
+
+    .saved_details_container {
+        width: 100%;
+        max-width: 600px;
+    }
+
+    .button_toolbar {
+        display: flex;
+        justify-content: flex-start;
+        margin-top: 25px;
+
+        .goback_btn,
+        .res_btn {
+            padding: 10px 15px;
+            font-size: 14px;
+            appearance: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: ease-in-out 150ms;
+            outline: 0;
+        }
+
+        .res_btn {
+            
+        }
+
+        .goback_btn {
+            background: #fff;
+            border: 1px solid #41a3ff;
+            color: #41a3ff;
+
+            &:hover {
+                color: #fff;
+                background: #41a3ff;
+                border-color: #41a3ff;
+            }
+        }
+    }
+
+    .body_content {
+        padding: 15px;
+
+        .detail_group {
+            display: flex;
+            flex-flow: row nowrap;
+            align-items: center;
+            margin-bottom: 10px;
+            background: rgba(0, 0, 0, 0.05);  
+            border-radius: 5px;
+
+            .text_group {
+                display: flex;
+                flex-flow: column nowrap;
+                align-items: flex-start;
+                padding: 15px;
+            }
+
+            .pricing {
+                .inexpensive {
+                    color: $green;
+                }
+
+                .moderate {
+                    color: $lightgreen;
+                }
+                
+                .pricey {
+                    color: $orange;
+                }
+
+                .ultra_high_end {
+                    color: $red;
+                }
+            }
+
+            .rating {
+                &.green {
+                    color: $green;
+                }
+        
+                &.light_green {
+                    color: $lightgreen;
+                }
+        
+                &.orange {
+                    color: $orange; 
+                }
+        
+                &.red {
+                    color: $red;
+                }
+            }
+
+            .day {
+                font-size: 16px;
+                margin: 5px 0;
+
+                &.current_day {
+                    color: #41a3ff;
+                    font-weight: bold;
+                }
+            }
+    
+            .label {
+                font-size: 14px;
+            }
+    
+            .text {
+                text-align: left;
+                font-size: 20px;
+            }
+
+            i {
+                background: #fff;
+                color: #41a3ff;
+                padding: 5px;
+                font-size: 45px;
+                margin-left: 10px;
+                border-radius: 50%;
+            }
+
+        }
+    }
+
+
+
+
+}
