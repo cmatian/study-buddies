@@ -1,7 +1,6 @@
 import React from "react";
 import CallbackContext from "../../CallbackContext";
 import { Link } from 'react-router-dom';
-import Loader from '../layouts/Loader';
 import "./Signin.scss";
 
 class Signin extends React.Component {

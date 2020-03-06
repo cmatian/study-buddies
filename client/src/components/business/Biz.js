@@ -26,7 +26,7 @@ class Biz extends React.Component {
                 pathname: "/biz/rate",
                 state: {
                     places_id: this.props.selectedPlaceDetail.place_id,
-                    picture: this.props.selectedPlaceDetail.photos[0].getUrl(),
+                    picture: this.props.selectedPlaceDetail.photos ? this.props.selectedPlaceDetail[0].getUrl() : undefined,
                     name: this.props.selectedPlaceDetail.name,
                     referral: "/maps",
                 }
@@ -59,7 +59,7 @@ class Biz extends React.Component {
         } else {
             this.props.onReservationSelect();
         }
-    }
+    };
 
     fetchReviews() {
         let auth2 = window.gapi.auth2.getAuthInstance();
@@ -101,10 +101,12 @@ class Biz extends React.Component {
 
             return (
                 <div className="business_detail_wrapper">
-                    <img className="image_container " src={selectedPlaceDetail.photos[0].getUrl()} alt=""></img>
+                    {selectedPlaceDetail.photos !== null || selectedPlaceDetail.photos == undefined &&
+                        <img className="image_container " src={selectedPlaceDetail.photos[0].getUrl()} alt=""></img>
+                    }
                     <div className="utility_buttons_container">
                         <button className={"reservation_button " + protectedClassName}
-                                onClick={this.onReservationSelect}>
+                            onClick={this.onReservationSelect}>
                             Make Reservation
                         </button>
                     </div>
@@ -125,45 +127,51 @@ class Biz extends React.Component {
                             </span>
                         </div>
                     }
-                    <div className="business_hours_container">
-                        <div className="title"> Opening Hours: </div>
-                        {selectedPlaceDetail.opening_hours.weekday_text.map((text, index) => {
-                            let current = new Date().getDay();
-                            current -= 1;
-                            if (current < 0) {
-                                current = 6;
-                            }
-                            return (
-                                <div key={index} className={"day " + (current === index ? "current_day" : "")}>
-                                    {text}
-                                </div>
-                            );
-                        })}
-                    </div>
+                    {selectedPlaceDetail.opening_hours &&
+                        <div className="business_hours_container">
+                            <div className="title"> Opening Hours: </div>
+                            {selectedPlaceDetail.opening_hours.weekday_text.map((text, index) => {
+                                let current = new Date().getDay();
+                                current -= 1;
+                                if (current < 0) {
+                                    current = 6;
+                                }
+                                return (
+                                    <div key={index} className={"day " + (current === index ? "current_day" : "")}>
+                                        {text}
+                                    </div>
+                                );
+                            })}
+                        </div>
+                    }
                     <div className="review_button_container">
                         <button className={"review_button " + protectedClassName} onClick={this.onRateSelect}>
                             Submit a Review
                         </button>
                     </div>
-                    <div className="view_review_container">
-                        <span onClick={this.onGoogleSelect} className={showGoogleReview ? "selected" : ""}>
-                            Google<br />Reviews
+                    {selectedPlaceDetail.reviews &&
+                        <>
+                            <div className="view_review_container">
+                                <span onClick={this.onGoogleSelect} className={showGoogleReview ? "selected" : ""}>
+                                    Google<br />Reviews
                         </span>
-                        <span onClick={this.onStudySelect} className={showStudyReview ? "selected" : ""}>
-                            Study Buddies<br />Reviews
+                                <span onClick={this.onStudySelect} className={showStudyReview ? "selected" : ""}>
+                                    Study Buddies<br />Reviews
                         </span>
-                    </div>
-                    <div>
-                        {this.state.showGoogleReview ? (
-                            <ReviewList
-                                reviews={selectedPlaceDetail.reviews}
-                            />
-                        ) : (
-                            <ReviewList 
-                                reviews={this.state.reviewDetail}
-                            />
-                        )}
-                    </div>
+                            </div>
+                            <div>
+                                {this.state.showGoogleReview ? (
+                                    <ReviewList
+                                        reviews={selectedPlaceDetail.reviews}
+                                    />
+                                ) : (
+                                        <ReviewList
+                                            reviews={this.state.reviewDetail}
+                                        />
+                                    )}
+                            </div>
+                        </>
+                    }
                 </div>
             );
         }

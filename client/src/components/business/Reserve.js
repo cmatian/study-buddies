@@ -26,7 +26,6 @@ class Reserve extends React.Component {
             meeting_date_time: "",
             initialTime: {
                 closed_days: [],
-                injectHours: [],
                 open: { hours: 0, minutes: 0 }, // 12:00 am
                 close: { hours: 23, minutes: 0 }, // 11:00 pm},
             },
@@ -126,6 +125,9 @@ class Reserve extends React.Component {
     };
 
     setOperationHours = (date, req = false) => {
+        if (this.props.data.opening_hours === null || this.props.data.opening_hours === undefined) {
+            return console.log("Unable to set operation hours. Opening Hours are undefined.");
+        }
         const { periods } = this.props.data.opening_hours;
         let { initialTime } = this.state;
         // Generate a key value pair from the periods array that google provides us.
@@ -191,12 +193,16 @@ class Reserve extends React.Component {
         // Returning an object containing the initialTime obj and the closed_days array.
         // We need to spread both results into the state.initialTime object.
         let obj = this.setOperationHours(date, true);
-        if (this.state.isTimeInitialized === false) {
+        if (this.state.isTimeInitialized === false && this.props.data.opening_hours) {
             this.setState({
                 initialTime: {
                     ...obj.initialTime,
                     closed_days: obj.closedDays,
                 },
+                isTimeInitialized: true,
+            });
+        } else {
+            this.setState({
                 isTimeInitialized: true,
             });
         }

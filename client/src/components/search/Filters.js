@@ -74,7 +74,6 @@ class Filters extends React.Component {
         const { filters } = this.props; // filters prop
         const { type } = filters;
         const current = parseInt(filters.maxPriceLevel);
-        const currType = filters.type;
         return (
             <form className="form_filters">
                 <span className="fp_wrapper" ref={node => (this.priceFilterRef = node)}>

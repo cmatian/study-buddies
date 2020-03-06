@@ -128,6 +128,10 @@ class ReservationDetails extends React.Component {
      * function will return the initialTime object rather than call setState directly.
      */
     setOperationHours = (date, req = false) => {
+        if (!this.state.details.opening_hours) {
+            return console.log("Opening hours were undefined.");
+        }
+
         const { periods } = this.state.details.opening_hours;
         let { initialTime } = this.state;
 
@@ -197,12 +201,16 @@ class ReservationDetails extends React.Component {
         // Returning an object containing the initialTime obj and the closed_days array.
         // We need to spread both results into the state.initialTime object.
         let obj = this.setOperationHours(date, true);
-        if (this.state.isTimeInitialized === false) {
+        if (this.state.isTimeInitialized === false && this.state.details.opening_hours) {
             this.setState({
                 initialTime: {
                     ...obj.initialTime,
                     closed_days: obj.closedDays,
                 },
+                isTimeInitialized: true,
+            });
+        } else {
+            this.setState({
                 isTimeInitialized: true,
             });
         }
@@ -585,18 +593,24 @@ class ReservationDetails extends React.Component {
                             <div className="sub_detail_box sub_hours">
                                 <div className="sub_title">Hours</div>
                                 <div className="sub_details">
-                                    {details.opening_hours.weekday_text.map((item, idx) => {
-                                        let current = new Date().getDay();
-                                        current -= 1;
-                                        if (current < 0) {
-                                            current = 6;
-                                        }
-                                        return (
-                                            <p key={idx} className={current === idx ? "current_day" : ""}>
-                                                {item}
-                                            </p>
-                                        );
-                                    })}
+                                    {details.opening_hours ?
+                                        <>
+                                            {details.opening_hours.weekday_text.map((item, idx) => {
+                                                let current = new Date().getDay();
+                                                current -= 1;
+                                                if (current < 0) {
+                                                    current = 6;
+                                                }
+                                                return (
+                                                    <p key={idx} className={current === idx ? "current_day" : ""}>
+                                                        {item}
+                                                    </p>
+                                                );
+                                            })}
+                                        </>
+                                        :
+                                        <p>Could not retrieve the opening hours.</p>
+                                    }
                                 </div>
                             </div>
                             <div className="sub_detail_box sub_contact">
