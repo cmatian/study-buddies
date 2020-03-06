@@ -180,11 +180,7 @@ class App extends React.Component {
                         return (
                             <UserContext.Consumer>
                                 {userState => (
-                                    <CallbackContext.Consumer>
-                                        {() => (
-                                            <Signin user={userState} />
-                                        )}
-                                    </CallbackContext.Consumer>
+                                    <Signin user={userState} />
                                 )}
                             </UserContext.Consumer>
                         );
