@@ -101,8 +101,10 @@ class Biz extends React.Component {
 
             return (
                 <div className="business_detail_wrapper">
-                    {selectedPlaceDetail.photos !== null || selectedPlaceDetail.photos == undefined &&
-                        <img className="image_container " src={selectedPlaceDetail.photos[0].getUrl()} alt=""></img>
+                    {selectedPlaceDetail.photos ?
+                        <img className="image_container " src={selectedPlaceDetail.photos[0].getUrl()} alt={"Image of " + selectedPlace.name} />
+                        :
+                        <img className="image_container" src="https://images.unsplash.com/photo-1519389950473-47ba0277781c?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1050&q=80" alt="Default Image" />
                     }
                     <div className="utility_buttons_container">
                         <button className={"reservation_button " + protectedClassName}

@@ -74,6 +74,14 @@
         display: flex;
         flex-flow: column nowrap;
 
+        &.undefined_photo {
+            margin-top: 15px; 
+            
+            button {
+                margin-top: 0;
+            }
+        }
+
         .reservation_button {
             margin-bottom: 15px;
         }
