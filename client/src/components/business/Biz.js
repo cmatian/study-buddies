@@ -26,7 +26,7 @@ class Biz extends React.Component {
                 pathname: "/biz/rate",
                 state: {
                     places_id: this.props.selectedPlaceDetail.place_id,
-                    picture: this.props.selectedPlaceDetail.photos ? this.props.selectedPlaceDetail[0].getUrl() : undefined,
+                    picture: this.props.selectedPlaceDetail.photos ? this.props.selectedPlaceDetail.photos[0].getUrl() : undefined,
                     name: this.props.selectedPlaceDetail.name,
                     referral: "/maps",
                 }
