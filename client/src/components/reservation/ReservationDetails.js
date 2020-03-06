@@ -68,6 +68,7 @@ class ReservationDetails extends React.Component {
                 "price_level",
                 "website",
                 "opening_hours",
+                "photos",
             ],
         };
         let servicePromise = new Promise((resolve, reject) => {
@@ -377,13 +378,14 @@ class ReservationDetails extends React.Component {
 
     reviewRedirect = () => {
         const { reservations, index } = this.props;
-
+        
         const location = {
             pathname: "/biz/rate",
             state: {
                 places_id: reservations[index].location.places_id,
                 name: reservations[index].location.name,
                 referral: "/users/reservations",
+                picture: this.state.details.photos ? this.state.details.photos[0].getUrl() : undefined,
             }
         };
 
