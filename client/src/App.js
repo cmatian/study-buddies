@@ -8,6 +8,7 @@ import Rates from "./components/business/Rates";
 import Reserve from "./components/business/Reserve";
 import Reservations from "./components/reservation/Reservations";
 import Saved from "./components/maps/Saved";
+import SavedDetails from "./components/save/SavedDetails";
 import NotFound from "./components/pages/NotFound";
 import Signin from "./components/auth/Signin";
 import CallbackContext from "./CallbackContext";
@@ -176,7 +177,9 @@ class App extends React.Component {
                     <Route path="/biz/reserve" exact component={Reserve}></Route>
                     <Route path="/users/reservations" exact component={Reservations}></Route>
                     <Route path="/maps/users/saved" exact component={Saved}></Route>
+                    <Route path="/maps/users/saved/details" exact component={SavedDetails}></Route>
                     <Route path="/signin" exact render={() => {
+                        // signin needs to consume 2 contexts in order to conditionally render signin/signout content
                         return (
                             <UserContext.Consumer>
                                 {userState => (

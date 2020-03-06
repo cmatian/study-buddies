@@ -54,6 +54,15 @@ class Maps extends React.Component {
         });
     };
 
+    isCommercial = () => {
+        const { filters } = this.props;
+
+        if (filters.type === "library" || filters.type === "university") {
+            return null;
+        }
+        return filters.type;
+    };
+
     // map is google map and maps = maps api
     handleApiLoaded = ({ map, maps }) => {
         // console.log(map, maps)
@@ -67,11 +76,9 @@ class Maps extends React.Component {
         let request = {
             location: new maps.LatLng(this.props.lat, this.props.long),
             type: this.props.filters.type,
-            maxPriceLevel: this.props.filters.maxPriceLevel,
+            maxPriceLevel: this.isCommercial(),
             openNow: this.props.filters.openNow,
-            // can only use rankBy or radius can't use both
             rankBy: maps.places.RankBy.DISTANCE,
-            // radius: 30000,
         };
 
         // perform nearbySearch
