@@ -8,10 +8,10 @@
         flex-direction: column;
     }
 
-    .search_button {
+    .search_button,
+    .refresh_button{
         position: absolute;
         z-index: 1;
-        top: 50px;
         left: 5px;
         border-radius: 5px;
         background: #41a3ff;
@@ -27,6 +27,14 @@
             padding: 5px;
             cursor: pointer;
         }
+    }
+
+    .search_button {
+        top: 50px;
+    }
+
+    .refresh_button {
+        top: 95px;
     }
 
     .close_detail_menu,

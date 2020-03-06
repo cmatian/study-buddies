@@ -37,10 +37,19 @@ class Maps extends React.Component {
             noResults: false,
             hoverTarget: null,
             markerRefs: [],
+            zoom: 12,
         };
     }
 
     newMapSearch = () => {
+        this.refreshMap(false);
+    }
+
+    refreshMap = (keepZoom) => {
+        var zoom = 12;
+        if (keepZoom && this.state.map) {
+            zoom = this.state.map.getZoom();
+        }
         // Dump markerRefs so it fills up with new references
         // It's also very important that we toggle the keys because that will cause the map to load fresh pins
         this.setState({
@@ -51,6 +60,7 @@ class Maps extends React.Component {
             showMakeReservation: false,
             isSearching: false,
             noResults: false,
+            zoom: zoom,
         });
     };
 
@@ -265,6 +275,12 @@ class Maps extends React.Component {
         }));
     };
 
+    refreshSearch = () => {
+        var latLng = this.state.map.getCenter();
+        this.props.updateUserCoord(latLng.lat(), latLng.lng());
+        this.refreshMap(true);
+    };
+
     render() {
         // console.log('this.props: ', this.props)
         const center = {
@@ -349,6 +365,9 @@ class Maps extends React.Component {
                     <div className="search_button" onClick={this.toggleSearch} title="Search in a new area">
                         <i className="material-icons">search</i>
                     </div>
+                    <div className="refresh_button" onClick={this.refreshSearch} title="Refresh search at current area">
+                        <i className="material-icons">refresh</i>
+                    </div>
                     <div style={mapStyles}>
                         {/* Google Map + Pins */}
                         <GoogleMap
@@ -356,6 +375,7 @@ class Maps extends React.Component {
                             bootstrapURLKeys={{ key: "AIzaSyC4YLPSKd-b0RxRh5kqx8QDnf9yMDioK0Y" }}
                             center={center}
                             defaultZoom={12}
+                            zoom={this.state.zoom}
                             yesIWantToUseGoogleMapApiInternals
                             onGoogleApiLoaded={({ map, maps }) => this.handleApiLoaded({ map, maps })}
                         ></GoogleMap>
