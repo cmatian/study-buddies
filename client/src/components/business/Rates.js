@@ -178,7 +178,7 @@ class Rates extends React.Component {
                                 </form>
                             </div>
                             <div className="button_container">
-                                <button className="cancel_button" onClick={() => this.clearForm()}>Cancel</button>
+                                <button className="cancel_button" onClick={() => this.handleRedriect()}>Cancel</button>
                                 <button className="submit_button" disabled={!disabled} onClick={this.handleSubmit}>Submit Review</button>
                             </div>
                         </>
