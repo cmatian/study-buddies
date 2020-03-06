@@ -53,7 +53,8 @@ router.get("/", function (req, res, next) {
                     "LEFT JOIN saved_locations as s " +
                     "  ON s.location_id = l.location_id " +
                     "  AND s.user_id = r.user_id " +
-                    "where r.user_id = ?",
+                    "where r.user_id = ? " +
+                    "ORDER BY date_time DESC",
                 [userId]
             );
         })
