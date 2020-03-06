@@ -75,8 +75,6 @@ class Rates extends React.Component {
             cost: this.state.estimatedCost.toString(),
         };
 
-        console.log('review:', data);
-
         fetch("/backend/users/ratings", {
             method: "POST",
             body: JSON.stringify(data),
