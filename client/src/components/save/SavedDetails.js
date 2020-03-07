@@ -8,9 +8,12 @@ class SavedDetails extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            data: this.props.location.state.data,
-            details: {},
+            data: props.location.state ? props.location.state.data : undefined,
+            details: {
+                place_id: props.location.state ? props.location.state.data.location.places_id : undefined,
+            },
             map: null,
+            isExpanded: false,
             isLoading: true,
         };
     }
@@ -54,8 +57,11 @@ class SavedDetails extends React.Component {
                 if (status === google.maps.places.PlacesServiceStatus.OK) {
                     console.log(results);
                     this.setState({
-                        details: results, // set the results of the getDetails request
+                        details: {
+                            ...this.state.details, ...results
+                        }, // set the results of the getDetails request
                         isLoading: false, // No longer loading
+                        isExpanded: false, // Hide Make Reservation each mount
                         map: map, // Set the map object so we can reference it directly.
                     });
                 }
@@ -113,16 +119,52 @@ class SavedDetails extends React.Component {
         );
     };
 
+    makeReservation = () => {
+        this.setState(prevState => ({
+            isExpanded: !prevState.isExpanded,
+        }));
+    };
+
+    closeReservationBar = () => {
+        this.setState({
+            isExpanded: false,
+        });
+    };
+
+    goBack = () => {
+        const { history } = this.props;
+        return history.push(history.location.state.referral);
+    };
+
     componentDidMount() {
+        if (!this.props.history.location.state) {
+            console.log("Caught referral with undefined data.");
+            return this.props.history.push("/maps/users/saved");
+        }
         this.initMap();
     }
 
     render() {
-        const { isLoading, data, details } = this.state;
+        const { isLoading, data, details, isExpanded } = this.state;
+
+        if (!this.props.location.state || this.props.location.state === null) {
+            return <></>; // Additional catch for invalid referrals. 
+        }
 
         return (
             <div className="saved_details_wrapper">
-                <div className="saved_details_container">
+                {!isLoading && Object.keys(details).length > 0 &&
+                    <div className={"side_bar_container " + (isExpanded ? "push" : "")}>
+                        <Reserve data={details} />
+                    </div>
+                }
+                <div className={"saved_details_container " + (isExpanded ? "push" : "")}>
+                    {isExpanded &&
+                        <div className="close_reservation" onClick={this.closeReservationBar}>
+                            <i className="material-icons">close</i>
+                        </div>
+                    }
+                    <div className="overlay"></div>
                     <div className="header">
                         <div className="button_toolbar">
                             <button type="button" className="goback_btn" onClick={this.goBack}>Return to Saved Locations</button>
@@ -171,18 +213,24 @@ class SavedDetails extends React.Component {
                                     <div className="text_group">
                                         <div className="label">Hours</div>
                                         <div className="text hours">
-                                            {details.opening_hours.weekday_text.map((text, index) => {
-                                                let current = new Date().getDay();
-                                                current -= 1;
-                                                if (current < 0) {
-                                                    current = 6;
-                                                }
-                                                return (
-                                                    <div key={index} className={"day " + (current === index ? "current_day" : "")}>
-                                                        {text}
-                                                    </div>
-                                                );
-                                            })}
+                                            {details.opening_hours ?
+                                                <>
+                                                    {details.opening_hours.weekday_text.map((text, index) => {
+                                                        let current = new Date().getDay();
+                                                        current -= 1;
+                                                        if (current < 0) {
+                                                            current = 6;
+                                                        }
+                                                        return (
+                                                            <div key={index} className={"day " + (current === index ? "current_day" : "")}>
+                                                                {text}
+                                                            </div>
+                                                        );
+                                                    })}
+                                                </>
+                                                :
+                                                <span>Could not retrieve the opening hours.</span>
+                                            }
                                         </div>
                                     </div>
                                 </div>

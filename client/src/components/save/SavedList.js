@@ -2,6 +2,7 @@ import React from "react";
 import UserContext from "../../UserContext";
 import SavedItem from "./SavedItem";
 import Loader from '../layouts/Loader';
+import "./SavedList.scss";
 
 class SavedList extends React.Component {
     static contextType = UserContext;
@@ -13,6 +14,7 @@ class SavedList extends React.Component {
             isFetched: false,   // flag for fetched data
             isFetching: true,   // flag for fetching data
             savedLocations: [],
+            grid: false,
         });
     }
 
@@ -61,7 +63,7 @@ class SavedList extends React.Component {
 
     // delete and refetch data
     onDelete = (places_id) => {
-        console.log("in on delete places_id: ", places_id)
+        console.log("in on delete places_id: ", places_id);
         const googleUser = this.context.user;
         let idToken = googleUser.getAuthResponse().id_token;
 
@@ -84,39 +86,62 @@ class SavedList extends React.Component {
             });
     };
 
+    toggleGrid = () => {
+        this.setState({
+            grid: true,
+        });
+    };
+
+    toggleList = () => {
+        this.setState({
+            grid: false,
+        });
+    };
+
     render() {
-        if (this.state.isFetching) {
+        const { grid, isFetching, savedLocations } = this.state;
+        if (isFetching) {
             return <Loader />;
         }
 
-        if (this.state.savedLocations.length < 1) {
-            return(
+        if (savedLocations.length < 1) {
+            return (
                 <div>
                     <h1>My Locations</h1>
                     <div>You currently have no saved locations.</div>
                 </div>
-                
-            )
-        } else {
-            return(
-                <div>
-                    <h1>My Locations</h1>
-                    <div> {
-                        this.state.savedLocations.map((savedLocation) => {
-                            let places_id = savedLocation.location.places_id;
-                            return (
-                                <SavedItem 
-                                    key={places_id}
-                                    savedLocation={savedLocation}
-                                    onDelete={this.onDelete}
-                                />
-                            );
-                        })
-                    } 
-                    </div>
-                </div>
+
             );
         }
+
+        return (
+            <>
+                <h1>My Locations</h1>
+                <div className="change_orientation">
+                    <button type="button" title="Show as List" onClick={this.toggleList} className={"list_btn " + (!grid ? "active" : "")}>
+                        <i className="material-icons">
+                            view_list
+                        </i>
+                    </button>
+                    <button type="button" title="Show as Grid" onClick={this.toggleGrid} className={"grid_btn " + (grid ? "active" : "")}>
+                        <i className="material-icons">view_module</i>
+                    </button>
+                </div>
+                <div className={"saved_list_container " + (grid ? "grid" : "list")}> {
+                    this.state.savedLocations.map((savedLocation) => {
+                        let places_id = savedLocation.location.places_id;
+                        return (
+                            <SavedItem
+                                key={places_id}
+                                savedLocation={savedLocation}
+                                onDelete={this.onDelete}
+                            />
+                        );
+                    })
+                }
+                </div>
+            </>
+        );
     }
 }
 
