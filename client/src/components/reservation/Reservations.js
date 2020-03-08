@@ -285,11 +285,15 @@ class Reservations extends React.Component {
                 <h1>My Reservations</h1>
                 <div className="filter_buttons">
                     <span className="text">Toggle Filters:</span>
-                    <button className={"hideSubmitted " + (hideSubmitted ? "active" : "")} onClick={this.toggleSubmitted}>{(hideSubmitted ? "Show Submitted" : "Hide Submitted")}</button>
-                    <button className={"hideCancelled " + (hideCancelled ? "active" : "")} onClick={this.toggleCancelled}>
-                        {(hideCancelled ? "Show Cancelled" : "Hide Cancelled")}
+                    <button className={"hideSubmitted " + (hideSubmitted ? "active" : "")} onClick={this.toggleSubmitted}>
+                        Hide Submitted
                     </button>
-                    <span className="reset" onClick={this.clearFilters}>Clear Filters</span>
+                    <button className={"hideCancelled " + (hideCancelled ? "active" : "")} onClick={this.toggleCancelled}>
+                        Hide Cancelled
+                    </button>
+                    {(hideSubmitted || hideCancelled) &&
+                        <span className="reset" onClick={this.clearFilters}>Clear Filters</span>
+                    }
                 </div>
                 <div className="reservation_window">
                     <div className="reservation_cards">
@@ -314,7 +318,7 @@ class Reservations extends React.Component {
                         })}
                     </div>
                     <div className="reservation_detail_window">
-                        {count > 0 &&
+                        {count > 0 ? (
                             <ReservationDetails
                                 cancelReservation={this.cancelReservation}
                                 updateReservation={this.updateReservation}
@@ -323,7 +327,14 @@ class Reservations extends React.Component {
                                 reservations={reservationData.reservations}
                                 selected={isSelected}
                                 index={isSelectedIdx}
-                            />
+                            />) : (
+                                <div className="no_res_details">
+                                    <span className="icon">
+                                        <i className="material-icons">warning</i>
+                                    </span>
+                                    <span className="text">No reservations match the currently selected filters.</span>
+                                </div>
+                            )
                         }
                     </div>
                 </div>
