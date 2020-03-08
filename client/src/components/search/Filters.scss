@@ -36,7 +36,7 @@
         background: #fff;
         border-radius: 4px;
         padding: 10px 15px;
-        min-width: 175px;
+        min-width: 150px;
         box-shadow: 0 0 18px rgba(0, 0, 0, 0.15);
         opacity: 0;
         transition: opacity ease-in 150ms;
@@ -89,6 +89,10 @@
         position: relative;
         display: inline-block;
 
+        .flex_container {
+            min-width: 200px;
+        }
+
         input {
             position: relative;
             top: 1px;
@@ -131,6 +135,11 @@
     .ft_wrapper {
         position: relative;
         margin-left: 10px;
+
+        .flex_container {
+            min-width: 175px;
+            right: 0;
+        }
 
         label {
             display: flex;
