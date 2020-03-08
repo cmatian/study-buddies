@@ -43,7 +43,7 @@ class Maps extends React.Component {
 
     newMapSearch = () => {
         this.refreshMap(false);
-    }
+    };
 
     refreshMap = (keepZoom) => {
         var zoom = 12;
@@ -70,7 +70,7 @@ class Maps extends React.Component {
         if (filters.type === "library" || filters.type === "university") {
             return null;
         }
-        return filters.type;
+        return filters.maxPriceLevel;
     };
 
     // map is google map and maps = maps api
