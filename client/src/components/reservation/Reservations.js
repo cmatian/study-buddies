@@ -99,7 +99,7 @@ class Reservations extends React.Component {
                     reservationData: data || {},
                     isFetching: false,
                     isFetched: true,
-                    isError: false,
+                    isError: true,
                     isSelected: selectionState,
                     isSelectedIdx: selectionStateIdx,
                 });
@@ -262,10 +262,12 @@ class Reservations extends React.Component {
                 <div className="reservation_wrapper">
                     <h1>My Reservations</h1>
                     <div className="reservation_window">
-                        There was an error loading your reservations. Please wait a moment and try again.
-                        {/* Put a button that allows the user to trigger the fetchRequest again */}
-                    </div>
-                </div>
+                        <div className="error_res_group">
+                            <i className="material-icons">error</i>
+                            <span>There was an error loading your reservations.<br />Please wait and reload the page to try again.</span>
+                        </div>
+                    </div >
+                </div >
             );
         }
 
@@ -274,7 +276,12 @@ class Reservations extends React.Component {
             return (
                 <div className="reservation_wrapper">
                     <h1>My Reservations</h1>
-                    <div className="reservation_window">You do not have any reservations.</div>
+                    <div className="reservation_window">
+                        <div className="no_res_group">
+                            <i className="material-icons">error</i>
+                            <span>You currently do not have any reservations.</span>
+                        </div>
+                    </div>
                 </div>
             );
         }
@@ -299,10 +306,10 @@ class Reservations extends React.Component {
                     <div className="reservation_cards">
                         {reservationData.reservations.map((item, index) => {
                             if (this.state.hideSubmitted && item.status === "SUBMITTED") {
-                                return;
+                                return <></>;
                             }
                             if (this.state.hideCancelled && item.status === "CANCELLED") {
-                                return;
+                                return <></>;
                             }
                             count++;
                             return (

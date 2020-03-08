@@ -58,6 +58,38 @@
         }
     }
 
+    .error_res_group,
+    .no_res_group {
+        display: flex;
+        flex-flow: row nowrap;
+        justify-content: center;
+        align-self: center;
+        align-items: center;
+        width: 100%;
+        color: #272727;
+
+        i {
+            color: #f8783d;
+            font-size: 26px;
+            margin-right: 15px;
+        }
+
+        span {
+            font-size: 24px;
+        }
+    }
+
+    .error_res_group {
+
+        i { 
+            color: #ca2525;
+        }
+
+        span {
+            color: #ca2525;
+        }
+    }
+
     .reservation_window {
         display: flex;
         flex: 1;
