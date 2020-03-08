@@ -96,7 +96,7 @@ class Filters extends React.Component {
                                 checked={current === 1}
                                 onChange={this.handleChange}
                             />
-                            <label htmlFor="price_radio_1">Inexpensive</label>
+                            <label htmlFor="price_radio_1">Inexpensive ($)</label>
                         </div>
                         <div className={"flex_item " + (current === 2 ? "active" : "")}>
                             <input
@@ -107,7 +107,7 @@ class Filters extends React.Component {
                                 checked={current === 2}
                                 onChange={this.handleChange}
                             />
-                            <label htmlFor="price_radio_2">Moderate</label>
+                            <label htmlFor="price_radio_2">Moderate ($$)</label>
                         </div>
                         <div className={"flex_item " + (current === 3 ? "active" : "")}>
                             <input
@@ -118,7 +118,7 @@ class Filters extends React.Component {
                                 checked={current === 3}
                                 onChange={this.handleChange}
                             />
-                            <label htmlFor="price_radio_3">Pricey</label>
+                            <label htmlFor="price_radio_3">Pricey ($$$)</label>
                         </div>
                         <div className={"flex_item " + (current === 4 ? "active" : "")}>
                             <input
@@ -129,7 +129,7 @@ class Filters extends React.Component {
                                 checked={current === 4}
                                 onChange={this.handleChange}
                             />
-                            <label htmlFor="price_radio_4">Ultra High-End</label>
+                            <label htmlFor="price_radio_4">Ultra High-End ($$$$)</label>
                         </div>
                     </div>
                 </span>
@@ -152,7 +152,7 @@ class Filters extends React.Component {
                         name="showTypesFilter"
                         onClick={this.toggleFilter}
                     >
-                        Locations
+                        Location Type
                         <i className="material-icons">keyboard_arrow_down</i>
                     </button>
                     <div className={"flex_container " + (this.state.showTypesFilter ? "visible" : "")}>
