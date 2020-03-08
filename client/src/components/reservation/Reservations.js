@@ -19,8 +19,29 @@ class Reservations extends React.Component {
             isSelected: null, // This is the reservation id of the card that is selected
             isSelectedIdx: null,
             needsSignin: false,
+            hideSubmitted: false,
+            hideCancelled: false,
         };
     }
+
+    clearFilters = () => {
+        this.setState({
+            hideSubmitted: false,
+            hideCancelled: false,
+        });
+    };
+
+    toggleSubmitted = () => {
+        this.setState(prevState => ({
+            hideSubmitted: !prevState.hideSubmitted,
+        }));
+    };
+
+    toggleCancelled = () => {
+        this.setState(prevState => ({
+            hideCancelled: !prevState.hideCancelled,
+        }));
+    };
 
     updateSelectedCard = event => {
         const itemkey = event.currentTarget.getAttribute("data-itemkey");
@@ -215,10 +236,19 @@ class Reservations extends React.Component {
     }
 
     render() {
-        const { isFetching, isError, reservationData, isSelected, isSelectedIdx, needsSignin } = this.state;
+        const { isFetching,
+            isError,
+            reservationData,
+            isSelected,
+            isSelectedIdx,
+            needsSignin,
+            hideSubmitted,
+            hideCancelled } = this.state;
+
+        let count = 0;
 
         if (needsSignin) {
-            return <Redirect to="/signin"/>;
+            return <Redirect to="/signin" />;
         }
 
         // Is the data loading?
@@ -253,9 +283,28 @@ class Reservations extends React.Component {
         return (
             <div className="reservation_wrapper">
                 <h1>My Reservations</h1>
+                <div className="filter_buttons">
+                    <span className="text">Toggle Filters:</span>
+                    <button className={"hideSubmitted " + (hideSubmitted ? "active" : "")} onClick={this.toggleSubmitted}>
+                        Hide Submitted
+                    </button>
+                    <button className={"hideCancelled " + (hideCancelled ? "active" : "")} onClick={this.toggleCancelled}>
+                        Hide Cancelled
+                    </button>
+                    {(hideSubmitted || hideCancelled) &&
+                        <span className="reset" onClick={this.clearFilters}>Clear Filters</span>
+                    }
+                </div>
                 <div className="reservation_window">
                     <div className="reservation_cards">
                         {reservationData.reservations.map((item, index) => {
+                            if (this.state.hideSubmitted && item.status === "SUBMITTED") {
+                                return;
+                            }
+                            if (this.state.hideCancelled && item.status === "CANCELLED") {
+                                return;
+                            }
+                            count++;
                             return (
                                 <ReservationCard
                                     key={item.reservation_id}
@@ -269,15 +318,24 @@ class Reservations extends React.Component {
                         })}
                     </div>
                     <div className="reservation_detail_window">
-                        <ReservationDetails
-                            cancelReservation={this.cancelReservation}
-                            updateReservation={this.updateReservation}
-                            deleteSavedLocation={this.deleteSavedLocation}
-                            addSavedLocation={this.addSavedLocation}
-                            reservations={reservationData.reservations}
-                            selected={isSelected}
-                            index={isSelectedIdx}
-                        />
+                        {count > 0 ? (
+                            <ReservationDetails
+                                cancelReservation={this.cancelReservation}
+                                updateReservation={this.updateReservation}
+                                deleteSavedLocation={this.deleteSavedLocation}
+                                addSavedLocation={this.addSavedLocation}
+                                reservations={reservationData.reservations}
+                                selected={isSelected}
+                                index={isSelectedIdx}
+                            />) : (
+                                <div className="no_res_details">
+                                    <span className="icon">
+                                        <i className="material-icons">warning</i>
+                                    </span>
+                                    <span className="text">No reservations match the currently selected filters.</span>
+                                </div>
+                            )
+                        }
                     </div>
                 </div>
             </div>
@@ -297,4 +355,4 @@ class Reservations extends React.Component {
     }
 }
 
-export default Reservations;
+export default Reservations;;
