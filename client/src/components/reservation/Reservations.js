@@ -99,7 +99,7 @@ class Reservations extends React.Component {
                     reservationData: data || {},
                     isFetching: false,
                     isFetched: true,
-                    isError: true,
+                    isError: false,
                     isSelected: selectionState,
                     isSelectedIdx: selectionStateIdx,
                 });
