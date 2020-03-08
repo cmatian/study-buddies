@@ -81,6 +81,7 @@
     .map_container {
         flex: 0 1 100%;
         position: relative;
+        z-index: 0;
     };
 
     .gm-style .gm-style-iw-t::after {
