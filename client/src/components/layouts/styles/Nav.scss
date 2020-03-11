@@ -22,14 +22,15 @@ nav {
         padding: 0;
 
         li.logo {
-            &:hover a {
-                color: $logoDark;
-            }
-
             a {
                 font-family: "Pacifico", cursive;
                 font-size: 24px;
                 color: $logo;
+
+                &:hover {
+                    color: $logoDark !important;
+                    background: transparent !important;  
+                }
             }
         }
 
@@ -44,6 +45,17 @@ nav {
                 height: inherit;
                 color: black;
                 transition: ease-in-out 150ms;
+                margin-right: 5px;
+
+                &.active {
+                    color: #fff;
+                    background: #9147ff
+                }
+
+                &:not(.disabled):hover {
+                    color: #fff;
+                    background: #9147ff
+                }
 
                 &.disabled {
                     cursor: default;
