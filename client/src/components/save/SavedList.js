@@ -2,7 +2,7 @@ import React from "react";
 import UserContext from "../../UserContext";
 import SavedItem from "./SavedItem";
 import Loader from '../layouts/Loader';
-import "./SavedList.scss";
+import "./styles/SavedList.scss";
 
 class SavedList extends React.Component {
     static contextType = UserContext;

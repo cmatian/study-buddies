@@ -1,5 +1,5 @@
 import React from 'react';
-import './PlaceDetail.scss';
+import './styles/PlaceDetail.scss';
 
 const PlaceDetail = (props) => {
     const { data } = props;

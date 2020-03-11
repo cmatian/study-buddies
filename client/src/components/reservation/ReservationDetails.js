@@ -5,7 +5,7 @@ import { subDays, setHours, setMinutes, parseISO, getDay } from "date-fns";
 import DatePickerButton from "../layouts/form/DatePickerButton";
 import Loader from '../layouts/Loader';
 import "react-datepicker/dist/react-datepicker.css"; // DatePicker CSS import
-import "./ReservationDetails.scss";
+import "./styles/ReservationDetails.scss";
 
 const google = window.google;
 class ReservationDetails extends React.Component {
@@ -378,7 +378,7 @@ class ReservationDetails extends React.Component {
 
     reviewRedirect = () => {
         const { reservations, index } = this.props;
-        
+
         const location = {
             pathname: "/biz/rate",
             state: {
@@ -628,7 +628,7 @@ class ReservationDetails extends React.Component {
                                         {details.website ? (
                                             <a target="_blank" rel="noopener noreferrer" href={details.website}>
                                                 Visit Official Website
-                                        </a>
+                                            </a>
                                         ) : (
                                                 "Website Unavailable"
                                             )}
@@ -658,7 +658,7 @@ class ReservationDetails extends React.Component {
                                 className="btn_cancel_reservation"
                             >
                                 Cancel Reservation
-                    </button>
+                            </button>
                         )}
                 </form>
             );

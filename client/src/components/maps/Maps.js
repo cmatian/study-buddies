@@ -8,7 +8,7 @@ import Biz from "../business/Biz";
 import PlaceDetail from './PlaceDetail';
 import Search from '../search/Search';
 import Filters from '../search/Filters';
-import "./Maps.scss"; // Styling
+import "./styles/Maps.scss"; // Styling
 
 const mapStyles = {
     width: "100%",

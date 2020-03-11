@@ -1,6 +1,6 @@
 import React from 'react';
 import UserContext from "../../UserContext";
-import './PlaceSelected.scss';
+import './styles/PlaceSelected.scss';
 
 // display currently selected place with detail information
 class PlaceSelected extends React.Component {
@@ -13,7 +13,7 @@ class PlaceSelected extends React.Component {
         } else {
             this.props.onReservationSelect();
         }
-    }
+    };
 
     render() {
         const userContext = this.context;
@@ -32,7 +32,7 @@ class PlaceSelected extends React.Component {
                             </div >
                             <div className="focus_toolbar">
                                 <button className={"reservation " + protectedClassName}
-                                        onClick={this.onReservationSelect}>
+                                    onClick={this.onReservationSelect}>
                                     Make Reservation
                                 </button>
                                 <button className="details" onClick={() => onDetailSelect()}>Details</button>

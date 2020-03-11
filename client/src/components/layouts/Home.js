@@ -3,7 +3,7 @@ import Search from "../search/Search";
 import Filters from "../search/Filters";
 import Header from "./Header";
 // Home specific styling
-import "./Home.scss";
+import "./styles/Home.scss";
 
 class Home extends React.Component {
     constructor(props) {

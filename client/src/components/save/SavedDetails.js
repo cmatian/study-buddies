@@ -1,7 +1,7 @@
 import React from 'react';
 import Loader from '../layouts/Loader';
 import Reserve from '../business/Reserve';
-import "./SavedDetail.scss";
+import "./styles/SavedDetail.scss";
 
 const google = window.google;
 class SavedDetails extends React.Component {

@@ -1,6 +1,6 @@
 import React from 'react';
 import { withRouter } from "react-router-dom";
-import "./Rates.scss";
+import "./styles/Rates.scss";
 
 const stars = [0, 1, 2, 3, 4];
 const costs = ["$", "$$", "$$$", "$$$$"];

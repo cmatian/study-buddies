@@ -2,7 +2,7 @@ import React from "react";
 import { NavLink } from "react-router-dom";
 import UserContext from "../../UserContext";
 import ReactTooltip from "react-tooltip";
-import "./BurgerMenu.scss";
+import "./styles/BurgerMenu.scss";
 
 class BurgerMenu extends React.Component {
     static contextType = UserContext;
@@ -19,7 +19,7 @@ class BurgerMenu extends React.Component {
         } else {
             this.props.close();
         }
-    }
+    };
 
     render() {
         const userContext = this.context;
@@ -31,11 +31,11 @@ class BurgerMenu extends React.Component {
         }
         return (
             <div className="menu">
-                <ReactTooltip place="bottom"/>
+                <ReactTooltip place="bottom" />
                 <ul>
                     <li>
                         <NavLink exact to="/" activeClassName="active"
-                                 onClick={close}>
+                            onClick={close}>
                             Home
                         </NavLink>
                     </li>
@@ -46,15 +46,15 @@ class BurgerMenu extends React.Component {
                     </li>
                     <li>
                         <NavLink exact to="/users/reservations" activeClassName="active"
-                                 onClick={this.handleProtectedClick}
-                                 {...protectedOpts}>
+                            onClick={this.handleProtectedClick}
+                            {...protectedOpts}>
                             My Reservations
                         </NavLink>
                     </li>
                     <li>
                         <NavLink exact to="/maps/users/saved" activeClassName="active"
-                                 onClick={this.handleProtectedClick}
-                                 {...protectedOpts}>
+                            onClick={this.handleProtectedClick}
+                            {...protectedOpts}>
                             My Locations
                         </NavLink>
                     </li>

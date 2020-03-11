@@ -4,8 +4,8 @@ import AuthNavButton from "../auth/AuthNavButton";
 import BurgerIcon from "./BurgerIcon";
 import BurgerMenu from "./BurgerMenu";
 import Popup from "reactjs-popup";
-import "./Nav.scss";
-import "./MobileNav.scss";
+import "./styles/Nav.scss";
+import "./styles/MobileNav.scss";
 
 const contentStyle = {
     background: "rgba(255,255,255,0)",
@@ -28,7 +28,7 @@ class MobileNav extends React.Component {
                     contentStyle={contentStyle}
                     closeOnDocumentClick={false}
                     trigger={open => <BurgerIcon open={open} />}
-                        >
+                >
                     {close => <BurgerMenu close={close} />}
                 </Popup>
                 <nav className={window.location.pathname === "/" ? "home" : "default"}>
@@ -40,7 +40,7 @@ class MobileNav extends React.Component {
                                 </NavLink>
                             </li>
                             <li className="user">
-                                <AuthNavButton/>
+                                <AuthNavButton />
                             </li>
                         </ul>
                     </div>

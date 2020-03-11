@@ -1,5 +1,5 @@
 import React from "react";
-import "./Filters.scss"; // Filter Styling
+import "./styles/Filters.scss"; // Filter Styling
 
 class Filters extends React.Component {
     constructor(props) {

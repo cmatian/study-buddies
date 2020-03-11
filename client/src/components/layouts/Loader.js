@@ -1,5 +1,5 @@
 import React from 'react';
-import './Loader.scss';
+import './styles/Loader.scss';
 
 // Do not alter - CM
 const Loader = props => {

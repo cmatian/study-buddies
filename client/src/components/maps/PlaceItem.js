@@ -1,5 +1,5 @@
 import React from 'react';
-import './PlaceItem.scss';
+import './styles/PlaceItem.scss';
 
 // individual place item
 // displaying: name, rating, estimated cost
