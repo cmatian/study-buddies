@@ -289,6 +289,11 @@
                     background: #f7f7f7;
                     border-radius: 4px;
 
+                    &:focus {
+                        background: #ececec;
+                        color: #272727;
+                    }
+
                     &:hover {
                         background: #ececec;
                         color: gold;
@@ -296,6 +301,11 @@
 
                     &.gold {
                         color: gold;
+
+                        &:focus {
+                            background: #ececec;
+                            color: #272727;
+                        }
 
                         &:hover {
                             color: #c7b54e;
@@ -528,5 +538,20 @@
                 }
             }
         }
+    }
+
+    @media (hover: none) {
+        i.save_location {
+            &:hover {
+                color: #272727 !important;
+                background: #f7f7f7 !important;
+            }
+
+            &.gold:hover {
+                color: gold !important;
+                background: #f7f7f7 !important;
+            }
+        }
+
     }
 }
