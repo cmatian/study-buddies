@@ -2,7 +2,7 @@ import React from 'react';
 import { withRouter } from "react-router-dom";
 import ReviewList from "../rate/ReviewList";
 import UserContext from "../../UserContext";
-import "./Biz.scss";
+import "./styles/Biz.scss";
 
 // Display extended details for matches display of hours, location, and distance
 class Biz extends React.Component {

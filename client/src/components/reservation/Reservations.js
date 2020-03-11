@@ -2,7 +2,7 @@ import React from "react";
 import { Redirect } from "react-router-dom";
 import ReservationCard from "./ReservationCard";
 import ReservationDetails from "./ReservationDetails";
-import "./Reservations.scss";
+import "./styles/Reservations.scss";
 import UserContext from "../../UserContext";
 import Loader from '../layouts/Loader';
 

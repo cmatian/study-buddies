@@ -5,7 +5,7 @@ import ResponsiveLayout from "./ResponsiveLayout";
 import MobileNav from "./MobileNav";
 import UserContext from "../../UserContext";
 import ReactTooltip from "react-tooltip";
-import "./Nav.scss";
+import "./styles/Nav.scss";
 
 class Nav extends React.Component {
     static contextType = UserContext;
@@ -21,10 +21,10 @@ class Nav extends React.Component {
                 breakPoint={500}
                 renderDesktop={() => this.renderDesktopNav()}
                 renderMobile={() => (
-                    <MobileNav/>
+                    <MobileNav />
                 )}
-                />
-        )
+            />
+        );
     }
 
     handleProtectedClick = event => {
@@ -32,7 +32,7 @@ class Nav extends React.Component {
         if (!userContext.isAuthenticated) {
             event.preventDefault();
         }
-    }
+    };
 
     renderDesktopNav() {
         const userContext = this.context;
@@ -44,7 +44,7 @@ class Nav extends React.Component {
         return (
             <nav className={window.location.pathname === "/" ? "home" : "default"}>
                 <div>
-                    <ReactTooltip place="bottom"/>
+                    <ReactTooltip place="bottom" />
                     <ul>
                         {window.location.pathname !== "/" &&
                             <li className="logo">
@@ -60,15 +60,15 @@ class Nav extends React.Component {
                         </li>
                         <li>
                             <NavLink exact to="/users/reservations" activeClassName="active"
-                                    onClick={this.handleProtectedClick}
-                                    {...protectedOpts}>
+                                onClick={this.handleProtectedClick}
+                                {...protectedOpts}>
                                 Reservations
                             </NavLink>
                         </li>
                         <li>
                             <NavLink exact to="/maps/users/saved" activeClassName="active"
-                                 onClick={this.handleProtectedClick}
-                                 {...protectedOpts}>
+                                onClick={this.handleProtectedClick}
+                                {...protectedOpts}>
                                 Saved
                             </NavLink>
                         </li>

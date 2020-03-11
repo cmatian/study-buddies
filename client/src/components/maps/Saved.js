@@ -1,6 +1,6 @@
 import React from "react";
 import SavedList from "../save/SavedList";
-import "./Saved.scss";
+import "./styles/Saved.scss";
 
 class Saved extends React.Component {
     render() {

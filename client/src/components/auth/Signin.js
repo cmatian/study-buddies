@@ -1,7 +1,7 @@
 import React from "react";
 import CallbackContext from "../../CallbackContext";
 import { Link } from 'react-router-dom';
-import "./Signin.scss";
+import "./styles/Signin.scss";
 
 class Signin extends React.Component {
     static contextType = CallbackContext;
