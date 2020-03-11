@@ -46,7 +46,6 @@ nav {
                 transition: ease-in-out 150ms;
 
                 &.disabled {
-                    pointer-events: none;
                     cursor: default;
                     color: gray;
                 }

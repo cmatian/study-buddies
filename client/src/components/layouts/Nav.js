@@ -4,6 +4,7 @@ import AuthNavButton from "../auth/AuthNavButton";
 import ResponsiveLayout from "./ResponsiveLayout";
 import MobileNav from "./MobileNav";
 import UserContext from "../../UserContext";
+import ReactTooltip from "react-tooltip";
 import "./Nav.scss";
 
 class Nav extends React.Component {
@@ -35,10 +36,15 @@ class Nav extends React.Component {
 
     renderDesktopNav() {
         const userContext = this.context;
-        const protectedNavClassName = userContext.isAuthenticated ? "" : "disabled";
+        const protectedOpts = {};
+        if (!userContext.isAuthenticated) {
+            protectedOpts["className"] = "disabled";
+            protectedOpts["data-tip"] = "Sign in to use this feature";
+        }
         return (
             <nav className={window.location.pathname === "/" ? "home" : "default"}>
                 <div>
+                    <ReactTooltip place="bottom"/>
                     <ul>
                         {window.location.pathname !== "/" &&
                             <li className="logo">
@@ -54,15 +60,15 @@ class Nav extends React.Component {
                         </li>
                         <li>
                             <NavLink exact to="/users/reservations" activeClassName="active"
-                                 className={protectedNavClassName}
-                                 onClick={this.handleProtectedClick}>
+                                    onClick={this.handleProtectedClick}
+                                    {...protectedOpts}>
                                 Reservations
                             </NavLink>
                         </li>
                         <li>
                             <NavLink exact to="/maps/users/saved" activeClassName="active"
-                                 className={protectedNavClassName}
-                                 onClick={this.handleProtectedClick}>
+                                 onClick={this.handleProtectedClick}
+                                 {...protectedOpts}>
                                 Saved
                             </NavLink>
                         </li>

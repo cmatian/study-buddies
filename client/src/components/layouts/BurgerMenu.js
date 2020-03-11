@@ -1,6 +1,7 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
 import UserContext from "../../UserContext";
+import ReactTooltip from "react-tooltip";
 import "./BurgerMenu.scss";
 
 class BurgerMenu extends React.Component {
@@ -22,10 +23,15 @@ class BurgerMenu extends React.Component {
 
     render() {
         const userContext = this.context;
-        const protectedNavClassName = userContext.isAuthenticated ? "" : "disabled";
         var close = this.props.close;
+        const protectedOpts = {};
+        if (!userContext.isAuthenticated) {
+            protectedOpts["className"] = "disabled";
+            protectedOpts["data-tip"] = "Sign in to use this feature";
+        }
         return (
             <div className="menu">
+                <ReactTooltip place="bottom"/>
                 <ul>
                     <li>
                         <NavLink exact to="/" activeClassName="active"
@@ -40,15 +46,15 @@ class BurgerMenu extends React.Component {
                     </li>
                     <li>
                         <NavLink exact to="/users/reservations" activeClassName="active"
-                                 className={protectedNavClassName}
-                                 onClick={this.handleProtectedClick}>
+                                 onClick={this.handleProtectedClick}
+                                 {...protectedOpts}>
                             My Reservations
                         </NavLink>
                     </li>
                     <li>
                         <NavLink exact to="/maps/users/saved" activeClassName="active"
-                                 className={protectedNavClassName}
-                                 onClick={this.handleProtectedClick}>
+                                 onClick={this.handleProtectedClick}
+                                 {...protectedOpts}>
                             My Locations
                         </NavLink>
                     </li>
