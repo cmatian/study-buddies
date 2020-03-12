@@ -558,15 +558,15 @@ class ReservationDetails extends React.Component {
                                 <h3>
                                     @{details.name}
                                     <i
-                                        className={"material-icons save_location " + (
+                                        className={"material-icons save_location noselect " + (
                                             reservation.saved_location !== null && reservation.saved_location.saved_location_id ? "gold" : ""
                                         )}
                                         title={reservation.saved_location !== null && reservation.saved_location.saved_location_id ? "Remove from Saved Locations" : "Save Location"}
                                         onClick={this.toggleSavedLocation}
                                     >
-                                        star
+                                        bookmark
                                     </i>
-                                    <i className="material-icons location_type_icon">
+                                    <i className="material-icons location_type_icon noselect">
                                         {(() => {
                                             switch (details.types[0]) {
                                                 case "cafe":
